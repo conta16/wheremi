@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.js"></script>
+    <script src="./leaflet-geosearch.js"></script>
+
+    <link rel="stylesheet" href="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.css" />
+    <link type="text/css" href="./leaflet-search.css"/>
+
+    <title>app</title>
+    <style>
+      body {
+          padding: 0;
+          margin: 0;
+      }
+      html, body, #map {
+          height: 100%;
+          width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <button class="btn btn-primary" v-on:click.prevent="showPanel">
+         Show Panel
+      </button>
+      <slideout-panel></slideout-panel>
+    </div>
+    <div id="map"></div>
+    <script src="./leaflet.js"></script>
+    <!-- built files will be auto injected -->
+  </body>
+</html>
