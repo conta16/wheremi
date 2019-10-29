@@ -7,13 +7,9 @@ var map = L.map('map', {
     zoom: 10
 });
 
-mapLink = 
-	'<a href="http://openstreetmap.org">OpenStreetMap</a>';
-L.tileLayer(
-	'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-	attribution: '&copy; ' + mapLink + ' Contributors',
-	maxZoom: 18,
-	}).addTo(map);
+var Esri_WorldStreetMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+}).addTo(map);
 
 const provider = new OpenStreetMapProvider();
 
