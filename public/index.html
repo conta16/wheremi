@@ -6,13 +6,19 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.css" />
-    <link rel="stylesheet" type="text/css" href="leaflet-search.css" />
+    <link rel="stylesheet" href="leaflet-search.css" />
     <link rel="stylesheet" type="text/css" href="main.css"/>
     <link rel="stylesheet" type="text/css" href="util.css"/>
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.js"></script>
     <script src="./leaflet-geosearch.js"></script>
+
+    <script type="text/javascript">
+      handleOnLoad = function() {
+        L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@0.7.7/dist/images/';
+      }
+    </script>
 
     <title>app</title>
     <style>
@@ -28,7 +34,6 @@
     width: 100%;
     height: 100%;
     position: relative;
-    /*border: 1px solid black;*/
 }
       #map{
         position: absolute;
@@ -37,12 +42,10 @@
         position: absolute;
         right: 1%;
         top: 1%;
-        /*width: 100%;
-    /*border: 1px solid red;*/
       }
     </style>
   </head>
-  <body>
+  <body onload="handleOnLoad()">
     <div id="map-wrapper">
       <div id="map"></div>
       <div id="app">
@@ -51,6 +54,7 @@
           </button>
           <slideout-panel></slideout-panel>
         </div>
+        <!--<script type="text/javascript" src="bundle.min.js" charset="utf-8"></script>-->
     </div>
     <script src="./leaflet.js"></script>
     <!-- built files will be auto injected -->
