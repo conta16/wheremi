@@ -58,6 +58,13 @@ const removeClassName = (element, className) => {
   }
 };
 
+class ChoiceElement {
+  constructor({classNames = {}} = {}){
+    const container = createElement('div', ['geosearch', classNames.container2].join(' '));
+    this.elements = {container};
+  }
+}
+
 /*searchElement*/
 
 class SearchElement {
@@ -65,6 +72,9 @@ class SearchElement {
     const container = createElement('div', ['geosearch', classNames.container].join(' '));
     const form = createElement('form', ['', classNames.form].join(' '), container);
     const input = createElement('input', ['glass', classNames.input].join(' '), form);
+
+    const container2 = createElement('div', ['geosearch', classNames.container2].join(' '));
+    const form2 = createElement('form', ['', classNames.form].join(' '), container);
 
     input.type = 'text';
     input.placeholder = searchLabel;
@@ -75,7 +85,7 @@ class SearchElement {
     input.addEventListener('focus', (e) => { this.onFocus(e); }, false);
     input.addEventListener('blur', (e) => { this.onBlur(e); }, false);
 
-    this.elements = { container, form, input };
+    this.elements = { container, form, input, container2, form2 };
     this.handleSubmit = handleSubmit;
   }
 
@@ -156,6 +166,7 @@ const defaultOptions = () => ({
   zoomLevel: 18,
   classNames: {
     container: 'leaflet-bar leaflet-control leaflet-control-geosearch',
+    container2: 'leaflet-control-choice',
     button: 'leaflet-bar-part leaflet-bar-part-single',
     resetButton: 'reset',
     msgbox: 'leaflet-bar message',
@@ -177,6 +188,41 @@ const mapHandlers = [
   'boxZoom',
   'keyboard',
 ];
+
+const chControl = {
+  initialize(options){
+    this.options = {
+      ...defaultOptions(),
+      ...options,
+    };
+    const { style, classNames } = this.options;
+    this.choiceElement = new ChoiceElement({
+      ...this.options,
+    });
+
+    const { container } = this.choiceElement.elements;
+  },
+  onAdd(map) {
+    const { showMarker, style } = this.options;
+
+    this.map = map;
+    if (showMarker) {
+      //this.markers.addTo(map);
+    }
+
+    if (style === 'bar') {
+      const { form } = this.searchElement.elements;
+      const root = map.getContainer().querySelector('.leaflet-control-container');
+
+      const container = createElement('div', 'leaflet-control-geosearch bar');
+      container.appendChild(form);
+      root.appendChild(container);
+      this.elements.container = container;
+    }
+
+    return this.choiceElement.elements.container;
+  },
+};
 
 const Control = {
   initialize(options) {
@@ -200,16 +246,20 @@ const Control = {
 
     const { container, form, input } = this.searchElement.elements;
 
-    const button = createElement('a', classNames.button, container);
+
+    /*this.choiceElement = new choice({
+      ...this.options,
+    });*/
+    /*const button = createElement('a', classNames.button, container);
     button.title = searchLabel;
     button.href = '#';
 
-    button.addEventListener('click', (e) => { this.onClick(e); }, false);
+    button.addEventListener('click', (e) => { this.onClick(e); }, false);*/
 
-    const resetButton = createElement('a', classNames.resetButton, form);
-    resetButton.innerHTML = 'x';
-    button.href = '#';
-    resetButton.addEventListener('click', () => { this.clearResults(null, true); }, false);
+    const searchButton = createElement('a', classNames.button, container);
+    //resetButton.innerHTML = 'x';
+    //button.href = '#';
+    searchButton.addEventListener('click', () => { this.onSubmit({query: input.value}); }, false);
 
     if (autoComplete) {
       this.resultList = new ResultList({
@@ -230,7 +280,7 @@ const Control = {
     form.addEventListener('mouseenter', e => this.disableHandlers(e), true);
     form.addEventListener('mouseleave', e => this.restoreHandlers(e), true);
 
-    this.elements = { button, resetButton };
+    this.elements = {  }; //button
   },
 
   onAdd(map) {
@@ -472,6 +522,15 @@ function GeoSearchControl(...options) {
   }
 
   const LControl = L.Control.extend(Control);
+  return new LControl(...options);
+}
+
+function ChoiceControl(...options) {
+  if (!L || !L.Control || !L.Control.extend) {
+    throw new Error('Leaflet must be loaded before instantiating the GeoSearch control');
+  }
+
+  const LControl = L.Control.extend(chControl);
   return new LControl(...options);
 }
 

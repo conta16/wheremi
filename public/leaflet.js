@@ -14,11 +14,15 @@ var WorldStreetMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/se
 const provider = new OpenStreetMapProvider();
 
 const searchControl = new GeoSearchControl({
-provider: provider,
+    provider: provider,
+});
+
+const choiceControl = new ChoiceControl({
+    provider: provider,
 });
 	  
 map.addControl(searchControl);
-
+map.addControl(choiceControl);
 
 L.control.zoom({
 	position:'bottomleft'
