@@ -60,7 +60,11 @@ const removeClassName = (element, className) => {
 
 class ChoiceElement {
   constructor({classNames = {}} = {}){
-    const container = createElement('div', ['geosearch', classNames.container2].join(' '));
+    const container = createElement('div', ['geosearch', classNames.choice].join(' '));
+    const header = createElement('div',[classNames.header].join(' '), container);
+    const icon1 = createElement('form',[].join(' '), container);
+    const icon2 = createElement('form',[].join(' '), container);
+    const icon3 = createElement('form',[].join(' '), container);
     this.elements = {container};
   }
 }
@@ -72,9 +76,7 @@ class SearchElement {
     const container = createElement('div', ['geosearch', classNames.container].join(' '));
     const form = createElement('form', ['', classNames.form].join(' '), container);
     const input = createElement('input', ['glass', classNames.input].join(' '), form);
-
-    const container2 = createElement('div', ['geosearch', classNames.container2].join(' '));
-    const form2 = createElement('form', ['', classNames.form].join(' '), container);
+    /*const choice = createElement('div', ['geosearch', classNames.container2].join(' '), container);*/
 
     input.type = 'text';
     input.placeholder = searchLabel;
@@ -85,7 +87,7 @@ class SearchElement {
     input.addEventListener('focus', (e) => { this.onFocus(e); }, false);
     input.addEventListener('blur', (e) => { this.onBlur(e); }, false);
 
-    this.elements = { container, form, input, container2, form2 };
+    this.elements = { container, form, input };
     this.handleSubmit = handleSubmit;
   }
 
@@ -166,7 +168,8 @@ const defaultOptions = () => ({
   zoomLevel: 18,
   classNames: {
     container: 'leaflet-bar leaflet-control leaflet-control-geosearch',
-    container2: 'leaflet-control-choice',
+    choice: 'leaflet-control-choice card',
+    header: 'card-body',
     button: 'leaflet-bar-part leaflet-bar-part-single',
     resetButton: 'reset',
     msgbox: 'leaflet-bar message',
@@ -638,7 +641,7 @@ class ResultList {
     this.results = [];
 
     const container = createElement('div', cx('results', classNames.container));
-    const resultItem = createElement('div', cx(classNames.item));
+    const resultItem = createElement('div', cx());
 
     container.addEventListener('click', this.onClick, true);
     this.elements = { container, resultItem };
