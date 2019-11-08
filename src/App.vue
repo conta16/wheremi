@@ -1,8 +1,14 @@
 <template>
-  <slideout-panel/>
+  <div id ="app">
+    <Map />
+    <RightPanel/>
+  </div>
 </template>
 
 <script>
+export default{
+  
+}
 
 import { vueSlideoutPanelService } from 'vue2-slideout-panel';
 
