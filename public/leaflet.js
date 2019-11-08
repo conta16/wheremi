@@ -1,7 +1,7 @@
-//var map = L.map('map').setView([-41.2858, 174.78682], 14);
+
 var map = L.map('map', {
     // Set latitude and longitude of the map center (required)
-    center: [37.7833, -122.4167],
+    center: [44.7,10.633333],
     // Set the initial zoom level, values 0-18, where 0 is most zoomed-out (required)
     zoomControl: false,
     zoom: 10

@@ -1,37 +1,14 @@
 <template>
-  //<slideout-panel></slideout-panel>
+  <div id ="app">
+    <Map />
+    <RightPanel/>
+  </div>
 </template>
 
 <script>
-    /*export default {
-        data() {
-            return {
-                menu: [
-                    {
-                        header: true,
-                        title: 'Main Navigation',
-                        hiddenOnCollapse: true
-                    },
-                    {
-                        href: '/',
-                        title: 'Dashboard',
-                        icon: 'fa fa-user'
-                    },
-                    {
-                        href: '/charts',
-                        title: 'Charts',
-                        icon: 'fa fa-chart-area',
-                        child: [
-                            {
-                                href: '/charts/sublink',
-                                title: 'Sub Link'
-                            }
-                        ]
-                    }
-                ]
-            }
-        }
-    }*/
+export default{
+  
+}
 
 import { vueSlideoutPanelService } from 'vue2-slideout-panel';
 
