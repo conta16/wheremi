@@ -58,6 +58,13 @@ const removeClassName = (element, className) => {
   }
 };
 
+class ChoiceElement {
+  constructor({classNames = {}} = {}){
+    const container = createElement('div', ['geosearch', classNames.container2].join(' '));
+    this.elements = {container};
+  }
+}
+
 /*searchElement*/
 
 class SearchElement {
@@ -65,6 +72,9 @@ class SearchElement {
     const container = createElement('div', ['geosearch', classNames.container].join(' '));
     const form = createElement('form', ['', classNames.form].join(' '), container);
     const input = createElement('input', ['glass', classNames.input].join(' '), form);
+
+    const container2 = createElement('div', ['geosearch', classNames.container2].join(' '));
+    const form2 = createElement('form', ['', classNames.form].join(' '), container);
 
     input.type = 'text';
     input.placeholder = searchLabel;
@@ -75,7 +85,7 @@ class SearchElement {
     input.addEventListener('focus', (e) => { this.onFocus(e); }, false);
     input.addEventListener('blur', (e) => { this.onBlur(e); }, false);
 
-    this.elements = { container, form, input };
+    this.elements = { container, form, input, container2, form2 };
     this.handleSubmit = handleSubmit;
   }
 
@@ -134,82 +144,6 @@ class SearchElement {
   }
 }
 
-/*ResultList*/
-
-const cx = (...classnames) => classnames.join(' ').trim();
-
-class ResultList {
-  constructor({ handleClick = () => {}, classNames = {} } = {}) {
-    this.props = { handleClick, classNames };
-    this.selected = -1;
-    this.results = [];
-
-    const container = createElement('div', cx('results', classNames.container));
-    const resultItem = createElement('div', cx(classNames.item));
-
-    container.addEventListener('click', this.onClick, true);
-    this.elements = { container, resultItem };
-  }
-
-  render(results = []) {
-    const { container, resultItem } = this.elements;
-    this.clear();
-
-    results.forEach((result, idx) => {
-      const child = resultItem.cloneNode(true);
-      child.setAttribute('data-key', idx);
-      child.innerHTML = result.label;
-      container.appendChild(child);
-    });
-
-    if (results.length > 0) {
-      addClassName(container, 'active');
-    }
-
-    this.results = results;
-  }
-
-  select(index) {
-    const { container } = this.elements;
-
-    // eslint-disable-next-line no-confusing-arrow
-    Array.from(container.children).forEach((child, idx) => (idx === index)
-      ? addClassName(child, 'active')
-      : removeClassName(child, 'active'));
-
-    this.selected = index;
-    return this.results[index];
-  }
-
-  count() {
-    return this.results ? this.results.length : 0;
-  }
-
-  clear() {
-    const { container } = this.elements;
-    this.selected = -1;
-
-    while (container.lastChild) {
-      container.removeChild(container.lastChild);
-    }
-
-    removeClassName(container, 'active');
-  }
-
-  onClick ({ target } = {})  {
-    const { handleClick } = this.props;
-    const { container } = this.elements;
-
-    if (target.parentNode !== container || !target.hasAttribute('data-key')) {
-      return;
-    }
-
-    const idx = target.getAttribute('data-key');
-    const result = this.results[idx];
-    handleClick({ result });
-  };
-}
-
 /*LeafletControl*/
 
 
@@ -232,6 +166,7 @@ const defaultOptions = () => ({
   zoomLevel: 18,
   classNames: {
     container: 'leaflet-bar leaflet-control leaflet-control-geosearch',
+    container2: 'leaflet-control-choice',
     button: 'leaflet-bar-part leaflet-bar-part-single',
     resetButton: 'reset',
     msgbox: 'leaflet-bar message',
@@ -241,7 +176,7 @@ const defaultOptions = () => ({
   autoComplete: true,
   autoCompleteDelay: 250,
   autoClose: false,
-  keepResult: false,
+  keepResult: true,
 });
 
 const wasHandlerEnabled = {};
@@ -253,6 +188,41 @@ const mapHandlers = [
   'boxZoom',
   'keyboard',
 ];
+
+const chControl = {
+  initialize(options){
+    this.options = {
+      ...defaultOptions(),
+      ...options,
+    };
+    const { style, classNames } = this.options;
+    this.choiceElement = new ChoiceElement({
+      ...this.options,
+    });
+
+    const { container } = this.choiceElement.elements;
+  },
+  onAdd(map) {
+    const { showMarker, style } = this.options;
+
+    this.map = map;
+    if (showMarker) {
+      //this.markers.addTo(map);
+    }
+
+    if (style === 'bar') {
+      const { form } = this.searchElement.elements;
+      const root = map.getContainer().querySelector('.leaflet-control-container');
+
+      const container = createElement('div', 'leaflet-control-geosearch bar');
+      container.appendChild(form);
+      root.appendChild(container);
+      this.elements.container = container;
+    }
+
+    return this.choiceElement.elements.container;
+  },
+};
 
 const Control = {
   initialize(options) {
@@ -276,16 +246,20 @@ const Control = {
 
     const { container, form, input } = this.searchElement.elements;
 
-    const button = createElement('a', classNames.button, container);
+
+    /*this.choiceElement = new choice({
+      ...this.options,
+    });*/
+    /*const button = createElement('a', classNames.button, container);
     button.title = searchLabel;
     button.href = '#';
 
-    button.addEventListener('click', (e) => { this.onClick(e); }, false);
+    button.addEventListener('click', (e) => { this.onClick(e); }, false);*/
 
-    const resetButton = createElement('a', classNames.resetButton, form);
-    resetButton.innerHTML = 'x';
-    button.href = '#';
-    resetButton.addEventListener('click', () => { this.clearResults(null, true); }, false);
+    const searchButton = createElement('a', classNames.button, container);
+    //resetButton.innerHTML = 'x';
+    //button.href = '#';
+    searchButton.addEventListener('click', () => { this.onSubmit({query: input.value}); }, false);
 
     if (autoComplete) {
       this.resultList = new ResultList({
@@ -306,7 +280,7 @@ const Control = {
     form.addEventListener('mouseenter', e => this.disableHandlers(e), true);
     form.addEventListener('mouseleave', e => this.restoreHandlers(e), true);
 
-    this.elements = { button, resetButton };
+    this.elements = {  }; //button
   },
 
   onAdd(map) {
@@ -551,6 +525,15 @@ function GeoSearchControl(...options) {
   return new LControl(...options);
 }
 
+function ChoiceControl(...options) {
+  if (!L || !L.Control || !L.Control.extend) {
+    throw new Error('Leaflet must be loaded before instantiating the GeoSearch control');
+  }
+
+  const LControl = L.Control.extend(chControl);
+  return new LControl(...options);
+}
+
 class BaseProvider {
   constructor(options = {}) {
     this.options = options;
@@ -643,6 +626,83 @@ class OpenStreetMapProvider extends BaseProvider {
     return ''; // Unknown
   }
 }
+
+/*ResultList*/
+
+const cx = (...classnames) => classnames.join(' ').trim();
+
+class ResultList {
+  constructor({ handleClick = () => {}, classNames = {} } = {}) {
+    this.props = { handleClick, classNames };
+    this.selected = -1;
+    this.results = [];
+
+    const container = createElement('div', cx('results', classNames.container));
+    const resultItem = createElement('div', cx(classNames.item));
+
+    container.addEventListener('click', this.onClick, true);
+    this.elements = { container, resultItem };
+  }
+
+  render(results = []) {
+    const { container, resultItem } = this.elements;
+    this.clear();
+
+    results.forEach((result, idx) => {
+      const child = resultItem.cloneNode(true);
+      child.setAttribute('data-key', idx);
+      child.innerHTML = result.label;
+      container.appendChild(child);
+    });
+
+    if (results.length > 0) {
+      addClassName(container, 'active');
+    }
+
+    this.results = results;
+  }
+
+  select(index) {
+    const { container } = this.elements;
+
+    // eslint-disable-next-line no-confusing-arrow
+    Array.from(container.children).forEach((child, idx) => (idx === index)
+      ? addClassName(child, 'active')
+      : removeClassName(child, 'active'));
+
+    this.selected = index;
+    return this.results[index];
+  }
+
+  count() {
+    return this.results ? this.results.length : 0;
+  }
+
+  clear() {
+    const { container } = this.elements;
+    this.selected = -1;
+
+    while (container.lastChild) {
+      container.removeChild(container.lastChild);
+    }
+
+    removeClassName(container, 'active');
+  }
+
+  onClick = ({ target } = {}) => {
+    const { handleClick } = this.props;
+    const { container } = this.elements;
+
+    if (target.parentNode !== container || !target.hasAttribute('data-key')) {
+      return;
+    }
+
+    const idx = target.getAttribute('data-key');
+    const result = this.results[idx];
+    handleClick({ result });
+  };
+}
+
 
 
 ////////////////// ADDED CODE ////////////////////////
