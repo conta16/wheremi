@@ -20,7 +20,7 @@
       }
     </script>
 
-    <title>app</title>
+    <title>WhereMICLARISSA</title>
     <style>
       body {
           padding: 0;
@@ -46,17 +46,13 @@
     </style>
   </head>
   <body onload="handleOnLoad()">
+    <noscript>
+      <strong>We're sorry but our website doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
     <div id="map-wrapper">
       <div id="map"></div>
-      <div id="app">
-          <button class="btn btn-primary" v-on:click.prevent="showPanel">
-             Accedi
-          </button>
-          <slideout-panel></slideout-panel>
-        </div>
-        <!--<script type="text/javascript" src="bundle.min.js" charset="utf-8"></script>-->
     </div>
+    <div id="app"></div>
     <script src="./leaflet.js"></script>
-    <!-- built files will be auto injected -->
   </body>
 </html>

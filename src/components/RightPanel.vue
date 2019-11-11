@@ -66,9 +66,21 @@
 		</div>
 	</div>
 </template>
-
 <script>
+	export default{
+		props: {
 
+		},
+		data() {
+		return {
+		};
+		},
+		methods: {
+			closePanel() {
+			this.$emit("closePanel", {});
+			}
+		}
+	}
 </script>
 
 <style scoped>
