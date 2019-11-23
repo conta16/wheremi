@@ -5,6 +5,8 @@ const ARROW_UP_KEY = 38;
 const ARROW_LEFT_KEY = 37;
 const ARROW_RIGHT_KEY = 39;
 
+var r = {};
+
 const SPECIAL_KEYS = [
   ENTER_KEY,
   ESCAPE_KEY,
@@ -136,7 +138,7 @@ class SearchElement {
 
   onKeyPress(event) {
     if (event.keyCode === ENTER_KEY) {
-      this.onSubmit(event);
+      this.singleSearch(event);
     }
   }
 
@@ -192,6 +194,7 @@ const mapHandlers = [
   'keyboard',
 ];
 
+
 const chControl = {
   initialize(options){
     this.options = {
@@ -229,6 +232,7 @@ const chControl = {
 
 const Control = {
   initialize(options) {
+    parentThis = this;
     this.markers = new L.FeatureGroup();
     this.handlersDisabled = false;
 
@@ -262,13 +266,19 @@ const Control = {
     const searchButton = createElement('a', classNames.button, container);
     //resetButton.innerHTML = 'x';
     //button.href = '#';
-    searchButton.addEventListener('click', () => { this.onSubmit({query: input.value}); }, false);
+    searchButton.addEventListener('click', () => { this.singleSearch({query: input.value}); }, false);
 
     if (autoComplete) {
       this.resultList = new ResultList({
-        handleClick: ({ result }) => {
-          input.value = result.label;
-          this.onSubmit({ query: result.label, data: result });
+        handleClick: ({ result }, bool) => {
+          if (bool){
+            input.value = result.label;
+            this.singleSearch({ query: result.label, data: result }, bool);
+          }
+          else {
+            input.value = result.label;
+            this.singleSearch({ query: result.label, data: result }, bool);
+          }
         },
       });
 
@@ -375,7 +385,7 @@ const Control = {
 
     if (event.keyCode === ENTER_KEY) {
       const item = list.select(list.selected);
-      this.onSubmit({ query: input.value, data: item });
+      this.singleSearch({ query: input.value, data: item },list.bool);
       return;
     }
 
@@ -420,7 +430,7 @@ const Control = {
     const { provider } = this.options;
 
     if (query.length) {
-      const results = await provider.search({ query });
+      const results = await provider.search({ query },0);
       this.resultList.render(results);
     }
     else {
@@ -428,17 +438,27 @@ const Control = {
     }
   },
 
-  async onSubmit(query) {
+  async singleSearch(query, bool = 0){
     const { provider } = this.options;
 
-    const results = await provider.search(query);
+    const results = await provider.search2(query, bool);
+
+    if (results && results.length > 0) {
+      this.showResult(results[0], query, bool);
+    }
+  },
+
+  async onSubmit(query, bool = 0) {
+    const { provider } = this.options;
+
+    const results = await provider.search(query, bool);
 
     if (results && results.length > 0) {
       this.showResult(results[0], query);
     }
   },
 
-  showResult(result, { query }) {
+  showResult(result, { query }, bool) {
     const { autoClose } = this.options;
 
     const markers = Object.keys(this.markers._layers);
@@ -446,13 +466,21 @@ const Control = {
       this.markers.removeLayer(markers[0]);
     }
 
-    const marker = this.addMarker(result, query);
-    this.centerMap(result);
 
-    this.map.fireEvent('geosearch/showlocation', {
-      location: result,
-      marker,
-    });
+    if (!bool){
+      const marker = this.addMarker(result, query);
+      this.centerMap(result);
+
+      this.options.provider.itinerary.setWaypoints([]);
+
+      this.map.fireEvent('geosearch/showlocation', {
+        location: result,
+        marker,
+      });
+    }
+    else{
+      this.options.provider.itinerary.setWaypoints(result.waypoints);
+    }
 
     if (autoClose) {
       this.closeResults();
@@ -560,6 +588,11 @@ class BaseProvider {
 }
 
 class OpenStreetMapProvider extends BaseProvider {
+  constructor(itinerary){
+    super();
+    this.itinerary = itinerary;
+  }
+
   endpoint({ query } = {}) {
     const { params } = this.options;
 
@@ -600,26 +633,48 @@ class OpenStreetMapProvider extends BaseProvider {
     }));
   }
 
+  async search2({query, data}, bool = 0){
+    if (!bool){
+      // eslint-disable-next-line no-bitwise
+      const protocol = ~location.protocol.indexOf('http') ? location.protocol : 'https:';
+      const url = data
+        ? this.endpointReverse({ data, protocol })
+        : this.endpoint({ query, protocol });
+
+      const request = await fetch(url);
+      const json = await request.json();
+      return this.parse({ data: data ? [json] : json });
+    }
+    else {
+      var dbResponse = {};
+      await this.itinerary.GSItineraryFromDB(query).then((data) => {
+        dbResponse = data;
+      }).catch(() => {});
+      return dbResponse.result;
+    }
+  }
+
   async search({ query, data }) {
     // eslint-disable-next-line no-bitwise
     const protocol = ~location.protocol.indexOf('http') ? location.protocol : 'https:';
-    var mongo_response;
-
+    var dbResponse = {};
     const url = data
       ? this.endpointReverse({ data, protocol })
       : this.endpoint({ query, protocol });
 
-    /*var socket = io.connect('http://localhost'); //da vedere
-    socket.on('ack', function(data){
-      socket.emit('mongoevent', {query});
-      socket.on('mongoresp', function(d){
-        mongo_response = d;
-      });
-    });*/
+    await this.itinerary.GSItineraryFromDB(query).then((data) => {
+      dbResponse = data;
+    }).catch(() => {});
+
+    console.log("pippo");
 
     const request = await fetch(url);
     const json = await request.json();
-    return this.parse({ data: data ? [json] : json });
+    const places = this.parse({ data: data ? [json] : json });
+    return {
+      places: places,
+      dbResponse: dbResponse.result
+    };
   }
 
   translateOsmType(type) {
@@ -639,26 +694,44 @@ class ResultList {
     this.props = { handleClick, classNames };
     this.selected = -1;
     this.results = [];
+    this.bool = 0;
 
     const container = createElement('div', cx('results', classNames.container));
     const resultItem = createElement('div', cx());
 
     container.addEventListener('click', this.onClick, true);
     this.elements = { container, resultItem };
+    this.container = container;
+    this.resultItem = resultItem;
+    r = this;
   }
 
   render(results = []) {
     const { container, resultItem } = this.elements;
+    var idx = 0;
     this.clear();
 
-    results.forEach((result, idx) => {
+    results.places.forEach((result, ids) => {
       const child = resultItem.cloneNode(true);
-      child.setAttribute('data-key', idx);
+      child.setAttribute('data-key', idx); //unique even among dbResponse objects
+      child.setAttribute('data-key2', ids); //not unique, used for indexing in array
+      child.setAttribute('data-type', 'place');
       child.innerHTML = result.label;
       container.appendChild(child);
+      idx+=1;
     });
 
-    if (results.length > 0) {
+    results.dbResponse.forEach((result, ids) => {
+      const child = resultItem.cloneNode(true);
+      child.setAttribute('data-key', idx);
+      child.setAttribute('data-key2', ids);
+      child.setAttribute('data-type', 'dbresponse');
+      child.innerHTML = result.label;
+      container.appendChild(child);
+      idx+=1;
+    });
+
+    if (results.places.length > 0 || results.dbResponse.length > 0) {
       addClassName(container, 'active');
     }
 
@@ -667,18 +740,26 @@ class ResultList {
 
   select(index) {
     const { container } = this.elements;
-
+    var ids = 0;
+    this.bool = 0;
     // eslint-disable-next-line no-confusing-arrow
-    Array.from(container.children).forEach((child, idx) => (idx === index)
-      ? addClassName(child, 'active')
-      : removeClassName(child, 'active'));
-
+    Array.from(container.children).forEach((child, idx) => {
+      if (idx === index){
+        addClassName(child, 'active');
+        if (child.getAttribute("data-type") == "dbresponse"){
+          this.bool = 1;
+          ids = child.getAttribute("data-key2");
+        }
+      }
+      else {removeClassName(child, 'active');}
+    });
     this.selected = index;
-    return this.results[index];
+    if (this.bool) return this.results.dbResponse[ids];
+    else return this.results.places[index];
   }
 
   count() {
-    return this.results ? this.results.length : 0;
+    return this.results.places || this.results.dbResponse ? this.results.places.length + this.results.dbResponse.length : 0;
   }
 
   clear() {
@@ -700,9 +781,19 @@ class ResultList {
       return;
     }
 
-    const idx = target.getAttribute('data-key');
-    const result = this.results[idx];
-    handleClick({ result });
+    var result = {};
+
+    if (target.getAttribute('data-type') == 'dbresponse'){
+      const ids = target.getAttribute('data-key2');
+      result = this.results.dbResponse[ids];
+      this.bool = 1;
+    }
+    else {
+      const ids = target.getAttribute('data-key2');
+      result = this.results.places[ids];
+      this.bool = 0;
+    }
+    handleClick({ result }, this.bool);
   };
 }
 
@@ -719,10 +810,10 @@ provider
 
 /*const form = document.querySelector('form');
 const input = form.querySelector('input[type="text"]');
- 
+
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
- 
+
   const results = await provider.search({ query: input.value });
   console.log(results); // » [{}, {}, {}, ...]
 });*/

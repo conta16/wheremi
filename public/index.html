@@ -4,11 +4,16 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.css" />
     <link rel="stylesheet" href="leaflet-search.css" />
     <link rel="stylesheet" type="text/css" href="main.css"/>
     <link rel="stylesheet" type="text/css" href="util.css"/>
+    <link rel="stylesheet" href="./leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="../src/index.css" />
+
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.js"></script>
@@ -20,7 +25,7 @@
       }
     </script>
 
-    <title>WhereMICLARISSA</title>
+    <title>wheremi</title>
     <style>
       body {
           padding: 0;
@@ -52,7 +57,15 @@
     <div id="map-wrapper">
       <div id="map"></div>
     </div>
-    <div id="app"></div>
+    <script src="artyom.window.min.js"></script>
+    <script src="Leaflet.Control.Custom.js"></script>
+    <script src="./leaflet-routing-machine.js"></script>
+    <script src="./Control.Geocoder.js"></script>
+    <script src="./config.js"></script>
+    <script src="./itinerary.js"></script>
+    <script src="./navigatorController.js"></script>
+    <script src="./pollonavigator.js"></script>
+    <script src="./L0.Control.Locate.js"></script>
     <script src="./leaflet.js"></script>
   </body>
 </html>
