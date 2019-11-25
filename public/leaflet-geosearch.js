@@ -666,8 +666,6 @@ class OpenStreetMapProvider extends BaseProvider {
       dbResponse = data;
     }).catch(() => {});
 
-    console.log("pippo");
-
     const request = await fetch(url);
     const json = await request.json();
     const places = this.parse({ data: data ? [json] : json });

@@ -1,10 +1,13 @@
 class Itinerary {
-    constructor(map, control){
-        this.waypoints = [];
-        this.map = map;
-        this.control = control;
+    constructor(map, control, maxItineraries){
+        this.itineraries = []; //itineraries shown on zoom event
+        this.waypoints = []; //waypoints of the itinerary shown on the map. there can only be one itinerary showed at a time
+        /*this.map = map;
+        this.control = control;*/
+        this.markers = [];
+        this.maxItineraries = maxItineraries;
         this.url = "http://localhost:3000";
-        this.load_itinerary(this.waypoints);
+        this.init_itinerary(this.waypoints);
     }
 
     /*pushWaypoints(waypoints){
@@ -16,7 +19,7 @@ class Itinerary {
     }*/
 
 
-    load_itinerary(itinerary){
+    init_itinerary(itinerary){
         control = L.Routing.control({
           waypoints: itinerary.waypoints,
           routeWhileDragging: true
@@ -35,7 +38,6 @@ class Itinerary {
             //this.waypoints = waypoints;
             this.waypoints.push(waypoints[i].latLng);
         }
-        console.log("setWaypoints: "+this.waypoints);
         this.showOnMap();
     }
 
@@ -74,6 +76,37 @@ class Itinerary {
             async: true,
             success: function(){
                 console.log("posted successfully");
+            }
+        });
+    }
+
+    loadItineraries(){
+        var bound = map.getBounds();
+        var parentThis = this;
+        $.ajax({
+            url: parentThis.url+"/about?swlat="+bound._southWest.lat+"&swlng="+bound._southWest.lng+"&nelat="+bound._northEast.lat+"&nelng="+bound._northEast.lng,
+            method: "GET",
+            dataType: "json",
+            async: true,
+            /*data: {
+                bounds: JSON.stringify(bound)
+            },*/
+            success: (data) => {
+                parentThis.itineraries = data.result;
+                for (var i = 0; i<parentThis.maxItineraries; i++){
+                    if (parentThis.markers[i]) {
+                        map.removeLayer(parentThis.markers[i]);
+                        parentThis.markers[i] = undefined;
+                    }
+                }
+                parentThis.itineraries.forEach((obj, index) => {
+                    parentThis.markers[index] = new L.Marker(parentThis.itineraries[index].waypoints[0].latLng).addTo(map);
+                    parentThis.markers[index].on('click', () => {
+                        map.removeLayer(parentThis.markers[index]);
+                        parentThis.markers[index] = undefined;
+                        parentThis.setWaypoints(parentThis.itineraries[index].waypoints);
+                    });
+                });
             }
         });
     }

@@ -3,12 +3,20 @@ var map = L.map('map', {
     center: [44.7,10.633333],
     // Set the initial zoom level, values 0-18, where 0 is most zoomed-out (required)
     zoomControl: false,
-    zoom: 10
+    zoom: 3,
+	minZoom: 3
 });
 
 var WorldStreetMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
+	noWrap: true
 }).addTo(map);
+
+var bounds = L.latLngBounds([[-90,-180], [90, 180]]);
+map.setMaxBounds(bounds);
+map.on('drag', function() {
+	map.panInsideBounds(bounds, { animate: false });
+});
 
 Paul=new Artyom()
 
@@ -57,7 +65,7 @@ L.control.custom({
 
 var control;
 
-var itinerary = new Itinerary(map,control);
+var itinerary = new Itinerary(map,control,10);
 
 var navigatorControl = new navigatorController(itinerary);
 
@@ -91,15 +99,10 @@ L.control.custom({
 }).addTo(map);
 
 
-/*setTimeout(function(){
-    itinerary.setWaypoints([{lat:58.74, lng:11.94},{lat:57.6792,lng:11.949}]);
-},1000);
+map.on('zoomend', function(){
+	itinerary.loadItineraries();
+});
 
-setTimeout(function(){
-    itinerary.GSItineraryFromDB("viag").then((data) => {
-        console.log(data);
-    }).catch((err) => {
-        console.log(err);
-    });
-    //itinerary.postItineraryToDB("vlog");
-},3000);*/
+map.on('drag', function(){
+	itinerary.loadItineraries();
+});

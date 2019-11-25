@@ -14,7 +14,6 @@ app.use(function(req, res, next) {
 });
 
 app.get('/', function (req, res){
-	console.log("get connection noted...");
 	MongoClient.connect(url, {useUnifiedTopology: true}, function(err, db) {
 		if (err) throw err;
 		var dbo = db.db("boh");
@@ -27,8 +26,28 @@ app.get('/', function (req, res){
 	});
 });
 
+app.get('/about', function (req, res){
+	MongoClient.connect(url, {useUnifiedTopology: true}, function(err, db) {
+		if (err) throw err;
+		var dbo = db.db("boh");
+		//var bounds = JSON.parse(req.body.bounds);
+		dbo.collection("itineraries").find({
+			$and: [
+                                {"waypoints.0.latLng.lat": { $gt: parseInt(req.query.swlat)}},
+                                {"waypoints.0.latLng.lat": { $lt: parseInt(req.query.nelat)}},
+                                {"waypoints.0.latLng.lng": { $gt: parseInt(req.query.swlng)}},
+                                {"waypoints.0.latLng.lng": { $lt: parseInt(req.query.nelng)}}
+                        ]
+		}).toArray(function(err,result){
+			if (err) throw err;
+			res.send({result});
+			db.close();
+		});
+	});
+});
+
 app.post('/', function (req, res){
-        var obj = {
+        var obj = { //da aggiornare con nuovo json
 		"name": req.body.name,
 		"waypoints": []
 	};
