@@ -16,7 +16,7 @@ app.use(function(req, res, next) {
 app.get('/', function (req, res){
 	MongoClient.connect(url, {useUnifiedTopology: true}, function(err, db) {
 		if (err) throw err;
-		var dbo = db.db("boh");
+		var dbo = db.db("sitedb");
 		//Find the first document in the customers collection:
 		dbo.collection("itineraries").find({'label': {$regex: ".*"+req.query.query+".*"}}).toArray(function(err, result) {
 			if (err) throw err;
@@ -29,7 +29,7 @@ app.get('/', function (req, res){
 app.get('/about', function (req, res){
 	MongoClient.connect(url, {useUnifiedTopology: true}, function(err, db) {
 		if (err) throw err;
-		var dbo = db.db("boh");
+		var dbo = db.db("sitedb");
 		//var bounds = JSON.parse(req.body.bounds);
 		dbo.collection("itineraries").find({
 			$and: [
@@ -60,7 +60,7 @@ app.post('/', function (req, res){
 
 	MongoClient.connect(url, {useUnifiedTopology: true}, function(err,db){
 		if (err) throw err;
-		var dbo = db.db("boh");
+		var dbo = db.db("sitedb");
 		dbo.collection("itineraries").insertOne(obj, (err,res) => {
 			if (err) throw err;
 			db.close();
