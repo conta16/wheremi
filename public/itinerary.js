@@ -148,4 +148,8 @@ class Itinerary {
         this.block = value;
     }
 
+    getControl(){
+        return this.control;
+    }
+
 }

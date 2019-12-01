@@ -8,6 +8,7 @@ class navigatorController{
     }
 
     reachItinerary(position, itinerary) {
+        var control = this.itinerary.getControl();
         if (control)
           map.removeControl(control);
         console.log([position], itinerary)
