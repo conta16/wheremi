@@ -15860,7 +15860,7 @@ module.exports={
 			fitSelectedRoutes: 'smart',
 			routeLine: function(route, options) { return new Line(route, options); },
 			autoRoute: true,
-			routeWhileDragging: false,
+			routeWhileDragging: true,
 			routeDragInterval: 500,
 			waypointMode: 'connect',
 			showAlternatives: false,
@@ -18288,7 +18288,8 @@ module.exports = L.Routing = {
 				var options = {
 						draggable: this.draggableWaypoints
 					},
-				    marker = L.marker(wp.latLng, options);
+                    //marker = L.marker(wp.latLng, options);
+                    marker = undefined;
 
 				return marker;
 			},

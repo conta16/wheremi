@@ -10,9 +10,13 @@
   },
   "dependencies": {
     "core-js": "^3.3.2",
+    "material-icons": "^0.3.1",
+    "materialize-css": "^1.0.0-rc.2",
     "mdbvue": "5.8.3",
     "vue": "^2.6.10",
-    "vue-sidebar-menu": "^4.4.0"
+    "vue-sidebar-menu": "^4.4.0",
+    "vue-slideout-panel": "^3.0.0",
+    "vuesax": "^3.11.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.0.0",
@@ -23,6 +27,8 @@
     "eslint-plugin-html": "^5.0.5",
     "eslint-plugin-vue": "^5.0.0",
     "eslint-plugin-vue-libs": "^3.0.0",
+    "stylus": "^0.54.7",
+    "stylus-loader": "^3.0.2",
     "vue-cli-plugin-mdb": "^1.9.0",
     "vue-template-compiler": "^2.6.10",
     "vue2-slideout-panel": "^2.4.0"

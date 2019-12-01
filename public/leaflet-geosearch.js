@@ -472,6 +472,7 @@ const Control = {
       this.centerMap(result);
 
       this.options.provider.itinerary.setWaypoints([]);
+      this.options.provider.itinerary.showOnMap();
 
       this.map.fireEvent('geosearch/showlocation', {
         location: result,
@@ -479,7 +480,12 @@ const Control = {
       });
     }
     else{
-      this.options.provider.itinerary.setWaypoints(result.waypoints);
+      var tmp = [];
+      for (var i in result.waypoints){
+        tmp.push(result.waypoints[i].latLng);
+      }
+      this.options.provider.itinerary.setWaypoints(tmp);
+      this.options.provider.itinerary.showOnMap();
     }
 
     if (autoClose) {

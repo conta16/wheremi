@@ -47,16 +47,13 @@ app.get('/about', function (req, res){
 });
 
 app.post('/', function (req, res){
-        var obj = { //da aggiornare con nuovo json
-		"name": req.body.name,
-		"waypoints": []
-	};
+        var obj = JSON.parse(req.body.itinerary);
 
-        var waypoints = JSON.parse(req.body.waypoints);
+        /*var waypoints = JSON.parse(req.body.waypoints);
 
         for (var i=0; i<req.body.length; i++){
 		obj.waypoints.push({"lat": waypoints[i].lat, "lng": waypoints[i].lng});
-        }
+        }*/
 
 	MongoClient.connect(url, {useUnifiedTopology: true}, function(err,db){
 		if (err) throw err;

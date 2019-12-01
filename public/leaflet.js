@@ -63,9 +63,9 @@ L.control.custom({
 	classes : 'leaflet-control leaflet-bar'
 }).addTo(map);
 
-var control;
+var pointsOfInterest = new PointOfInterest(10);
 
-var itinerary = new Itinerary(map,control,10);
+var itinerary = pointsOfInterest.getItinerary();
 
 var navigatorControl = new navigatorController(itinerary);
 
@@ -99,10 +99,93 @@ L.control.custom({
 }).addTo(map);
 
 
-map.on('zoomend', function(){
-	itinerary.loadItineraries();
+////////////////////////////
+
+function loadPoints(){
+	pointsOfInterest.loadItineraries();
+}
+
+var buttonMode = 0;
+
+$(document).ready(function() {
+	pointsOfInterest.loadItineraries();
+	var elem = document.querySelector('.sidenav');
+	var instance = M.Sidenav.init(elem, {
+	  inDuration: 350,
+	  outDuration: 350,
+	  edge: 'right' //or right
+	});
+	instance.open();
+	map.on('zoomend', loadPoints);
+	
+	map.on('drag', loadPoints);
+
+	/*$(document.createElement('button'), {
+		text: 'insert itinerary mode',
+		click: () => {
+			if (!buttonMode){
+				map.off('zoomend', itinerary.loadItineraries);
+				map.off('drag', itinerary.loadItineraries);
+				itinerary.setWaypoints([]);
+				map.on('click', (e) => {
+					console.log(e);
+				});
+				buttonMode = 1;
+			}
+			else{
+				map.off('click');
+				map.on('zoomend', itinerary.loadItineraries);
+				map.on('drag', itinerary.loadItineraries);
+				buttonMode = 0;
+			}
+		}
+	});
+	$('<button/>', {
+		text: 'load itinerary',
+		click: () => {
+			itinerary.postItineraryToDB();
+		}
+	});*/
 });
 
-map.on('drag', function(){
-	itinerary.loadItineraries();
-});
+function createMode(){
+	var mode = itinerary.getMode();
+	if (!mode){
+		map.off('zoomend', loadPoints); 
+		map.off('drag', loadPoints);
+		pointsOfInterest.removeAllMarkers();
+		itinerary.setWaypoints([]);
+		itinerary.showOnMap();
+		//itinerary.removeMarkers();
+		map.on('click', (e) => {
+			if (itinerary.getBlock()) itinerary.setBlock(0);
+			else {
+				e.latLng = e.latlng; // it is needed because pushWaypoints uses property latLng
+				//itinerary.setMarkers(e.latlng);
+				itinerary.pushWaypoints([e.latLng]);
+				itinerary.showOnMap();
+			}
+		});
+		mode = 1;
+	}
+	else{
+		map.off('click');
+		itinerary.setWaypoints([]);
+		itinerary.showOnMap();
+		pointsOfInterest.loadItineraries();
+		map.on('zoomend', loadPoints);
+		map.on('drag', loadPoints);
+		mode = 0;
+	}
+	itinerary.setMode(mode);
+}
+function ldItinerary(){
+	itinerary.setWaypoints([]);
+	itinerary.showOnMap();
+	itinerary.postItineraryToDB("prova");
+}
+
+//var collapsibleElem = document.querySelector('.collapsible');
+//var collapsibleInstance = M.Collapsible.init(collapsibleElem, options);
+
+////////////////////////////
