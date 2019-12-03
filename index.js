@@ -1,3 +1,7 @@
+var passport = require('passport');
+var Strategy = require('passport-facebook').Strategy;
+
+
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
 var express = require("express");
@@ -13,6 +17,55 @@ app.use(function(req, res, next) {
   next();
 });
 
+//passport stuff
+
+passport.use(new Strategy({
+    clientID: 1058562301142057,
+    clientSecret: '5c14b6338e08dda572acaa6ed111005e',
+    callbackURL: "http://localhost:3000/auth/facebook/callback",
+    profileFields: ['id', 'displayName', 'photos', 'email']
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    //User.findOrCreate({ facebookId: profile.id }, function (err, user) {
+      return cb(null, profile);
+    //});
+  }
+));
+
+// Configure Passport authenticated session persistence.
+//
+// In order to restore authentication state across HTTP requests, Passport needs
+// to serialize users into and deserialize users out of the session.  In a
+// production-quality application, this would typically be as simple as
+// supplying the user ID when serializing, and querying the user record by ID
+// from the database when deserializing.  However, due to the fact that this
+// example does not have a database, the complete Facebook profile is serialized
+// and deserialized.
+passport.serializeUser(function(user, cb) {
+  cb(null, user);
+});
+
+passport.deserializeUser(function(obj, cb) {
+  cb(null, obj);
+});
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get('/auth/facebook',
+  passport.authenticate('facebook', { scope: ['user_friends', 'manage_pages'] }));
+
+app.get('/auth/facebook/callback',
+  passport.authenticate('facebook', { failureRedirect: '/' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    console.log(req.user);
+    res.redirect('/');
+});
+
+
+
+//
 app.get('/', function (req, res){
 	MongoClient.connect(url, {useUnifiedTopology: true}, function(err, db) {
 		if (err) throw err;

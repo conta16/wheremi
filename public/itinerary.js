@@ -124,6 +124,9 @@ class Itinerary {
             tmp.splice(i,0,e.target._latlng);
             parentThis.setWaypoints(tmp);
             parentThis.showOnMap(false);
+            setTimeout(() => {
+                parentThis.block = 0;
+            }, 500); //serious doubts
         });
     }
 

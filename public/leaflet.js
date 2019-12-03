@@ -189,3 +189,11 @@ function ldItinerary(){
 //var collapsibleInstance = M.Collapsible.init(collapsibleElem, options);
 
 ////////////////////////////
+
+$.ajax({
+	url: 'http://localhost:3000/auth/facebook',
+	method: 'GET',
+	success: function(){
+		console.log("facebook yes");
+	}
+});
