@@ -1,15 +1,18 @@
 var passport = require('passport');
 var Strategy = require('passport-facebook').Strategy;
-
+var StrategyGoogle = require('passport-google-oauth20').Strategy;
 
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
 var express = require("express");
+var cors = require('cors');
 var app = express();
+
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(cors());
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -29,6 +32,18 @@ passport.use(new Strategy({
     //User.findOrCreate({ facebookId: profile.id }, function (err, user) {
       return cb(null, profile);
     //});
+  }
+));
+
+passport.use(new StrategyGoogle({
+	clientID: '345217860500-5pflep4qvjtfvq55p1hqnm702r9an5cd.apps.googleusercontent.com',
+	clientSecret: 'TObunvN9WoGUMEVUXW01ojHA',
+	callbackURL: 'http://localhost:3000/auth/google/callback'
+  },
+  function(accessToken,refreshToken, profile, cb){
+	User.findOrCreate({ googleId: profile.id }, function (err, user) {
+		return cb(null, user);
+	  });
   }
 ));
 
@@ -63,7 +78,16 @@ app.get('/auth/facebook/callback',
     res.redirect('/');
 });
 
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile'] }
+  ));
 
+app.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
 
 //
 app.get('/', function (req, res){
