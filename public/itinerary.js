@@ -2,17 +2,10 @@ class Itinerary {
     constructor(){
         this.itinerary = {
             label: "",
-            waypoints: []
+            waypoints: [],
+            route:[]
         }; //waypoints of the itinerary shown on the map. there can only be one itinerary showed at a time
         this.markers = [];
-        this.icon = L.icon({
-        
-            iconSize:     [38, 95], // size of the icon
-            shadowSize:   [50, 64], // size of the shadow
-            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-            shadowAnchor: [4, 62],  // the same for the shadow
-            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-        });
         this.url = "http://localhost:3000";
         this.control = undefined;
         this.mode = 0; //0 when in visit mode, 1 when in create itinerary mode
@@ -27,7 +20,6 @@ class Itinerary {
         }).on('routesfound', function(e) {
             L.routes = e.routes;
             var f= new Event ("route-available");
-            console.log("init itinerary");
             document.dispatchEvent(f);
         });
         this.control.addTo(map);
@@ -96,10 +88,10 @@ class Itinerary {
     postItineraryToDB(name){
         var parentThis = this;
         var parentUrl = this.url;
-        console.log(this.itinerary);
         this.itinerary.label = name;
+        this.itinerary.route = L.routes;
         $.ajax({
-            url: parentUrl+"/search",
+            url: parentUrl,
             method: "POST",
             dataType: "json",
             data: {
@@ -115,7 +107,7 @@ class Itinerary {
         });
     }
 
-    setMarker(latLng, i){
+    setMarker(latLng){
         var parentThis = this;
         var index = this.markers.length;
         /*var redMarker = L.ExtraMarkers.icon({
@@ -137,7 +129,7 @@ class Itinerary {
         });
 
         this.markers[index].on('dragend', (e) => {
-            parentThis.removeWaypoints(i,1);
+            parentThis.removeWaypoints(index,1);
             var tmp = parentThis.getWaypoints();
             tmp.splice(index,0,e.target._latlng);
             parentThis.setWaypoints(tmp);

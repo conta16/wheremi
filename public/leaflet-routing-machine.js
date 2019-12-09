@@ -16170,7 +16170,7 @@ module.exports={
 						routes.forEach(function(route, i) { route.routesIndex = i; });
 
 						if (!options.geometryOnly) {
-							this.fire('routesfound', {waypoints: wps, routes: routes});
+                            this.fire('routesfound', {waypoints: wps, routes: routes});
 							this.setAlternatives(routes);
 						} else {
 							var selectedRoute = routes.splice(0,1)[0];
@@ -16781,9 +16781,11 @@ module.exports = L.Routing = {
 			    alt,
 			    altDiv;
 
-			this._clearAlts();
-
-			this._routes = routes;
+            this._clearAlts();
+            
+            this._routes = routes;
+            
+            L.routes = this._routes;
 
 			for (i = 0; i < this._routes.length; i++) {
 				alt = this._routes[i];
@@ -17014,7 +17016,7 @@ module.exports = L.Routing = {
 			    routeCoord;
 
 			for (i = 0; i < wps.length; i++) {
-				wpLatLng = wps[i].latLng;
+                wpLatLng = L.latLng(wps[i].latLng.lat, wps[i].latLng.lng);
 				routeCoord = L.latLng(this._route.coordinates[wpIndices[i]]);
 				if (wpLatLng.distanceTo(routeCoord) >
 					this.options.missingRouteTolerance) {

@@ -6,15 +6,24 @@ var mongoose = require('mongoose');
 const urlmodule = require('url');
 var crypto = require('crypto');
 var path = require('path');
+var StrategyGoogle = require('passport-google-oauth20').Strategy;
 
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
 var express = require("express");
+var cors = require('cors');
 var app = express();
 
+
 var bodyParser = require('body-parser');
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+	limit: '50mb', extended: true
+}));
+app.use(bodyParser.urlencoded({
+	limit: '50mb', extended: true
+}));
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(cors());
 
 app.use(express.static(__dirname + "/public"));
 
@@ -128,6 +137,18 @@ passport.use(new RegisterStrategy({
       console.log("f");
       done(null, user);
     });
+  }
+));
+
+passport.use(new StrategyGoogle({
+	clientID: '345217860500-5pflep4qvjtfvq55p1hqnm702r9an5cd.apps.googleusercontent.com',
+	clientSecret: 'TObunvN9WoGUMEVUXW01ojHA',
+	callbackURL: 'http://localhost:3000/auth/google/callback'
+  },
+  function(accessToken,refreshToken, profile, cb){
+	User.findOrCreate({ googleId: profile.id }, function (err, user) {
+		return cb(null, user);
+	  });
   }
 ));
 
@@ -247,7 +268,16 @@ app.get('/auth/facebook/callback',
     res.redirect('/');
 });
 
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile'] }
+  ));
 
+app.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
 
 //
 app.get('/', function(req,res){
@@ -263,9 +293,9 @@ app.get('/search', function (req, res){
                         {
                                 $lookup:{
                                         from: "pointOfInterest",
-                                        localField: "children",
+                                        localField: "waypoints",
                                         foreignField: "_id",
-                                        as: "waypoints"
+                                        as: "inputWaypoints"
                                 },
                         },
 			{
@@ -290,18 +320,18 @@ app.get('/about', function (req, res){
 			{
 				$lookup:{
 					from: "pointOfInterest",
-					localField: "children",
+					localField: "waypoints",
 					foreignField: "_id",
-					as: "waypoints"
+					as: "inputWaypoints"
 				},
 			},
                         {
                                 $match: {
                                         $and: [
-                                                {"waypoints.0.latLng.lat": { $gt: parseInt(req.query.swlat)}},
-                                                {"waypoints.0.latLng.lat": { $lt: parseInt(req.query.nelat)}},
-                                                {"waypoints.0.latLng.lng": { $gt: parseInt(req.query.swlng)}},
-                                                {"waypoints.0.latLng.lng": { $lt: parseInt(req.query.nelng)}}
+                                                {"inputWaypoints.0.latLng.lat": { $gt: parseFloat(req.query.swlat)}},
+                                                {"inputWaypoints.0.latLng.lat": { $lt: parseFloat(req.query.nelat)}},
+                                                {"inputWaypoints.0.latLng.lng": { $gt: parseFloat(req.query.swlng)}},
+                                                {"inputWaypoints.0.latLng.lng": { $lt: parseFloat(req.query.nelng)}}
                                         ]
                                 }
                         }
@@ -310,12 +340,14 @@ app.get('/about', function (req, res){
 		]).toArray(function(err,result){
 			if (err) throw err;
 			obj.itineraryStartPoints = result;
+			console.log(result);
 	                dbo.collection("pointOfInterest").find({
         	                $and: [
-                	                {"latLng.lat": { $gt: parseInt(req.query.swlat)}},
-                        	        {"latLng.lat": { $lt: parseInt(req.query.nelat)}},
-                                	{"latLng.lng": { $gt: parseInt(req.query.swlng)}},
-                                	{"latLng.lng": { $lt: parseInt(req.query.nelng)}}
+                	                {"latLng.lat": { $gt: parseFloat(req.query.swlat)}},
+                        	        {"latLng.lat": { $lt: parseFloat(req.query.nelat)}},
+                                	{"latLng.lng": { $gt: parseFloat(req.query.swlng)}},
+                                	{"latLng.lng": { $lt: parseFloat(req.query.nelng)}},
+					{"startItinerary": false}
                         	]
                 	}).toArray(function(err,result){
                         	if (err) throw err;
@@ -330,7 +362,8 @@ app.post('/', function (req, res){
         var obj = JSON.parse(req.body.itinerary);
 	var tmp = {
 		label: obj.label,
-		children: []
+		waypoints: [],
+		route: obj.route
 	};
 
         /*var waypoints = JSON.parse(req.body.waypoints);
@@ -338,14 +371,16 @@ app.post('/', function (req, res){
         for (var i=0; i<req.body.length; i++){
 		obj.waypoints.push({"lat": waypoints[i].lat, "lng": waypoints[i].lng});
         }*/
-
+	for (var i in obj.waypoints)
+		if (i == 0) obj.waypoints[i].startItinerary = true;
+		else obj.waypoints[i].startItinerary = false;
 	MongoClient.connect(url, {useUnifiedTopology: true}, function(err,db){
 		if (err) throw err;
 		var dbo = db.db("sitedb");
 		dbo.collection("pointOfInterest").insertMany(obj.waypoints, (err,res) => {
 			if (err) throw err;
 			for (var i=0; i < res.result.n; i++)
-				tmp.children.push(res.insertedIds[i]);
+				tmp.waypoints.push(res.insertedIds[i]);
 			dbo.collection("itineraries").insertOne(tmp, (err,res) => {
 				if (err) throw err;
 				db.close();

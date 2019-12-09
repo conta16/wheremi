@@ -27,19 +27,22 @@ class PointOfInterest{
             dataType: "json",
             async: true,
             success: (data) => {
+                console.log(data);
                 parentThis.itineraryStartPoints = data.itineraryStartPoints;
                 parentThis.points = data.points;
                 while (parentThis.markers.length > 0) parentThis.removeMarker(parentThis.markers[0], 0, 0);
                 while (parentThis.itineraryStartMarkers.length > 0) parentThis.removeMarker(parentThis.itineraryStartMarkers[0], 0, 1);
-                for (var i in parentThis.itineraryStartPoints) parentThis.setMarker(parentThis.itineraryStartPoints[i].waypoints[0].latLng, 1);
+                for (var i in parentThis.itineraryStartPoints) parentThis.setMarker(parentThis.itineraryStartPoints[i].inputWaypoints[0].latLng, 1);
                 for (var i in parentThis.points) parentThis.setMarker(parentThis.points[i].latLng, 0);
                 parentThis.itineraryStartPoints.forEach((obj, index) => {
                     parentThis.itineraryStartMarkers[index].on('click', () => {
                         var tmp = [];
-                        for (var i in parentThis.itineraryStartPoints[index].waypoints)
-                            tmp.push(parentThis.itineraryStartPoints[index].waypoints[i].latLng);
-                        parentThis.currentItinerary.setWaypoints(tmp.slice(0));
-                        parentThis.currentItinerary.showOnMap();
+                        for (var i in parentThis.itineraryStartPoints[index].inputWaypoints)
+                            tmp.push(parentThis.itineraryStartPoints[index].inputWaypoints[i].latLng);
+                        parentThis.currentItinerary.setWaypoints(tmp.slice(0)); //with the latest change it is not necessary, but maybe having the waypoints might be good
+                        //parentThis.currentItinerary.showOnMap();
+                        parentThis.currentItinerary.getControl().setAlternatives(parentThis.itineraryStartPoints[index].route);
+
                     });
                 });
                 parentThis.points.forEach((obj,index) => {
@@ -51,7 +54,6 @@ class PointOfInterest{
                 this.wikipediaPoints = []; //with wikipedia stuff here, wikipedia links are loaded only if database responds successfully. Maybe it can be changed
                 var options = {wiki_search_url: "https://en.wikipedia.org/w/api.php", introCallback: function(a){
                     if (a){
-                        console.log("soapsop");
                         for (var i in a.query.pages)
                             parentThis.wikipediaPoints.push(a.query.pages[i]);
                         for (var i in a.query.pages)
@@ -67,16 +69,9 @@ class PointOfInterest{
         });
 }
 
-    checkMarkerIsStartPoint(latLng){
-        for (var i in this.itineraryStartMarkers)
-            if (latLng.lat === this.itineraryStartMarkers[i]._latlng.lat && latLng.lng === this.itineraryStartMarkers[i]._latlng.lng)
-                return false;
-        return true;
-    }
-
     setMarker(latLng, type){
         var parentThis = this;
-        if (type == 0 && this.checkMarkerIsStartPoint(latLng)){
+        if (type == 0){
             var len = this.markers.length;
             this.markers[len] = new L.Marker(
                 latLng,
@@ -174,6 +169,7 @@ class PointOfInterest{
             "options": { "allowUTurn" : false },
             "latLng" : latLng,
             "_initHooksCalled": true,
+            "startItinerary": false,
             "description": ""
         }
     }

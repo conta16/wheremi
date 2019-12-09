@@ -105,7 +105,6 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 					dist = dist * 60 * 1.1515;
 					if (unit=="K") { dist = dist * 1.609344 }
 					if (unit=="N") { dist = dist * 0.8684 }
-					console.log(dist);
 					return dist;
 					}
 				};

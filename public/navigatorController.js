@@ -15,13 +15,11 @@ class navigatorController{
         var tmp_itinerary={}
         tmp_itinerary.waypoints=Object.assign([], itinerary);
         tmp_itinerary.waypoints=([position].concat(tmp_itinerary.waypoints));
-          console.log(tmp_itinerary);
         this.itinerary.setWaypoints(tmp_itinerary.waypoints);
         this.itinerary.showOnMap();
     }
  
     wondering(nearest){
-        console.log("I'm in wondering");
         document.removeEventListener("route-available", nav.navigate);
         function coordsFromInstructin(i){
             return L.routes[0].coordinates[i.index];

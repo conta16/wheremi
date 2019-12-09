@@ -170,7 +170,6 @@ function createPoint(){
 
 function apply(){
 	pointsOfInterest.addedPoint.description = $("#popupInput").val();
-	console.log("sono in apply");
 	console.log($("#popupInput"));
 }
 
