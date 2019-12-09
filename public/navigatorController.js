@@ -11,28 +11,31 @@ class navigatorController{
         var control = this.itinerary.getControl();
         if (control)
           map.removeControl(control);
-        console.log([position], itinerary)
+        //console.log([position], itinerary)
         var tmp_itinerary={}
         tmp_itinerary.waypoints=Object.assign([], itinerary);
         tmp_itinerary.waypoints=([position].concat(tmp_itinerary.waypoints));
-          console.log(tmp_itinerary.waypoints)
-        this.itinerary.setWaypoints(tmp_itinerary.waypoints.map(function(i){return {latLng: i}}));
+          console.log(tmp_itinerary);
+        this.itinerary.setWaypoints(tmp_itinerary.waypoints);
+        this.itinerary.showOnMap();
     }
  
     wondering(nearest){
+        console.log("I'm in wondering");
+        document.removeEventListener("route-available", nav.navigate);
         function coordsFromInstructin(i){
             return L.routes[0].coordinates[i.index];
         }
         function preserve_waypoints(i){
             return (L.routes[0].waypointIndices.includes(i.index)) && i.index>=nearest;
         }
-        console.log(L.routes[0].instructions, L.routes[0].waypointIndices	)
-        document.addEventListener("route-available", nav.navigate)
+        //console.log(L.routes[0].instructions, L.routes[0].waypointIndices	)
+        document.addEventListener("route-available", nav.navigate);
         nav.stopped=true;
         var tmp_route=Object.assign([], L.routes[0].instructions)
         //tmp_route=tmp_route.map(coordsFromInstructin);
         tmp_route=tmp_route.filter(preserve_waypoints).map(coordsFromInstructin);
-        console.log(tmp_route)
+        //console.log(tmp_route)
         L.routes[0]=undefined;
         this.reachItinerary(L.latLng(L.userPosition.lat, L.userPosition.lng), tmp_route/*.splice(nearest)*/)
     }

@@ -4,24 +4,33 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link type="text/css" rel="stylesheet" href="./css/materialize.min.css"  media="screen,projection"/>
+    <!--<link type="text/css" rel="stylesheet" href="./css/materialize.min.css"  media="screen,projection"/>-->
      <!-- Compiled and minified CSS -->
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+     <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
              
 
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <!--<script src="https://unpkg.com/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/vuesax"></script>
     <link href="https://cdn.jsdelivr.net/npm/vuesax/dist/vuesax.css" rel="stylesheet">-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">-->
     <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
-    <link rel="stylesheet" href="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.css" />
-    <link rel="stylesheet" href="leaflet-search.css" />
-    <link rel="stylesheet" type="text/css" href="main.css"/>
-    <link rel="stylesheet" type="text/css" href="util.css"/>
-    <link rel="stylesheet" href="./leaflet-routing-machine.css" />
-    <link rel="stylesheet" href="../src/index.css" />
+
+    <link rel="stylesheet" type="text/css" href="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.css" />
+    <link rel="stylesheet" type="text/css" href="./leaflet-search.css" />
+    <link rel="stylesheet" type="text/css" href="./main.css"/>
+    <link rel="stylesheet" type="text/css" href="./util.css"/>
+    <link rel="stylesheet" type="text/css" href="./leaflet-routing-machine.css" />
+    <link rel="stylesheet" type="text/css" href="./index.css" />
+    <!--<link rel="stylesheet" type="text/css" href="./leaflet.extra-markers.min.css">-->
+    <!--<script href="./leaflet.extra-markers.min.js"></script>-->
+    <link rel="stylesheet" type="text/css" href="./img/markers_default.png">
+    <link rel="stylesheet" type="text/css" href="./img/markers_default@2x.png">
+    <link rel="stylesheet" type="text/css" href="./img/markers_shadow.png">
+    <link rel="stylesheet" type="text/css" href="./img/markers_shadow@2x.png">
+
+
 
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js"></script>
@@ -68,7 +77,7 @@
             <!---------------------------->
 
             <!--<nav> navbar content here </nav>-->
-
+<!--
             <ul id="slide-out" class="sidenav">
               <li><div class="user-view">
                 <div class="background">
@@ -85,23 +94,26 @@
               <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
             </ul>
             <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-
+          -->
           <!---------------------------->
 
     </div>
     <button style="width: 300px; height: 20px" onclick="createMode()">create itinerary mode</button>
     <button style="width: 300px; height: 20px" onclick="ldItinerary()">load itinerary</button>
-    <script src="./js/materialize.min.js"></script>
-    <script src="artyom.window.min.js"></script>
-    <script src="Leaflet.Control.Custom.js"></script>
+    <button style="width: 300px; height: 20px" onclick="createPoint()">create point</button>
+    <button style="width: 300px; height: 20px" onclick="ldPoint()">load point</button>
+    <!--<script src="./js/materialize.min.js"></script>-->
+    <script type="text/javascript" src="./artyom.window.min.js"></script>
+    <script src="./wikipedia.js"></script>
+    <script src="./Leaflet.Control.Custom.js"></script>
     <script src="./leaflet-routing-machine.js"></script>
-    <script src="./Control.Geocoder.js"></script>
-    <script src="./config.js"></script>
     <script src="./itinerary.js"></script>
     <script src="./pointofinterest.js"></script>
     <script src="./navigatorController.js"></script>
     <script src="./pollonavigator.js"></script>
     <script src="./L0.Control.Locate.js"></script>
+    <script src="./users.js"></script>
+    <script src="./world.js"></script>
     <script src="./leaflet.js"></script>
 
   </body>

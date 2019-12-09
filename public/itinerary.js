@@ -5,6 +5,14 @@ class Itinerary {
             waypoints: []
         }; //waypoints of the itinerary shown on the map. there can only be one itinerary showed at a time
         this.markers = [];
+        this.icon = L.icon({
+        
+            iconSize:     [38, 95], // size of the icon
+            shadowSize:   [50, 64], // size of the shadow
+            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
         this.url = "http://localhost:3000";
         this.control = undefined;
         this.mode = 0; //0 when in visit mode, 1 when in create itinerary mode
@@ -19,7 +27,8 @@ class Itinerary {
         }).on('routesfound', function(e) {
             L.routes = e.routes;
             var f= new Event ("route-available");
-            document.dispatchEvent(f)
+            console.log("init itinerary");
+            document.dispatchEvent(f);
         });
         this.control.addTo(map);
     }
@@ -32,7 +41,8 @@ class Itinerary {
                     "allowUTurn" : false
                 },
                 latLng: Object.assign({},waypoints[i]),
-                _initHooksCalled : true 
+                _initHooksCalled : true,
+                description: "a little description"
             }
             this.itinerary.waypoints.push(Object.assign({}, obj));
         }
@@ -59,7 +69,7 @@ class Itinerary {
         var tmp = [];
         for (var i in this.itinerary.waypoints)
             tmp.push(this.itinerary.waypoints[i].latLng);
-        
+
         this.control.setWaypoints(tmp.slice(0));
         if (markerUpdate){
             while (this.markers.length > 0) this.removeMarker(this.markers[0], 0);
@@ -86,9 +96,10 @@ class Itinerary {
     postItineraryToDB(name){
         var parentThis = this;
         var parentUrl = this.url;
+        console.log(this.itinerary);
         this.itinerary.label = name;
         $.ajax({
-            url: parentUrl,
+            url: parentUrl+"/search",
             method: "POST",
             dataType: "json",
             data: {
@@ -104,24 +115,31 @@ class Itinerary {
         });
     }
 
-    setMarker(latLng){
+    setMarker(latLng, i){
         var parentThis = this;
-        var i = this.markers.length;
-        this.markers[i] = new L.Marker(
+        var index = this.markers.length;
+        /*var redMarker = L.ExtraMarkers.icon({
+            icon: 'fa-coffee',
+            markerColor: 'red',
+            shape: 'square',
+            prefix: 'fa'
+          });*/
+        this.markers[index] = new L.Marker(
             latLng,
             {
-                draggable: parentThis.mode? true : false
+                draggable: parentThis.mode? true : false,
+                //icon: redMarker
             }
         ).addTo(map);
 
-        this.markers[i].on('drag', () => {
+        this.markers[index].on('drag', () => {
             parentThis.block = 1;
         });
 
-        this.markers[i].on('dragend', (e) => {
+        this.markers[index].on('dragend', (e) => {
             parentThis.removeWaypoints(i,1);
             var tmp = parentThis.getWaypoints();
-            tmp.splice(i,0,e.target._latlng);
+            tmp.splice(index,0,e.target._latlng);
             parentThis.setWaypoints(tmp);
             parentThis.showOnMap(false);
             setTimeout(() => {
@@ -155,4 +173,38 @@ class Itinerary {
         return this.control;
     }
 
+    checkWaypointInRange(){
+        var tmp;
+        if (L.userPosition)
+            for (var i in this.itinerary.waypoints){
+                tmp = this.itinerary.waypoints[i];
+                if (this.distance(L.userPosition.lat, L.userPosition.lng, tmp.latLng.lat, tmp.latLng.lng, 'K') < 50){
+                    console.log(tmp.description);
+                }
+            }
+    }
+
+    distance(lat1,lon1,lat2,lon2,unit){
+        if (lat2==undefined)
+            return Infinity;
+        if ((lat1 == lat2) && (lon1 == lon2)) {
+            return 0;
+        }
+        else {
+            var radlat1 = Math.PI * lat1/180;
+            var radlat2 = Math.PI * lat2/180;
+            var theta = lon1-lon2;
+            var radtheta = Math.PI * theta/180;
+            var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+            if (dist > 1) {
+                dist = 1;
+            }
+            dist = Math.acos(dist);
+            dist = dist * 180/Math.PI;
+            dist = dist * 60 * 1.1515;
+            if (unit=="K") { dist = dist * 1.609344 }
+            if (unit=="N") { dist = dist * 0.8684 }
+            return dist;
+    }
+}
 }

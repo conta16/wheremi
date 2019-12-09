@@ -44,7 +44,7 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 					dist: min,
 					index: index
 				};
-			}
+			};
 
 			this.nearestPoint= function (latlng){
 				var min=Infinity;
@@ -60,10 +60,10 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 					index: index,
 					dist: min
 				};
-			}
+			};
 
 			this._wondering = function(e){
-				var v=parent.nearestPoint(L.userPosition)
+				var v=parent.nearestPoint(L.userPosition);
 				if (parent.RECALCULATE_LIMIT<v.dist){
 					parent.stopped=true;
 					parent.wondering(parent._targetindex);
@@ -78,12 +78,12 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 						}
 					}
 				}
-			}
+			};
 
 			this._initListeners = function (){
 				document.addEventListener('instruction-available', parent._onpoint);
 				document.addEventListener('distance-increasement', parent._wondering);
-			}
+			};
 
 			this.__distance = function (lat1, lon1, lat2, lon2, unit) {
 				if (lat2==undefined)
@@ -105,6 +105,7 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 					dist = dist * 60 * 1.1515;
 					if (unit=="K") { dist = dist * 1.609344 }
 					if (unit=="N") { dist = dist * 0.8684 }
+					console.log(dist);
 					return dist;
 					}
 				};
@@ -160,7 +161,7 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 					}
 					if (parent._targetindex==0 && parent._calculate_distance(L.userPosition, parent._targetpoint)>parent.WONDERING_LIMIT){
 						parent.stopped=true;
-						parent.wondering(0)
+						parent.wondering(0);
 					}
 				}
 
@@ -180,12 +181,12 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 						document.dispatchEvent(e);
 					}
 					if (!parent.stopped)
-						parent._timeoutChain=setTimeout(f, 300);
+						parent._timeoutChain=setTimeout(f, 1000);
 				}
 
 				this.navigate= function(){
-					parent._initListeners()
+					parent._initListeners();
 					init();
-					parent._timeoutChain= setTimeout(f,300);
+					parent._timeoutChain= setTimeout(f,1000);
 				};
 }

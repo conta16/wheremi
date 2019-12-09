@@ -1,6 +1,11 @@
 var passport = require('passport');
 var Strategy = require('passport-facebook').Strategy;
-
+var lclStrategy = require('passport-local').Strategy;
+var RegisterStrategy = require('passport-local-register').Strategy;
+var mongoose = require('mongoose');
+const urlmodule = require('url');
+var crypto = require('crypto');
+var path = require('path');
 
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
@@ -11,11 +16,210 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
+app.use(express.static(__dirname + "/public"));
+
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
+/* MONGOOSE SETUP */
+
+mongoose.connect('mongodb://localhost:27017/pollo');
+
+const Schema = mongoose.Schema;
+const UserDetail = new Schema({
+      username: String,
+      password: String,
+      name: String,
+      surname: String,
+      email: String,
+      salt: String
+    });
+const UserDetails = mongoose.model('userInfo', UserDetail, 'userInfo');
+
+/**
+ * generates random string of characters i.e salt
+ * @function
+ * @param {number} length - Length of the random string.
+ */
+
+var genRandomString = function(length){
+    return crypto.randomBytes(Math.ceil(length/2))
+            .toString('hex') /** convert to hexadecimal format */
+            .slice(0,length);   /** return required number of characters */
+};
+
+/**
+ * hash password with sha512.
+ * @function
+ * @param {string} password - List of required fields.
+ * @param {string} salt - Data to be validated.
+ */
+var sha512 = function(password, salt){
+    var hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
+    hash.update(password);
+    var value = hash.digest('hex');
+    return {
+        salt:salt,
+        passwordHash:value
+    };
+};
+
+
+
+// Configure the local strategy for use by Passport.
+//
+// The local strategy require a `verify` function which receives the credentials
+// (`username` and `password`) submitted by the user.  The function must verify
+// that the password is correct and then invoke `cb` with a user object, which
+// will be set at `req.user` in route handlers after authentication.
+passport.use(new lclStrategy(
+  function(username, password, cb) {
+    UserDetails.findOne({username: username}, function(err, user) {
+      if (err) { return cb(err); }
+      if (!user) { return cb(null, false); }
+      if (user.password != sha512(password, user.salt).passwordHash) { return cb(null, false); }
+      return cb(null, user);
+    });
+  }));
+
+
+passport.use(new RegisterStrategy({
+    passReqToCallback : true
+  },
+  function verify(req, username, password, done) {
+    UserDetails.findOne({
+      'email' : req.body.email
+    }, function(err, user) {
+      if (err) {
+        console.log("a");
+        return done(err);
+      }
+      if (!user) {
+        console.log("b");
+        return done(); // see section below
+      }
+      if (user) {
+        console.log("c");
+        return done(null, false);
+      }
+    });
+  }, function create(req, username, password, done) {
+    var salt = sha512(req.body.password, genRandomString(32));
+    UserDetails.create({
+      'username' : username,
+      'name': req.body.name,
+      'surname': req.body.surname,
+      'password': salt.passwordHash,
+      'email': req.body.email,
+      'salt':salt.salt
+    }, function(err, user) {
+      if(err) {
+        console.log("d");
+        return done(err);
+      }
+      if(!user) {
+        console.log("e");
+        err = new Error();
+        return done(err, false, {success: false, message: "User creation failed."});
+      }
+      console.log("f");
+      done(null, user);
+    });
+  }
+));
+
+// Configure Passport authenticated session persistence.
+//
+// In order to restore authentication state across HTTP requests, Passport needs
+// to serialize users into and deserialize users out of the session.  The
+// typical implementation of this is as simple as supplying the user ID when
+// serializing, and querying the user record by ID from the database when
+// deserializing.
+// Configure Passport authenticated session persistence.
+
+passport.serializeUser(function(user, cb) {
+  cb(null, user.id);
+});
+
+passport.deserializeUser(function(id, cb) {
+  UserDetails.findOne({_id: id}, function (err, user) {
+    if (err) { return cb(err); }
+    cb(null, user);
+  });
+});
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Configure view engine to render EJS templates.
+app.set('views', __dirname + '/public/views');
+app.set('view engine', 'ejs');
+
+// Use application-level middleware for common functionality, including
+// logging, parsing, and session handling.
+app.use(require('morgan')('combined'));
+app.use(require('body-parser').urlencoded({ extended: true }));
+app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
+
+
+// Define routes.
+app.get('/login',
+  function(req, res){
+    res.render('login');
+  });
+
+app.post('/login', function (req, res, next){
+  passport.authenticate('local', function (err, user, info){
+    if (err)
+      return next(err);
+    if (!user)
+      return res.redirect(urlmodule.format({pathname: "/login", query: {success: false}}));
+      req.login(user, loginErr => {
+        if (loginErr) {
+          return next(loginErr);
+        }
+        return res.render("home",{user: user});
+      });
+    })(req, res, next);
+});
+
+app.get('/register',
+  function(req, res){
+    res.render('register');
+  });
+
+/*app.post('/register',
+      passport.authenticate('localRegister', {failureRedirect:'/register'}),
+      function(req, res){
+        res.redirect('/')
+      });*/
+app.post('/register', function (req, res, next){
+  passport.authenticate('localRegister', function (err, user, info){
+    console.log(err, user, info);
+    if (err)
+      return res.redirect(urlmodule.format({pathname: "/register", query: info}));
+    if (!user)
+      return res.redirect(urlmodule.format({pathname: "/register", query: info}));
+    if (user)
+      return res.redirect(urlmodule.format({pathname: "/register", query: {username: user.username}}));
+      })(req, res, next);
+});
+
+app.get('/logout',
+  function(req, res){
+    req.logout();
+    res.redirect('/');
+  });
+
+app.get('/profile',
+  require('connect-ensure-login').ensureLoggedIn(),
+  function(req, res){
+    res.render('profile', { user: req.user });
+  });
+
 
 //passport stuff
 
@@ -32,28 +236,8 @@ passport.use(new Strategy({
   }
 ));
 
-// Configure Passport authenticated session persistence.
-//
-// In order to restore authentication state across HTTP requests, Passport needs
-// to serialize users into and deserialize users out of the session.  In a
-// production-quality application, this would typically be as simple as
-// supplying the user ID when serializing, and querying the user record by ID
-// from the database when deserializing.  However, due to the fact that this
-// example does not have a database, the complete Facebook profile is serialized
-// and deserialized.
-passport.serializeUser(function(user, cb) {
-  cb(null, user);
-});
-
-passport.deserializeUser(function(obj, cb) {
-  cb(null, obj);
-});
-
-app.use(passport.initialize());
-app.use(passport.session());
-
 app.get('/auth/facebook',
-  passport.authenticate('facebook', { scope: ['user_friends', 'manage_pages'] }));
+  passport.authenticate('facebook', { scope: ['user_friends', 'user_photos'] }));
 
 app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/' }),
@@ -66,12 +250,30 @@ app.get('/auth/facebook/callback',
 
 
 //
-app.get('/', function (req, res){
+app.get('/', function(req,res){
+	res.sendFile(path.join(__dirname, './public', 'index.html'));
+});
+
+app.get('/search', function (req, res){
 	MongoClient.connect(url, {useUnifiedTopology: true}, function(err, db) {
 		if (err) throw err;
 		var dbo = db.db("sitedb");
 		//Find the first document in the customers collection:
-		dbo.collection("itineraries").find({'label': {$regex: ".*"+req.query.query+".*"}}).toArray(function(err, result) {
+		dbo.collection("itineraries").aggregate([
+                        {
+                                $lookup:{
+                                        from: "pointOfInterest",
+                                        localField: "children",
+                                        foreignField: "_id",
+                                        as: "waypoints"
+                                },
+                        },
+			{
+				$match: {
+					'label': {$regex: ".*"+req.query.query+".*"}
+				}
+			}
+		]).toArray(function(err, result) {
 			if (err) throw err;
 			res.send({result});
 			db.close();
@@ -80,27 +282,56 @@ app.get('/', function (req, res){
 });
 
 app.get('/about', function (req, res){
+	var obj = {};
 	MongoClient.connect(url, {useUnifiedTopology: true}, function(err, db) {
 		if (err) throw err;
 		var dbo = db.db("sitedb");
-		//var bounds = JSON.parse(req.body.bounds);
-		dbo.collection("itineraries").find({
-			$and: [
-                                {"waypoints.0.latLng.lat": { $gt: parseInt(req.query.swlat)}},
-                                {"waypoints.0.latLng.lat": { $lt: parseInt(req.query.nelat)}},
-                                {"waypoints.0.latLng.lng": { $gt: parseInt(req.query.swlng)}},
-                                {"waypoints.0.latLng.lng": { $lt: parseInt(req.query.nelng)}}
-                        ]
-		}).toArray(function(err,result){
+		dbo.collection("itineraries").aggregate([
+			{
+				$lookup:{
+					from: "pointOfInterest",
+					localField: "children",
+					foreignField: "_id",
+					as: "waypoints"
+				},
+			},
+                        {
+                                $match: {
+                                        $and: [
+                                                {"waypoints.0.latLng.lat": { $gt: parseInt(req.query.swlat)}},
+                                                {"waypoints.0.latLng.lat": { $lt: parseInt(req.query.nelat)}},
+                                                {"waypoints.0.latLng.lng": { $gt: parseInt(req.query.swlng)}},
+                                                {"waypoints.0.latLng.lng": { $lt: parseInt(req.query.nelng)}}
+                                        ]
+                                }
+                        }
+
+
+		]).toArray(function(err,result){
 			if (err) throw err;
-			res.send({result});
-			db.close();
+			obj.itineraryStartPoints = result;
+	                dbo.collection("pointOfInterest").find({
+        	                $and: [
+                	                {"latLng.lat": { $gt: parseInt(req.query.swlat)}},
+                        	        {"latLng.lat": { $lt: parseInt(req.query.nelat)}},
+                                	{"latLng.lng": { $gt: parseInt(req.query.swlng)}},
+                                	{"latLng.lng": { $lt: parseInt(req.query.nelng)}}
+                        	]
+                	}).toArray(function(err,result){
+                        	if (err) throw err;
+                        	obj.points = result;
+                        	res.send(obj);
+                	});
 		});
 	});
 });
 
 app.post('/', function (req, res){
         var obj = JSON.parse(req.body.itinerary);
+	var tmp = {
+		label: obj.label,
+		children: []
+	};
 
         /*var waypoints = JSON.parse(req.body.waypoints);
 
@@ -111,8 +342,26 @@ app.post('/', function (req, res){
 	MongoClient.connect(url, {useUnifiedTopology: true}, function(err,db){
 		if (err) throw err;
 		var dbo = db.db("sitedb");
-		dbo.collection("itineraries").insertOne(obj, (err,res) => {
+		dbo.collection("pointOfInterest").insertMany(obj.waypoints, (err,res) => {
 			if (err) throw err;
+			for (var i=0; i < res.result.n; i++)
+				tmp.children.push(res.insertedIds[i]);
+			dbo.collection("itineraries").insertOne(tmp, (err,res) => {
+				if (err) throw err;
+				db.close();
+			});
+		});
+	});
+});
+
+app.post("/postAdded", function(req,res){
+	var obj = JSON.parse(req.body.point);
+	MongoClient.connect(url, {useUnifiedTopology: true}, function(err,db){
+		if (err) throw err;
+		var dbo = db.db("sitedb");
+		dbo.collection("pointOfInterest").insertOne(obj, (err,res) => {
+			if (err) throw err;
+			console.log(obj);
 			db.close();
 		});
 	});

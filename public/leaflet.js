@@ -12,10 +12,10 @@ var WorldStreetMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/se
 	noWrap: true
 }).addTo(map);
 
-var bounds = L.latLngBounds([[-90,-180], [90, 180]]);
-map.setMaxBounds(bounds);
+var bound = L.latLngBounds([[-90,-180], [90, 180]]);
+map.setMaxBounds(bound);
 map.on('drag', function() {
-	map.panInsideBounds(bounds, { animate: false });
+	map.panInsideBounds(bound, { animate: false });
 });
 
 Paul=new Artyom()
@@ -63,9 +63,11 @@ L.control.custom({
 	classes : 'leaflet-control leaflet-bar'
 }).addTo(map);
 
-var pointsOfInterest = new PointOfInterest(10);
+var world = new World();
 
-var itinerary = pointsOfInterest.getItinerary();
+var pointsOfInterest = world.getPointsOfInterest();
+
+var itinerary = world.getItinerary();
 
 var navigatorControl = new navigatorController(itinerary);
 
@@ -92,8 +94,8 @@ L.control.custom({
 	classes : 'leaflet-control leaflet-bar',
 	events : {
 		click : function(e){
-		nav=new polloNavigator(navigatorControl.onpoint, navigatorControl.onend, navigatorControl.wondering);
-		nav.navigate();
+			nav=new polloNavigator(navigatorControl.onpoint, navigatorControl.onend, navigatorControl.wondering);
+			nav.navigate();
 		},
 	}
 }).addTo(map);
@@ -102,50 +104,17 @@ L.control.custom({
 ////////////////////////////
 
 function loadPoints(){
-	pointsOfInterest.loadItineraries();
+	pointsOfInterest.loadPoints();
 }
 
 var buttonMode = 0;
 
 $(document).ready(function() {
-	pointsOfInterest.loadItineraries();
-	var elem = document.querySelector('.sidenav');
-	var instance = M.Sidenav.init(elem, {
-	  inDuration: 350,
-	  outDuration: 350,
-	  edge: 'right' //or right
-	});
-	instance.open();
+	pointsOfInterest.loadPoints();
+
 	map.on('zoomend', loadPoints);
 	
 	map.on('drag', loadPoints);
-
-	/*$(document.createElement('button'), {
-		text: 'insert itinerary mode',
-		click: () => {
-			if (!buttonMode){
-				map.off('zoomend', itinerary.loadItineraries);
-				map.off('drag', itinerary.loadItineraries);
-				itinerary.setWaypoints([]);
-				map.on('click', (e) => {
-					console.log(e);
-				});
-				buttonMode = 1;
-			}
-			else{
-				map.off('click');
-				map.on('zoomend', itinerary.loadItineraries);
-				map.on('drag', itinerary.loadItineraries);
-				buttonMode = 0;
-			}
-		}
-	});
-	$('<button/>', {
-		text: 'load itinerary',
-		click: () => {
-			itinerary.postItineraryToDB();
-		}
-	});*/
 });
 
 function createMode(){
@@ -172,7 +141,7 @@ function createMode(){
 		map.off('click');
 		itinerary.setWaypoints([]);
 		itinerary.showOnMap();
-		pointsOfInterest.loadItineraries();
+		pointsOfInterest.loadPoints();
 		map.on('zoomend', loadPoints);
 		map.on('drag', loadPoints);
 		mode = 0;
@@ -180,20 +149,56 @@ function createMode(){
 	itinerary.setMode(mode);
 }
 function ldItinerary(){
+	itinerary.postItineraryToDB("prova");
 	itinerary.setWaypoints([]);
 	itinerary.showOnMap();
-	itinerary.postItineraryToDB("prova");
 }
 
+function createPoint(){
+	var mode = itinerary.getMode();
+	if (mode){
+		map.off('click');
+		itinerary.setWaypoints([]);
+		pointsOfInterest.removeAllMarkers();
+		itinerary.showOnMap();
+		itinerary.setMode(!mode);
+	}
+	map.on('click', (e) => {
+		pointsOfInterest.addPoint(e.latlng);
+	});
+}
+
+function apply(){
+	pointsOfInterest.addedPoint.description = $("#popupInput").val();
+	console.log("sono in apply");
+	console.log($("#popupInput"));
+}
+
+function ldPoint(){
+	pointsOfInterest.postAddedPoint();
+}
 //var collapsibleElem = document.querySelector('.collapsible');
 //var collapsibleInstance = M.Collapsible.init(collapsibleElem, options);
 
 ////////////////////////////
-
+/*
 $.ajax({
 	url: 'http://localhost:3000/auth/facebook',
 	method: 'GET',
 	success: function(){
 		console.log("facebook yes");
 	}
-});
+});*/
+
+function containsObject(obj, list) {
+    var i;
+    for (i = 0; i < list.length; i++) {
+        if (list[i] === obj) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
