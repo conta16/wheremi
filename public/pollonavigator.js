@@ -5,7 +5,7 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 				return;
 			if (!'userPosition'in L || L.userPosition==undefined)
 				return;
-			if (!'lat' in L.userPosition)
+			if (!'latLng' in L.userPosition)
 				return;
 
 			this.WONDERING_LIMIT = 0.030;
@@ -44,7 +44,7 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 					dist: min,
 					index: index
 				};
-			};
+			}
 
 			this.nearestPoint= function (latlng){
 				var min=Infinity;
@@ -60,10 +60,10 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 					index: index,
 					dist: min
 				};
-			};
+			}
 
 			this._wondering = function(e){
-				var v=parent.nearestPoint(L.userPosition);
+				var v=parent.nearestPoint(L.userPosition.latLng)
 				if (parent.RECALCULATE_LIMIT<v.dist){
 					parent.stopped=true;
 					parent.wondering(parent._targetindex);
@@ -78,12 +78,12 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 						}
 					}
 				}
-			};
+			}
 
 			this._initListeners = function (){
 				document.addEventListener('instruction-available', parent._onpoint);
 				document.addEventListener('distance-increasement', parent._wondering);
-			};
+			}
 
 			this.__distance = function (lat1, lon1, lat2, lon2, unit) {
 				if (lat2==undefined)
@@ -131,6 +131,11 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 					return this.__better_distance(latlng1.lat, latlng1.lng, latlng2.lat, latlng2.lng, 'K')
 				};
 
+				this.stop= function(){
+					parent.stopped=true;
+					clearTimeout(parent._timeoutChain)
+				}
+
 				this._onpoint= function(){
 				if (parent._targetindex>=L.routes[0].instructions.length){
 					parent.stop();
@@ -149,7 +154,7 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 				};
 
 				this._positionCheck= function (){
-					var dist = parent._calculate_distance(L.userPosition, parent._prevpos);
+					var dist = parent._calculate_distance(L.userPosition.latLng, parent._prevpos);
 					if (dist>parent.WONDERING_LIMIT /*&& parent.nearest(L.userPosition).index<=parent.nearest(parent._prevpos).index*/){
 						var distincr=new Event('distance-increasement', {
 							curDist: dist,
@@ -158,9 +163,9 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 						document.dispatchEvent(distincr);
 						return;
 					}
-					if (parent._targetindex==0 && parent._calculate_distance(L.userPosition, parent._targetpoint)>parent.WONDERING_LIMIT){
+					if (parent._targetindex==0 && parent._calculate_distance(L.userPosition.latLng, parent._targetpoint)>parent.WONDERING_LIMIT){
 						parent.stopped=true;
-						parent.wondering(0);
+						parent.wondering(0)
 					}
 				}
 
@@ -169,10 +174,10 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 						return
 					if (!parent._targetpoint)
 						return;
-					var dist = parent._calculate_distance(L.userPosition, parent._targetpoint);
+					var dist = parent._calculate_distance(L.userPosition.latLng, parent._targetpoint);
 					if (dist<parent._prevdist){
 						parent._prevdist=dist;
-						parent._prevpos=Object.assign({}, L.userPosition);
+						parent._prevpos=Object.assign({}, L.userPosition.latLng);
 					}
 					parent._positionCheck()
 					if (dist<parent.NEAR_LIMIT){
@@ -180,12 +185,12 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 						document.dispatchEvent(e);
 					}
 					if (!parent.stopped)
-						parent._timeoutChain=setTimeout(f, 1000);
+						parent._timeoutChain=setTimeout(f, 300);
 				}
 
 				this.navigate= function(){
-					parent._initListeners();
+					parent._initListeners()
 					init();
-					parent._timeoutChain= setTimeout(f,1000);
+					parent._timeoutChain= setTimeout(f,300);
 				};
 }

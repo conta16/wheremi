@@ -242,7 +242,7 @@ You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
             },
             /** Compass */
             compassStyle: {
-                draggable: true,
+                draggable: false,
                 fillColor:   '#2A93EE',
                 fillOpacity: 1,
                 weight:      0,
@@ -565,6 +565,7 @@ You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
 
             var latlng = this._event.latlng;
 
+            this._compassHeading=90;
 
             if (this.options.showCompass && latlng && this._compassHeading !== null) {
                 var cStyle = this._isFollowing() ? this.options.followCompassStyle : this.options.compassStyle;
@@ -600,7 +601,7 @@ You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
             this._event.latlng=e.target._latlng;
             this._event.accuracy=30;
             if (this.options.sharePosition)
-              L.userPosition = Object.assign({}, e.target._latlng);
+              L.userPosition = Object.assign({}, {latLng: e.target._latlng});
             this.setView();
         },
 
@@ -616,6 +617,8 @@ You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
 
             var radius = this._event.accuracy;
             var latlng = this._event.latlng;
+
+            this._drawCompass();  // in order to have the position marker in the top of the stack and make it draggable. 
 
             // circle with the radius of the location's accuracy
             if (this.options.drawCircle) {
@@ -651,8 +654,6 @@ You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
                     }
                 }
             }
-
-            this._drawCompass();
 
             var t = this.options.strings.popup;
             if (this.options.showPopup && t && this._marker) {
@@ -736,7 +737,7 @@ You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
                 this._event.latlng= Object.assign({}, this.options.defaultLatLng);
                 this._event.accuracy= 25000;
                 this._event.bounds=L.latLngBounds(L.latLng(this.options.defaultLatLng.lat+0.1, this.options.defaultLatLng.lng+0.1), L.latLng(this.options.defaultLatLng.lat-0.1, this.options.defaultLatLng.lng-0.1))
-                L.userPosition=Object.assign({}, this.options.defaultLatLng);
+                L.userPosition=Object.assign({}, {latLng: this.options.defaultLatLng});
                 this._drawMarker();
                 this.setView();
                 return;
@@ -769,7 +770,7 @@ You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
             this._event = e;
 
             if (this.options.sharePosition)
-              L.userPosition = Object.assign({}, e.latlng);
+              L.userPosition = Object.assign({}, {latLng: e.latlng});
 
 
             this._drawMarker();
