@@ -21,3 +21,24 @@ html {
     height: 480px;
     overflow-y: scroll;
 }
+body {
+    padding: 0;
+    margin: 0;
+}
+html, body, #map {
+    height: 100%;
+    width: 100%;
+}
+#map-wrapper {
+width: 100%;
+height: 100%;
+position: relative;
+}
+#map{
+  position: absolute;
+}
+#app{
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
