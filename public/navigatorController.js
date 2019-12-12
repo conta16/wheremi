@@ -18,7 +18,7 @@ class navigatorController{
         this.itinerary.setWaypoints(tmp_itinerary.waypoints);
         this.itinerary.showOnMap();
     }
- 
+
     wondering(nearest){
         document.removeEventListener("route-available", nav.navigate);
         function coordsFromInstructin(i){
@@ -29,7 +29,7 @@ class navigatorController{
         }
         //console.log(L.routes[0].instructions, L.routes[0].waypointIndices	)
         document.addEventListener("route-available", nav.navigate);
-        nav.stopped=true;
+        nav.stop();
         var tmp_route=Object.assign([], L.routes[0].instructions)
         //tmp_route=tmp_route.map(coordsFromInstructin);
         tmp_route=tmp_route.filter(preserve_waypoints).map(coordsFromInstructin);
@@ -42,7 +42,7 @@ class navigatorController{
         console.log(waypoint.text)
         //Paul.say(waypoint.text);
     }
-    
+
     onend (){
         //Paul.say("You reached your destination");
     }
