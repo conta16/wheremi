@@ -57,11 +57,11 @@ $.ajax({
 	L.control.locate(options).addTo(map);
 })
 
-L.control.custom({
+/*L.control.custom({
 	position: 'topright',
 	content : '<div id="app"></div>',
 	classes : 'leaflet-control leaflet-bar'
-}).addTo(map);
+}).addTo(map);*/
 
 var world = new World();
 
@@ -90,12 +90,59 @@ L.control.zoom({
 
 L.control.custom({
 	position: 'topleft',
-	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="nav.svg" width="26px" height="26px"></img></a>',
+	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/nav.svg" width="26px" height="26px"></img></a>',
 	classes : 'leaflet-control leaflet-bar',
 	events : {
 		click : function(e){
 			nav=new polloNavigator(navigatorControl.onpoint, navigatorControl.onend, navigatorControl.wondering);
 			nav.navigate();
+		},
+	}
+}).addTo(map);
+
+L.control.custom({
+	position: 'topleft',
+	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/create_itin.svg" width="26px" height="26px"></img></a>',
+	classes : 'leaflet-control leaflet-bar',
+	events : {
+		click : function(e){
+			createMode();
+		},
+	}
+}).addTo(map);
+
+
+L.control.custom({
+	position: 'topleft',
+	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/load.svg" width="26px" height="26px"></img></a>',
+	classes : 'leaflet-control leaflet-bar',
+	events : {
+		click : function(e){
+			ldItinerary();
+		},
+	}
+}).addTo(map);
+
+
+L.control.custom({
+	position: 'topleft',
+	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/create_point.svg" width="26px" height="26px"></img></a>',
+	classes : 'leaflet-control leaflet-bar',
+	events : {
+		click : function(e){
+			createPoint();
+		},
+	}
+}).addTo(map);
+
+
+L.control.custom({
+	position: 'topleft',
+	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/load_point.svg" width="26px" height="26px"></img></a>',
+	classes : 'leaflet-control leaflet-bar',
+	events : {
+		click : function(e){
+			ldPoint();
 		},
 	}
 }).addTo(map);
