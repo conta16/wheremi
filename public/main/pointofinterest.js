@@ -110,7 +110,7 @@ class PointOfInterest{
         if (type == 2){
             var len = this.wikipediaMarkers.length;
             var icon = L.icon({
-                iconUrl: "./wikipedia.svg"
+                iconUrl: "./img/wikipedia.svg"
             });
             this.wikipediaMarkers[len] = new L.Marker(
                 latLng,
