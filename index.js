@@ -282,7 +282,7 @@ app.get('/auth/google/callback',
 
 //
 app.get('/', function(req,res){
-	res.sendFile(path.join(__dirname, './public', 'index.html'));
+	res.sendFile(path.join(__dirname, './public/main', 'index.html'));
 });
 
 app.get('/search', function (req, res){
