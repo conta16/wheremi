@@ -301,7 +301,14 @@ app.get('/search', function (req, res){
                         },
 			{
 				$match: {
-					'label': {$regex: ".*"+req.query.query+".*"}
+					"label": {$regex: ".*"+req.query.query+".*"}
+				}
+			},
+			{
+				$project: {
+					"_id": 1,
+					"label": 1,
+					"inputWaypoints": 1
 				}
 			}
 		]).toArray(function(err, result) {

@@ -481,11 +481,14 @@ const Control = {
     }
     else{
       var tmp = [];
-      for (var i in result.waypoints){
-          tmp.push(result.waypoints[i].latLng);
+      for (var i in result.inputWaypoints){
+          tmp.push(result.inputWaypoints[i].latLng);
       }
-      this.options.provider.itinerary.setWaypoints(tmp);
-      this.options.provider.itinerary.showOnMap();
+      this.options.provider.itinerary.getRouteFromDB(result._id)
+      .then((data) => {
+        this.options.provider.itinerary.setAll(result.label, data.route, tmp);
+      })
+      .catch(() => {});
     }
 
     if (autoClose) {
@@ -669,6 +672,7 @@ class OpenStreetMapProvider extends BaseProvider {
       : this.endpoint({ query, protocol });
 
     await this.itinerary.GSItineraryFromDB(query).then((data) => {
+      console.log(data);
       dbResponse = data;
     }).catch(() => {});
 

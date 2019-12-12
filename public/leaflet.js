@@ -120,24 +120,21 @@ $(document).ready(function() {
 function createMode(){
 	var mode = itinerary.getMode();
 	if (!mode){
+		itinerary.setMode(!mode);
 		map.off('zoomend', loadPoints); 
 		map.off('drag', loadPoints);
 		pointsOfInterest.removeAllMarkers();
-		itinerary.setWaypoints([]);
-		itinerary.showOnMap();
-		//itinerary.removeMarkers();
+		itinerary.clearAll();
 		map.on('click', (e) => {
 			if (itinerary.getBlock()) itinerary.setBlock(0);
 			else {
 				e.latLng = e.latlng; // it is needed because pushWaypoints uses property latLng
-				//itinerary.setMarkers(e.latlng);
 				itinerary.pushWaypoints([e.latLng]);
-				itinerary.showOnMap();
 			}
 		});
-		mode = 1;
 	}
 	else{
+		itinerary.setMode(!mode);
 		map.off('click');
 		itinerary.setWaypoints([]);
 		itinerary.showOnMap();
@@ -146,7 +143,6 @@ function createMode(){
 		map.on('drag', loadPoints);
 		mode = 0;
 	}
-	itinerary.setMode(mode);
 }
 function ldItinerary(){
 	itinerary.postItineraryToDB("prova");

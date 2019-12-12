@@ -1,24 +1,22 @@
 class Itinerary {
     constructor(){
-        this.itinerary = {
-            label: "",
-            waypoints: [],
-            route:[]
-        }; //waypoints of the itinerary shown on the map. there can only be one itinerary showed at a time
+        this.label = "";
+        this.waypoints = [];
+        this.route = {};
         this.markers = [];
         this.url = "http://localhost:3000";
         this.control = undefined;
         this.mode = 0; //0 when in visit mode, 1 when in create itinerary mode
         this.block = 0; //to prevent click event after drag event
-        this.init_itinerary(this.itinerary);
+        this.init_itinerary();
     }
 
-    init_itinerary(itinerary){
+    init_itinerary(){
+        var parentThis = this;
         this.control = L.Routing.control({
-          waypoints: itinerary.waypoints,
+          waypoints: parentThis.waypoints,
           routeWhileDragging: true
         }).on('routesfound', function(e) {
-            L.routes = e.routes;
             var f= new Event ("route-available");
             document.dispatchEvent(f);
         });
@@ -36,50 +34,97 @@ class Itinerary {
                 _initHooksCalled : true,
                 description: "a little description"
             }
-            this.itinerary.waypoints.push(Object.assign({}, obj));
+            this.waypoints.push(Object.assign({}, obj));
         }
-        //this.showOnMap();
+        this.showOnMap();
     }
 
     setWaypoints(waypoints){
-        this.itinerary.waypoints = [];
+        this.waypoints = [];
         this.pushWaypoints(waypoints);
     }
 
     getWaypoints(){
         var tmp = [];
-        for (var i in this.itinerary.waypoints)
-            tmp.push(this.itinerary.waypoints[i].latLng);
+        for (var i in this.waypoints)
+            tmp.push(this.waypoints[i].latLng);
         return tmp.slice(0);
     }
 
     removeWaypoints(pos, delta){
-        this.itinerary.waypoints.splice(pos, delta);
+        this.waypoints.splice(pos, delta);
     }
 
     showOnMap(markerUpdate = true){
-        var tmp = [];
-        for (var i in this.itinerary.waypoints)
-            tmp.push(this.itinerary.waypoints[i].latLng);
+        if (!this.mode) this.showRoute();
+        else{
+            var tmp = [];
+            for (var i in this.waypoints)
+                tmp.push(this.waypoints[i].latLng);
 
-        this.control.setWaypoints(tmp.slice(0));
-        if (markerUpdate){
-            while (this.markers.length > 0) this.removeMarker(this.markers[0], 0);
-            for (var i in this.itinerary.waypoints) this.setMarker(this.itinerary.waypoints[i].latLng);
+            this.setLabel("");
+            this.control.setWaypoints(tmp.slice(0));
+            if (markerUpdate){
+                while (this.markers.length > 0) this.removeMarker(this.markers[0], 0);
+                for (var i in this.waypoints) this.setMarker(this.waypoints[i].latLng);
+            }
+            map.removeControl(this.control);
+            this.control.addTo(map);
+            this.setRoute(L.routes);
         }
-        map.removeControl(this.control);
-        this.control.addTo(map);
+    }
+
+    setAll(label, route, waypoints){
+        this.setLabel(label);
+        this.setRoute(route);
+        this.setWaypoints(waypoints);
+    }
+
+    clearAll(){
+        this.setLabel('');
+        this.setRoute({});
+        this.setWaypoints([]);
+    }
+
+    setRoute(route){
+        this.route = route;
+    }
+
+    getRouteFromDB(id){
+        var parentThis = this;
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: parentThis.url+"/route?id="+id,
+                method: 'GET',
+                dataType: 'json',
+                success: (data) => {
+                    resolve(data);
+                },
+                error: () => {
+                    console.log("error in getting route by id");
+                    reject();
+                }
+            });
+        });
+    }
+
+    showRoute(){
+        this.control.setAlternatives(this.route);
+    }
+
+    setLabel(label){
+        this.label = label;
     }
 
     GSItineraryFromDB(query){ //get and show itinerary from mongodb
         var parentUrl = this.url;
         return new Promise(function(resolve,reject) {
             $.ajax({
-                url: parentUrl+"?query="+query.toString(),
+                url: parentUrl+"/search?query="+query.toString(),
                 method: "GET",
                 async: true,
                 dataType: "json",
-                success: (data) =>{resolve(data)},
+                success: (data) =>{console.log(data);resolve(data)},
                 error: (err) => {reject(err)}
             });
         });
@@ -88,14 +133,16 @@ class Itinerary {
     postItineraryToDB(name){
         var parentThis = this;
         var parentUrl = this.url;
-        this.itinerary.label = name;
-        this.itinerary.route = L.routes;
+        this.label = name;
+        this.route = L.routes;
         $.ajax({
             url: parentUrl,
             method: "POST",
             dataType: "json",
             data: {
-                itinerary: JSON.stringify(parentThis.itinerary),
+                label: JSON.stringify(parentThis.label),
+                waypoints: JSON.stringify(parentThis.waypoints),
+                route: JSON.stringify(parentThis.route)
             },
             async: true,
             success: function(){
@@ -168,8 +215,8 @@ class Itinerary {
     checkWaypointInRange(){
         var tmp;
         if (L.userPosition)
-            for (var i in this.itinerary.waypoints){
-                tmp = this.itinerary.waypoints[i];
+            for (var i in this.waypoints){
+                tmp = this.waypoints[i];
                 if (this.distance(L.userPosition.lat, L.userPosition.lng, tmp.latLng.lat, tmp.latLng.lng, 'K') < 50){
                     console.log(tmp.description);
                 }

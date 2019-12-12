@@ -27,7 +27,6 @@ class PointOfInterest{
             dataType: "json",
             async: true,
             success: (data) => {
-                console.log(data);
                 parentThis.itineraryStartPoints = data.itineraryStartPoints;
                 parentThis.points = data.points;
                 while (parentThis.markers.length > 0) parentThis.removeMarker(parentThis.markers[0], 0, 0);
@@ -39,10 +38,12 @@ class PointOfInterest{
                         var tmp = [];
                         for (var i in parentThis.itineraryStartPoints[index].inputWaypoints)
                             tmp.push(parentThis.itineraryStartPoints[index].inputWaypoints[i].latLng);
-                        parentThis.currentItinerary.setWaypoints(tmp.slice(0)); //with the latest change it is not necessary, but maybe having the waypoints might be good
-                        //parentThis.currentItinerary.showOnMap();
-                        parentThis.currentItinerary.getControl().setAlternatives(parentThis.itineraryStartPoints[index].route);
 
+                        parentThis.currentItinerary.getRouteFromDB(parentThis.itineraryStartPoints[index]._id)
+                            .then((data) => {
+                                parentThis.currentItinerary.setAll(parentThis.itineraryStartPoints[index].label, data.route, tmp.slice(0));
+                            })
+                            .catch(() => {});
                     });
                 });
                 parentThis.points.forEach((obj,index) => {
@@ -61,7 +62,8 @@ class PointOfInterest{
                 }}};
                 var wiki = new wikiSearcher(options);
                 wiki.searchOnMap(map,10);
-                while(this.wikipediaMarkers.length > 0) this.removeMarker(this.wikipediaMarkers[0], 0, 2);
+                while(parentThis.wikipediaMarkers.length > 0) parentThis.removeMarker(parentThis.wikipediaMarkers[0], 0, 2);
+
             },
             error: (data) => {
                 console.log("getting points failed");
