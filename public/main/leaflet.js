@@ -156,6 +156,7 @@ $(document).ready(function() {
 	map.on('zoomend', loadPoints);
 	
 	map.on('drag', loadPoints);
+
 });
 
 function createMode(){
@@ -222,15 +223,13 @@ $.ajax({
 	}
 });*/
 
-function containsObject(obj, list) {
-    var i;
-    for (i = 0; i < list.length; i++) {
-        if (list[i] === obj) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
+function eventFire(el, etype){
+	if (el.fireEvent) {
+	  el.fireEvent('on' + etype);
+	} else {
+	  var evObj = document.createEvent('Events');
+	  evObj.initEvent(etype, true, false);
+	  el.dispatchEvent(evObj);
+	}
+  }
 
