@@ -2,7 +2,7 @@ class Itinerary {
     constructor(){
         this.label = "";
         this.waypoints = [];
-        this.route = {};
+        this.route = [];
         this.markers = [];
         this.url = "http://localhost:3000";
         this.control = undefined;
@@ -56,38 +56,27 @@ class Itinerary {
     }
 
     showOnMap(markerUpdate = true){
-        if (!this.mode) this.showRoute();
-        else{
-            var tmp = [];
-            for (var i in this.waypoints)
-                tmp.push(this.waypoints[i].latLng);
 
-            this.setLabel("");
-            this.control.setWaypoints(tmp.slice(0));
-            if (markerUpdate){
-                while (this.markers.length > 0) this.removeMarker(this.markers[0], 0);
-                for (var i in this.waypoints) this.setMarker(this.waypoints[i].latLng);
-            }
-            map.removeControl(this.control);
-            this.control.addTo(map);
-            this.setRoute(L.routes);
+        var tmp = [];
+        for (var i in this.waypoints)
+            tmp.push(this.waypoints[i].latLng);
+
+        this.setLabel("");
+        this.control.setWaypoints(tmp.slice(0));
+        if (markerUpdate){
+            this.removeMarkers();
+            this.setMarkers(tmp);
         }
-    }
-
-    setAll(label, route, waypoints){
-        this.setLabel(label);
-        this.setRoute(route);
-        this.setWaypoints(waypoints);
-    }
-
-    clearAll(){
-        this.setLabel('');
-        this.setRoute({});
-        this.setWaypoints([]);
+        map.removeControl(this.control);
+        this.control.addTo(map);
+        if (this.waypoints != []) L.routes = []; //without this, when you setWaypoints([]) it reloads the old route (stored in L.routes) instead of putting an empty route
+        this.route = L.routes;
     }
 
     setRoute(route){
         this.route = route;
+        this.waypoints = this.route[0].waypoints;
+        this.showRoute();
     }
 
     getRouteFromDB(id){
@@ -109,7 +98,11 @@ class Itinerary {
     }
 
     showRoute(){
+        this.removeMarkers();
         this.control.setAlternatives(this.route);
+        var tmp = [];
+        for (var i in this.waypoints) tmp.push(this.waypoints[i].latLng);
+        this.setMarkers(tmp);
     }
 
     setLabel(label){
@@ -154,42 +147,48 @@ class Itinerary {
         });
     }
 
-    setMarker(latLng){
+    setMarkers(waypoints){
         var parentThis = this;
-        var index = this.markers.length;
-        /*var redMarker = L.ExtraMarkers.icon({
-            icon: 'fa-coffee',
-            markerColor: 'red',
-            shape: 'square',
-            prefix: 'fa'
-          });*/
-        this.markers[index] = new L.Marker(
-            latLng,
-            {
-                draggable: parentThis.mode? true : false,
-                //icon: redMarker
-            }
-        ).addTo(map);
+        //var index = this.markers.length;
+        for (var i in waypoints){
+            this.markers[i] = new L.Marker(
+                waypoints[i],
+                {
+                    draggable: parentThis.mode? true : false,
+                }
+            ).addTo(map);
+        }
 
-        this.markers[index].on('drag', () => {
-            parentThis.block = 1;
-        });
+        this.markers.forEach((obj, index) => {
+            parentThis.markers[index].on('drag', () => {
+                parentThis.block = 1;
+            });
 
-        this.markers[index].on('dragend', (e) => {
-            parentThis.removeWaypoints(index,1);
-            var tmp = parentThis.getWaypoints();
-            tmp.splice(index,0,e.target._latlng);
-            parentThis.setWaypoints(tmp);
-            parentThis.showOnMap(false);
-            setTimeout(() => {
-                parentThis.block = 0;
-            }, 500); //serious doubts
+            parentThis.markers[index].on('dragend', (e) => {
+                parentThis.removeWaypoints(index,1);
+                var tmp = parentThis.getWaypoints();
+                tmp.splice(index,0,e.target._latlng);
+                parentThis.setWaypoints(tmp);
+                //parentThis.showOnMap(false);
+                setTimeout(() => {
+                    parentThis.block = 0;
+                }, 500); //serious doubts
+            });
+            parentThis.markers[index].bindPopup(parentThis.waypoints[index].description.toString());
+            parentThis.markers[index].on('mouseover', () => {
+                parentThis.markers[index].openPopup();
+            });
+            parentThis.markers[index].on('mouseout', () => {
+                parentThis.markers[index].closePopup();
+            });
         });
     }
 
-    removeMarker(marker, i){
-        map.removeLayer(marker);
-        this.markers.splice(i,1);
+    removeMarkers(){
+        while(this.markers.length > 0){
+            map.removeLayer(this.markers[0]);
+            this.markers.splice(0,1);
+        }
     }
 
     setMode(mode){

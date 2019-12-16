@@ -16784,8 +16784,10 @@ module.exports = L.Routing = {
             this._clearAlts();
             
             this._routes = routes;
-            
+
+
             L.routes = this._routes;
+
 
 			for (i = 0; i < this._routes.length; i++) {
 				alt = this._routes[i];

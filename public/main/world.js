@@ -1,7 +1,7 @@
 class World {
     constructor(){
         this.itinerary = new Itinerary();
-        this.pointsOfInterest = new PointOfInterest(this.itinerary);
+        this.pointsOfInterest = new PointOfInterest(this.itinerary, 5);
         this.user = new Users();
     }
 

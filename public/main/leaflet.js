@@ -57,12 +57,6 @@ $.ajax({
 	L.control.locate(options).addTo(map);
 })
 
-/*L.control.custom({
-	position: 'topright',
-	content : '<div id="app"></div>',
-	classes : 'leaflet-control leaflet-bar'
-}).addTo(map);*/
-
 var world = new World();
 
 var pointsOfInterest = world.getPointsOfInterest();
@@ -71,18 +65,18 @@ var itinerary = world.getItinerary();
 
 var navigatorControl = new navigatorController(itinerary);
 
-const provider = new OpenStreetMapProvider(itinerary);
+const provider = new OpenStreetMapProvider(itinerary, pointsOfInterest);
 
 const searchControl = new GeoSearchControl({
     provider: provider,
 });
 
-const choiceControl = new ChoiceControl({
+/*const choiceControl = new ChoiceControl({
     provider: provider,
-});
+});*/
 	  
 map.addControl(searchControl);
-map.addControl(choiceControl);
+//map.addControl(choiceControl);
 
 L.control.zoom({
 	position:'bottomleft'
@@ -171,11 +165,11 @@ function createMode(){
 		map.off('zoomend', loadPoints); 
 		map.off('drag', loadPoints);
 		pointsOfInterest.removeAllMarkers();
-		itinerary.clearAll();
+		itinerary.setWaypoints([]);
 		map.on('click', (e) => {
 			if (itinerary.getBlock()) itinerary.setBlock(0);
 			else {
-				e.latLng = e.latlng; // it is needed because pushWaypoints uses property latLng
+				e.latLng = e.latlng;
 				itinerary.pushWaypoints([e.latLng]);
 			}
 		});
@@ -184,17 +178,14 @@ function createMode(){
 		itinerary.setMode(!mode);
 		map.off('click');
 		itinerary.setWaypoints([]);
-		itinerary.showOnMap();
 		pointsOfInterest.loadPoints();
 		map.on('zoomend', loadPoints);
 		map.on('drag', loadPoints);
-		mode = 0;
 	}
 }
 function ldItinerary(){
 	itinerary.postItineraryToDB("prova");
 	itinerary.setWaypoints([]);
-	itinerary.showOnMap();
 }
 
 function createPoint(){
@@ -203,7 +194,6 @@ function createPoint(){
 		map.off('click');
 		itinerary.setWaypoints([]);
 		pointsOfInterest.removeAllMarkers();
-		itinerary.showOnMap();
 		itinerary.setMode(!mode);
 	}
 	map.on('click', (e) => {

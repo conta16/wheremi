@@ -314,6 +314,7 @@ app.get('/search', function (req, res){
 
 app.get('/about', function (req, res){
 	var obj = {};
+	console.log(typeof(req.query.maxpoints));
 	MongoClient.connect(url, {useUnifiedTopology: true}, function(err, db) {
 		if (err) throw err;
 		var dbo = db.db("sitedb");
@@ -345,7 +346,7 @@ app.get('/about', function (req, res){
 			}
 
 
-		]).toArray(function(err,result){
+		]).limit(parseInt(req.query.maxpoints)).toArray(function(err,result){
 			if (err) throw err;
 			obj.itineraryStartPoints = result;
 	                dbo.collection("pointOfInterest").find({
@@ -356,7 +357,7 @@ app.get('/about', function (req, res){
                                 	{"latLng.lng": { $lt: parseFloat(req.query.nelng)}},
 					{"startItinerary": false}
                         	]
-                	}).toArray(function(err,result){
+                	}).limit(parseInt(req.query.maxpoints)).toArray(function(err,result){
                         	if (err) throw err;
                         	obj.points = result;
                         	res.send(obj);
@@ -364,6 +365,9 @@ app.get('/about', function (req, res){
 		});
 	});
 });
+
+/*db.collection.find().sort({age:-1}).limit(1) // for MAX
+db.collection.find().sort({age:+1}).limit(1) // for MIN*/
 
 app.get('/route', function(req, res){
 	var tmp = ObjectId(req.query.id);
