@@ -7,8 +7,10 @@ class PointOfInterest{
         this.markers = [];
         this.itineraryStartMarkers = [];
         this.currentItinerary = itinerary;
-        this.addedPointMarker = undefined;
+        this.addedPointMarker = {};
         this.addedPoint = {};
+        this.searchPoint = {};
+        this.searchPointMarker = {}
         this.maxPoints = maxPoints;
         this.url = "http://localhost:3000";
     }
@@ -22,26 +24,24 @@ class PointOfInterest{
         var parentThis = this;
         //this.removeAllMarkers();
         $.ajax({
-            url: parentThis.url+"/about?swlat="+bound._southWest.lat+"&swlng="+bound._southWest.lng+"&nelat="+bound._northEast.lat+"&nelng="+bound._northEast.lng,
+            url: parentThis.url+"/about?swlat="+bound._southWest.lat+"&swlng="+bound._southWest.lng+"&nelat="+bound._northEast.lat+"&nelng="+bound._northEast.lng+"&maxpoints="+parentThis.maxPoints,
             method: "GET",
             dataType: "json",
             async: true,
             success: (data) => {
                 parentThis.itineraryStartPoints = data.itineraryStartPoints;
                 parentThis.points = data.points;
-                while (parentThis.markers.length > 0) parentThis.removeMarker(parentThis.markers[0], 0, 0);
-                while (parentThis.itineraryStartMarkers.length > 0) parentThis.removeMarker(parentThis.itineraryStartMarkers[0], 0, 1);
-                for (var i in parentThis.itineraryStartPoints) parentThis.setMarker(parentThis.itineraryStartPoints[i].inputWaypoints[0].latLng, 1);
-                for (var i in parentThis.points) parentThis.setMarker(parentThis.points[i].latLng, 0);
+                while (parentThis.markers.length > 0) parentThis.removePointsMarker(0);
+                while (parentThis.itineraryStartMarkers.length > 0) parentThis.removeItineraryMarker(0);
+                for (var i in parentThis.itineraryStartPoints) parentThis.setItineraryMarker(parentThis.itineraryStartPoints[i].inputWaypoints[0].latLng);
+                for (var i in parentThis.points) parentThis.setPointsMarker(parentThis.points[i].latLng);
                 parentThis.itineraryStartPoints.forEach((obj, index) => {
                     parentThis.itineraryStartMarkers[index].on('click', () => {
-                        var tmp = [];
-                        for (var i in parentThis.itineraryStartPoints[index].inputWaypoints)
-                            tmp.push(parentThis.itineraryStartPoints[index].inputWaypoints[i].latLng);
-
+                        parentThis.removeSearchMarker();
                         parentThis.currentItinerary.getRouteFromDB(parentThis.itineraryStartPoints[index]._id)
                             .then((data) => {
-                                parentThis.currentItinerary.setAll(parentThis.itineraryStartPoints[index].label, data.route, tmp.slice(0));
+                                for (var i in data.route[0].waypoints) data.route[0].waypoints[i].description = "a little description";
+                                parentThis.currentItinerary.setRoute(data.route);
                             })
                             .catch(() => {});
                     });
@@ -58,11 +58,11 @@ class PointOfInterest{
                         for (var i in a.query.pages)
                             parentThis.wikipediaPoints.push(a.query.pages[i]);
                         for (var i in a.query.pages)
-                            parentThis.setMarker(a.query.pages[i].latLng, 2);
+                            parentThis.setWikipediaMarker(a.query.pages[i].latLng);
                 }}};
                 var wiki = new wikiSearcher(options);
                 wiki.searchOnMap(map,10);
-                while(parentThis.wikipediaMarkers.length > 0) parentThis.removeMarker(parentThis.wikipediaMarkers[0], 0, 2);
+                while(parentThis.wikipediaMarkers.length > 0) parentThis.removeWikipediaMarker(0);
 
             },
             error: (data) => {
@@ -70,6 +70,69 @@ class PointOfInterest{
             }
         });
 }
+
+    setPointsMarker(latLng){
+        var parentThis = this;
+        var len = this.markers.length;
+        this.markers[len] = new L.Marker(
+            latLng,
+            {
+                draggable: false
+            }
+        );
+        this.markers[len].bindPopup(this.points[len].description.toString());
+        this.markers[len].on('mouseover', () => {
+            parentThis.markers[len].openPopup();
+        });
+        this.markers[len].on('mouseout', () => {
+            parentThis.markers[len].closePopup();
+        });
+        this.markers[len].addTo(map);
+    }
+
+    setItineraryMarker(latLng){
+        var parentThis = this;
+        var len = this.itineraryStartMarkers.length;
+        this.itineraryStartMarkers[len] = new L.Marker(
+            latLng,
+            {
+                draggable: false
+            }
+        );
+        this.itineraryStartMarkers[len].bindPopup(this.itineraryStartPoints[len].label.toString());
+        this.itineraryStartMarkers[len].on('mouseover', () => {
+            parentThis.itineraryStartMarkers[len].openPopup();
+        });
+        this.itineraryStartMarkers[len].on('mouseout', () => {
+            parentThis.itineraryStartMarkers[len].closePopup();
+        });
+        this.itineraryStartMarkers[len].addTo(map);
+    }
+
+    setWikipediaMarker(latLng){
+        var parentThis = this;
+        var len = this.wikipediaMarkers.length;
+        var icon = L.icon({
+            iconUrl: "./img/wikipedia.svg"
+        });
+        this.wikipediaMarkers[len] = new L.Marker(
+            latLng,
+            {
+                icon: icon
+            },
+            {
+                draggable: false
+            }
+        );
+        this.wikipediaMarkers[len].bindPopup(this.wikipediaPoints[len].title.toString());
+        this.wikipediaMarkers[len].on('mouseover', () => {
+            parentThis.wikipediaMarkers[len].openPopup();
+        });
+        this.wikipediaMarkers[len].on('mouseout', () => {
+            parentThis.wikipediaMarkers[len].closePopup();
+        });
+        this.wikipediaMarkers[len].addTo(map);
+    }
 
     setMarker(latLng, type){
         var parentThis = this;
@@ -132,11 +195,47 @@ class PointOfInterest{
         }
     }
 
-    removeMarker(marker, position, type){
-        map.removeLayer(marker);
-        if (type == 0) this.markers.splice(position,1);
-        if (type == 1) this.itineraryStartMarkers.splice(position,1);
-        if (type == 2) this.wikipediaMarkers.splice(position,1);
+    setSearchMarker(point){
+        var parentThis = this;
+        this.searchPoint = point;
+        this.searchPointMarker = new L.Marker(
+            point.latLng,
+            {
+                draggable: false
+            }
+        );
+        this.searchPointMarker.bindPopup(this.searchPoint.description.toString());
+        this.searchPointMarker.on('mouseover', () => {
+            parentThis.searchPointMarker.openPopup();
+        });
+        this.searchPointMarker.on('mouseout', () => {
+            parentThis.searchPointMarker.closePopup();
+        });
+        this.searchPointMarker.addTo(map);
+        return this.searchPointMarker;
+    }
+
+    removePointsMarker(position){
+        map.removeLayer(this.markers[position]);
+        this.markers.splice(position,1);
+    }
+
+    removeItineraryMarker(position){
+        map.removeLayer(this.itineraryStartMarkers[position]);
+        this.itineraryStartMarkers.splice(position,1);
+    }
+
+    removeWikipediaMarker(position){
+        map.removeLayer(this.wikipediaMarkers[position]);
+        this.wikipediaMarkers.splice(position,1);
+    }
+
+    removeSearchMarker(){
+        map.removeLayer(this.searchPointMarker);
+    }
+
+    removeAddedPointMarker(){
+        map.removeLayer(this.addedPointMarker);
     }
 
     removeAllMarkers(){
@@ -152,6 +251,8 @@ class PointOfInterest{
             map.removeLayer(this.wikipediaMarkers[0]);
             this.wikipediaMarkers.splice(0,1);
         }
+        if (this.searchPointMarker) map.removeLayer(this.searchPointMarker);
+        if (this.addedPointMarker) map.removeLayer(this.addedPointMarker);
     }
 
     addPoint(latLng){
@@ -160,7 +261,7 @@ class PointOfInterest{
         {
             'maxWidth': '500',
         };
-        if (this.addedPointMarker) this.removeMarker([this.addedPointMarker],0,0);
+        if (this.addedPointMarker) this.removeAddedPointMarker();
         this.addedPointMarker = new L.Marker(
             latLng,
             {

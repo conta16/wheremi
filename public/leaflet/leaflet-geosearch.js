@@ -271,6 +271,9 @@ const Control = {
     if (autoComplete) {
       this.resultList = new ResultList({
         handleClick: ({ result }, bool) => {
+          this.options.provider.itinerary.control._clearLines();
+          this.options.provider.itinerary.control._clearAlts();
+          this.options.provider.itinerary.removeMarkers();
           if (bool){
             input.value = result.label;
             this.singleSearch({ query: result.label, data: result }, bool);
@@ -461,18 +464,30 @@ const Control = {
   showResult(result, { query }, bool) {
     const { autoClose } = this.options;
 
-    const markers = Object.keys(this.markers._layers);
+    /*const markers = Object.keys(this.markers._layers);
     if (markers.length >= this.options.maxMarkers) {
       this.markers.removeLayer(markers[0]);
-    }
+    }*/
+
+    this.options.provider.pointsOfInterest.removeSearchMarker();
 
 
     if (!bool){
-      const marker = this.addMarker(result, query);
+      var searchPoint = {
+        _initHooksCalled: true,
+        description: result.label,
+        latLng: {
+          lat: result.y,
+          lng: result.x
+        },
+        options: {
+          allowUTurn: false
+        }
+      };
+      const marker = this.options.provider.pointsOfInterest.setSearchMarker(searchPoint);//this.addMarker(result, query);
       this.centerMap(result);
 
-      this.options.provider.itinerary.setWaypoints([]);
-      this.options.provider.itinerary.showOnMap();
+      //this.options.provider.itinerary.setWaypoints([]);
 
       this.map.fireEvent('geosearch/showlocation', {
         location: result,
@@ -480,13 +495,13 @@ const Control = {
       });
     }
     else{
-      var tmp = [];
+      /*var tmp = [];
       for (var i in result.inputWaypoints){
           tmp.push(result.inputWaypoints[i].latLng);
-      }
+      }*/
       this.options.provider.itinerary.getRouteFromDB(result._id)
       .then((data) => {
-        this.options.provider.itinerary.setAll(result.label, data.route, tmp);
+        this.options.provider.itinerary.setRoute(data.route);
       })
       .catch(() => {});
     }
@@ -507,7 +522,7 @@ const Control = {
     this.clearResults();
   },
 
-  addMarker(result, query) {
+  /*addMarker(result, query) {
     const { marker: options, showPopup, popupFormat } = this.options;
     const marker = new L.Marker([result.y, result.x], options);
     let popupLabel = result.label;
@@ -534,7 +549,7 @@ const Control = {
     }
 
     return marker;
-  },
+  },*/
 
   centerMap(result) {
     const { retainZoomLevel, animateZoom } = this.options;
@@ -597,9 +612,10 @@ class BaseProvider {
 }
 
 class OpenStreetMapProvider extends BaseProvider {
-  constructor(itinerary){
+  constructor(itinerary, pointsOfInterest){
     super();
     this.itinerary = itinerary;
+    this.pointsOfInterest = pointsOfInterest;
   }
 
   endpoint({ query } = {}) {
