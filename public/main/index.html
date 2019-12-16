@@ -6,16 +6,16 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <link rel="stylesheet" type="text/css" href="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.css" />
     <link rel="stylesheet" type="text/css" href="./leaflet/leaflet-search.css" />
     <link rel="stylesheet" type="text/css" href="./main/index.css"/>
-    <link rel="stylesheet" type="text/css" href="./main/main.css"/>
-    <link rel="stylesheet" type="text/css" href="./main/util.css"/>
     <link rel="stylesheet" type="text/css" href="./leaflet/leaflet-routing-machine.css" />
 
-
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
     <link rel="icon" href="./img/favicon.ico">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js"></script>
@@ -38,7 +38,7 @@
       <div id="map"></div>
     </div>
 
-  <div id="sidecards" class="container-fluid">
+<!--  <div id="sidecards" class="container-fluid">
     <div class="row">
         <div class="col-12 mt-3">
             <div class="card">
@@ -51,12 +51,94 @@
                         <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                     </div>
                 </div>
-                <!--<div class="card-footer">
+                <div class="card-footer">
                     <small class="text-muted">Last updated 3 mins ago</small>
-                </div>-->
+                </div>
             </div>
         </div>
+    </div>-->
+    <div class="container" id="menu">
+      <div class="row">
+        <div class="float-right">
+          <button class="btn btn-primary" type="button">Help</button>
+        </div>
+          <button class="btn btn-primary" type="button">Login</button>
+      </div>
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" href="#profile" role="tab" data-toggle="tab">profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#buzz" role="tab" data-toggle="tab">buzz</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#references" role="tab" data-toggle="tab">references</a>
+      </li>
+    </ul>
+    
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane fade in active" id="profile">
+        <div class="card">
+          <img class="card-img-left" src="http://via.placeholder.com/300x180" alt="Card image cap">
+          <div class="card-body">
+            This is some text within a card body.
+          </div>
+        </div>
+      </div>
+      <div role="tabpanel" class="tab-pane fade" id="buzz">bbb</div>
+      <div role="tabpanel" class="tab-pane fade" id="references">ccc</div>
     </div>
+  </div>
+
+    <!--<div class="container" id="menu">
+      <div style="display: block!important"><h2>Dynamic Tabs</h2>
+
+      </div>
+      <ul class="nav nav-tabs" style="display: block">
+        <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+        <li><a data-toggle="tab" href="#menu1">Menu 1</a></li>
+        <li><a data-toggle="tab" href="#menu2">Menu 2</a></li>
+        <li><a data-toggle="tab" href="#menu3">Menu 3</a></li>
+      </ul>
+    
+      <div class="tab-content">
+        <div id="home" class="tab-pane fade in active">
+          <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 mt-3">
+                    <div class="card">
+                        <div class="card-horizontal">
+                            <div class="img-square-wrapper">
+                                <img class="img-fluid" src="http://via.placeholder.com/300x180" alt="Card image cap">
+                            </div>
+                            <div class="card-body">
+                                <h4 class="card-title">Card title</h4>
+                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">Last updated 3 mins ago</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div id="menu1" class="tab-pane fade">
+          <h3>Menu 1</h3>
+          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        </div>
+        <div id="menu2" class="tab-pane fade">
+          <h3>Menu 2</h3>
+          <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+        </div>
+        <div id="menu3" class="tab-pane fade">
+          <h3>Menu 3</h3>
+          <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+        </div>
+      </div>
+    </div>-->
 <!-- <div id="sidecard" class="container-fluid">
   <div class="row">
       <div class="col-12 mt-3">
