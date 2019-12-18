@@ -13,6 +13,7 @@ var ObjectId = require('mongodb').ObjectID;
 var urldb = "mongodb://localhost:27017/";
 var express = require("express");
 var cors = require('cors');
+var upload = require('jquery-file-upload-middleware');
 var app = express();
 
 
@@ -23,7 +24,7 @@ app.set('view engine', 'ejs');
 // Use application-level middleware for common functionality, including
 // logging, parsing, and session handling.
 app.use(require('morgan')('combined'));
-app.use(require('body-parser').urlencoded({ extended: true }));
+//app.use(require('body-parser').urlencoded({ extended: true }));
 app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
 
 
@@ -34,7 +35,7 @@ app.use(bodyParser.json({
 app.use(bodyParser.urlencoded({
 	limit: '50mb', extended: true
 }));
-app.use(bodyParser.urlencoded({extended: false}));
+//app.use(bodyParser.urlencoded({extended: false}));
 app.use(cors());
 
 app.use(express.static(__dirname + "/public"));
@@ -507,7 +508,6 @@ app.get('/search', function (req, res){
 
 app.get('/about', function (req, res){
 	var obj = {};
-	console.log(typeof(req.query.maxpoints));
 	MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err, db) {
 		if (err) throw err;
 		var dbo = db.db("sitedb");
@@ -534,13 +534,25 @@ app.get('/about', function (req, res){
 				$project: {
 					_id: 1,
 					label: 1,
-					inputWaypoints: 1
+          				inputWaypoints: 1,
+          				waypoints: 1
 				}
 			}
 
 
 		]).limit(parseInt(req.query.maxpoints)).toArray(function(err,result){
 			if (err) throw err;
+			for (var index in result)
+				for (var i in result[index].waypoints){
+					for (var j=i; j<result[index].waypoints.length; j++){
+						if (result[index].inputWaypoints[j] && result[index].waypoints[i].toString() == result[index].inputWaypoints[j]._id.toString()){
+						/*var tmp = result.inputWaypoints[i];
+						result.inputWaypoints[i] = result.inputWaypoints[j];
+						result.inputWaypoints[j] = tmp;*/
+							[result[index].inputWaypoints[i], result[index].inputWaypoints[j]] = [result[index].inputWaypoints[j], result[index].inputWaypoints[i]];
+						}
+					}
+				}
 			obj.itineraryStartPoints = result;
 	                dbo.collection("pointOfInterest").find({
         	                $and: [
@@ -567,11 +579,22 @@ app.get('/route', function(req, res){
 	MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err, db) {
 		if (err) throw err;
                 var dbo = db.db("sitedb");
-                dbo.collection("itineraries").find({
-               		"_id": tmp
-                }).toArray(function(err,result){
+                dbo.collection("itineraries").aggregate([
+                {
+                  $match: {
+                    "_id": tmp
+                  }
+                },
+                {
+                  $lookup:{
+                    from: "pointOfInterest",
+                    localField: "waypoints",
+                    foreignField: "_id",
+                    as: "inputWaypoints"
+                  },
+                }
+              ]).toArray(function(err,result){
 			if (err) throw err;
-			console.log(result[0]);
 			res.send(result[0]);
                 });
 	});
@@ -581,11 +604,6 @@ app.post('/', function (req, res){
         var label = JSON.parse(req.body.label);
         var waypoints = JSON.parse(req.body.waypoints);
         var route = JSON.parse(req.body.route);
-	var tmp = {
-		label: label,
-		waypoints: [], // not waypoints: waypoints because in the db the waypoints property will only contain the waypoints id
-		route: route
-	};
 
         /*var waypoints = JSON.parse(req.body.waypoints);
 
@@ -595,18 +613,37 @@ app.post('/', function (req, res){
 	for (var i in waypoints)
 		if (i == 0) waypoints[i].startItinerary = true;
 		else waypoints[i].startItinerary = false;
-	MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err,db){
+	MongoClient.connect(urldb, {useUnifiedTopology: true}, async function(err,db){
 		if (err) throw err;
+	        var tmp = {
+        	        label: label,
+                	waypoints: [], // not waypoints: waypoints because in the db the waypoints property will only contain the waypoints id
+                	route: route
+        	};
 		var dbo = db.db("sitedb");
-		dbo.collection("pointOfInterest").insertMany(waypoints, (err,res) => {
-			if (err) throw err;
-			for (var i=0; i < res.result.n; i++)
-				tmp.waypoints.push(res.insertedIds[i]);
-			dbo.collection("itineraries").insertOne(tmp, (err,res) => {
-				if (err) throw err;
-				db.close();
-			});
+		var promise = new Promise(async function(resolve, reject) {
+			for (var i in waypoints){
+				if (!waypoints[i]._id){
+					var boh = new Promise(function (resolve, reject) {
+						dbo.collection("pointOfInterest").insertOne(waypoints[i], (err,res) => {
+							if (err) throw err;
+							//tmp.waypoints.push(ObjectId(res.insertedId));
+							resolve(ObjectId(res.insertedId));
+						});
+					});
+					var t = await boh;
+					tmp.waypoints.push(t);
+				}
+				else tmp.waypoints.push(ObjectId(waypoints[i]._id));
+			}
+			resolve(tmp);
 		});
+
+		var w = await promise;
+                dbo.collection("itineraries").insertOne(w, (err,res) => {
+			if (err) throw err;
+                });
+
 	});
 });
 
@@ -622,6 +659,53 @@ app.post("/postAdded", function(req,res){
 	});
 });
 
+upload.configure({
+        uploadDir: __dirname + '/public/uploads',
+        uploadUrl: '/uploads',
+        imageVersions: {
+            thumbnail: {
+                width: 80,
+                height: 80
+            }
+        }
+    });
+
+upload.configure({
+    uploadDir: __dirname + '/public/uploads/',
+    uploadUrl: '/uploads'
+});
+
+/// Redirect all to home except post
+app.get('/upload', function( req, res ){
+	res.redirect('/');
+});
+
+app.put('/upload', function( req, res ){
+	res.redirect('/');
+});
+
+app.delete('/upload', function( req, res ){
+	res.redirect('/');
+});
+
+app.use('/upload', function(req, res, next){
+    console.log("req"); console.log(req);
+    console.log("res"); console.log(res);
+    console.log("next"); console.log(next);
+    upload.fileHandler({
+        uploadDir: function () {
+            return __dirname + '/public/uploads/'
+        },
+        uploadUrl: function () {
+            return '/uploads'
+        }
+    })(req, res, next);
+});
+
+
 app.listen(3000, function(){
 	console.log('server listening on 3000...');
 });
+
+
+

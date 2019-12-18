@@ -34,7 +34,7 @@ class Itinerary {
                 },
                 latLng: Object.assign({},waypoints[i]),
                 _initHooksCalled : true,
-                description: "a little description"
+                description: ""
             }
             if (i==0 && point) obj._id = point._id;
             this.waypoints.push(Object.assign({}, obj));
@@ -183,13 +183,17 @@ class Itinerary {
                     parentThis.block = 0;
                 }, 500); //serious doubts
             });
-            parentThis.markers[index].bindPopup(parentThis.waypoints[index].description.toString());
+            parentThis.markers[index].on('click', (e) => {
+                
+            });
+            /*parentThis.markers[index].bindPopup(parentThis.waypoints[index].description.toString());
             parentThis.markers[index].on('mouseover', () => {
                 parentThis.markers[index].openPopup();
             });
             parentThis.markers[index].on('mouseout', () => {
                 parentThis.markers[index].closePopup();
-            });
+            });*/
+
         });
     }
 

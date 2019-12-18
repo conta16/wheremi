@@ -153,6 +153,38 @@ var buttonMode = 0;
 $(document).ready(function() {
 	pointsOfInterest.loadPoints();
 
+	//$('#fileupload').fileupload({ dataType: 'json' });
+
+
+	$('#f').change(function () {
+		if (this.files.length > 0) {
+
+			$.each(this.files, function (index, value) {
+				var reader = new FileReader();
+
+				reader.onload = function (e) {
+					//var img = new Image();
+					var slideItem;
+					var indicator;
+					if (index == 0){
+						slideItem = "<div class='carousel-item active'><img class='d-inline-block w-100' style='height:300px' src='"+e.target.result+"' alt=''></div>";
+						//indicator = "<li data-target='#carouselExampleIndicators' data-slide-to='0' style='height: 300px' class='active'></li>";
+					}
+					else{
+						slideItem = "<div class='carousel-item'><img class='d-inline-block w-100' src='"+e.target.result+"' alt=''></div>";
+						//indicator = "<li data-target='#carouselExampleIndicators' data-slide-to='"+index+"' class=''></li>";
+					}
+					//img.src = e.target.result;
+
+					//img.setAttribute('style', 'width:100%; height: 30%');    // you can adjust the image size by changing the width value. 
+					$('.carousel-inner').append(slideItem);
+					//$('.carousel-indicators').append(indicator);
+				};
+				reader.readAsDataURL(this);
+			});
+		}
+	});
+
 	map.on('zoomend', loadPoints);
 	
 	map.on('drag', loadPoints);
@@ -237,3 +269,166 @@ function eventFire(el, etype){
 	}
   }
 
+  /*(function() {
+	'use strict';
+	var FileSelect, GenerateNoty, tplJs;
+  
+	tplJs = (function() {
+	  function tplJs(_at_id) {
+		this.id = _at_id;
+		this.source = $(this.id).html();
+		this.template = Handlebars.compile(this.source);
+	  }
+  
+	  tplJs.prototype.tplLoad = function(context) {
+		return this.template(context);
+	  };
+  
+	  return tplJs;
+  
+	})();
+  
+	GenerateNoty = (function() {
+	  function GenerateNoty() {
+		this.theme = 'bootstrapTheme';
+		this.animat = {
+		  open: 'animated bounceInRight',
+		  close: 'animated bounceOutRight',
+		  easing: 'swing',
+		  speed: 500
+		};
+	  }
+  
+	  GenerateNoty.prototype.NotyTime = function(text, type, maxVisible, layout, timeOut) {
+		var _self;
+		if (maxVisible == null) {
+		  maxVisible = 4;
+		}
+		if (layout == null) {
+		  layout = 'topRight';
+		}
+		if (timeOut == null) {
+		  timeOut = 3000;
+		}
+		_self = this;
+		return new Noty({
+		  text: text,
+		  type: type,
+		  dismissQueue: true,
+		  progressBar: true,
+		  layout: layout,
+		  timeout: timeOut,
+		  closeWith: ['click'],
+		  theme: _self.theme,
+		  maxVisible: maxVisible,
+		  animation: _self.animat
+		}).show();
+	  };
+  
+	  GenerateNoty.prototype.NotyBtn = function(text, type, btnOk, btnCancel, layout) {
+		var _self;
+		if (layout == null) {
+		  layout = 'topRight';
+		}
+		_self = this;
+		return new Noty({
+		  text: text,
+		  type: type,
+		  theme: _self.theme,
+		  layout: layout,
+		  buttons: [btnOk, btnCancel]
+		});
+	  };
+  
+	  return GenerateNoty;
+  
+	})();
+  
+	FileSelect = (function() {
+	  FileSelect.prototype.ValidFile = ['XLS', 'XLSX', 'CSV'];
+  
+	  function FileSelect(_at_tag) {
+		var _self;
+		this.tag = _at_tag;
+		_self = this;
+		$(this.tag).fileupload({
+		  acceptFileTypes: /(\.|\/)(xls?x|csv)$/i,
+		  filesContainer: $('.files'),
+		  uploadTemplate: function(o) {
+			var rows;
+			rows = $();
+			$.each(o.files, function(index, file) {
+			  var data, row, tpl;
+			  tpl = new tplJs('#template-upload');
+			  data = {
+				o: o,
+				file: file
+			  };
+			  row = tpl.tplLoad(data);
+			  return rows = rows.add(row);
+			});
+			return rows;
+		  },
+		  downloadTemplate: function(o) {
+			var rows;
+			rows = $();
+			$.each(o.files, function(index, file) {
+			  var data, row, tpl;
+			  tpl = new tplJs('#template-download');
+			  data = {
+				o: o,
+				file: file,
+				size: _self.formatFileSize(file.size)
+			  };
+			  row = tpl.tplLoad(data);
+			  return rows = rows.add(row);
+			});
+			return rows;
+		  },
+		  progress: function(e, data) {
+			var lineload;
+			lineload = parseInt(data.loaded / data.total * 100, 10);
+			if (data.context) {
+			  data.context.each(function() {
+				console.log(lineload);
+				$(this).find('.progress').attr('aria-valuenow', lineload).css('width', lineload + '%').text(lineload + '%');
+			  });
+			}
+		  },
+		  success: function(data) {
+			var message;
+			message = new GenerateNoty;
+			console.log(data);
+			return message.NotyTime('<div class="activity-item"><div class="activity"><i class="fa fa-lock text-success"></i> <span>File ' + " " + ' upload!</span></div> </div>', 'success');
+		  },
+		  error: function(jqXHR, textStatus, errorThrown) {
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+		  }
+		});
+	  }
+  
+	  FileSelect.prototype.formatFileSize = function(bytes) {
+		if (typeof bytes !== 'number') {
+		  return '';
+		}
+		if (bytes >= 1000000000) {
+		  return (bytes / 1000000000).toFixed(2) + ' GB';
+		}
+		if (bytes >= 1000000) {
+		  return (bytes / 1000000).toFixed(2) + ' MB';
+		}
+		return (bytes / 1000).toFixed(2) + ' KB';
+	  };
+  
+	  return FileSelect;
+  
+	})();
+  
+	$(document).ready(function() {
+	  var SelectFile;
+	  SelectFile = new FileSelect('#exportisexcel');
+	});
+  
+	}).call(this);*/
