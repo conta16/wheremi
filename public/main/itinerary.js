@@ -3,6 +3,8 @@ class Itinerary {
         this.label = "";
         this.waypoints = [];
         this.route = [];
+        this.id = "";
+        this.childrenId = [];
         this.markers = [];
         this.url = "http://localhost:3000";
         this.control = undefined;
@@ -23,10 +25,10 @@ class Itinerary {
         this.control.addTo(map);
     }
 
-    pushWaypoints(waypoints){
+    pushWaypoints(waypoints, point){
         var obj;
         for (var i in waypoints){
-            obj = {
+            obj = {                
                 options : {
                     "allowUTurn" : false
                 },
@@ -34,6 +36,7 @@ class Itinerary {
                 _initHooksCalled : true,
                 description: "a little description"
             }
+            if (i==0 && point) obj._id = point._id;
             this.waypoints.push(Object.assign({}, obj));
         }
         this.showOnMap();
@@ -73,9 +76,12 @@ class Itinerary {
         this.route = L.routes;
     }
 
-    setRoute(route){
-        this.route = route;
-        this.waypoints = this.route[0].waypoints;
+    setRoute(data){
+        this.route = data.route;
+        this.waypoints = data.inputWaypoints;
+        this.label = data.label;
+        this.id = data._id;
+        this.childrenId = data.waypoints;
         this.showRoute();
     }
 
@@ -101,7 +107,10 @@ class Itinerary {
         this.removeMarkers();
         this.control.setAlternatives(this.route);
         var tmp = [];
-        for (var i in this.waypoints) tmp.push(this.waypoints[i].latLng);
+        for (var i in this.waypoints){
+            tmp.push(this.waypoints[i].latLng);
+        }
+
         this.setMarkers(tmp);
     }
 
