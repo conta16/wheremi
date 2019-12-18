@@ -35,13 +35,14 @@ class PointOfInterest{
                 while (parentThis.itineraryStartMarkers.length > 0) parentThis.removeItineraryMarker(0);
                 for (var i in parentThis.itineraryStartPoints) parentThis.setItineraryMarker(parentThis.itineraryStartPoints[i].inputWaypoints[0].latLng);
                 for (var i in parentThis.points) parentThis.setPointsMarker(parentThis.points[i].latLng);
-                parentThis.itineraryStartPoints.forEach((obj, index) => {
+                if (!parentThis.currentItinerary.getMode()) parentThis.itineraryStartPoints.forEach((obj, index) => {
                     parentThis.itineraryStartMarkers[index].on('click', () => {
                         parentThis.removeSearchMarker();
                         parentThis.currentItinerary.getRouteFromDB(parentThis.itineraryStartPoints[index]._id)
                             .then((data) => {
-                                for (var i in data.route[0].waypoints) data.route[0].waypoints[i].description = "a little description";
-                                parentThis.currentItinerary.setRoute(data.route);
+                                console.log(data);
+                                //for (var i in data.route[0].waypoints) data.route[0].waypoints[i].description = "a little description";
+                                parentThis.currentItinerary.setRoute(data);
                             })
                             .catch(() => {});
                     });
@@ -80,12 +81,20 @@ class PointOfInterest{
                 draggable: false
             }
         );
-        this.markers[len].bindPopup(this.points[len].description.toString());
+        /*this.markers[len].bindPopup(this.points[len].description.toString());
         this.markers[len].on('mouseover', () => {
             parentThis.markers[len].openPopup();
         });
         this.markers[len].on('mouseout', () => {
             parentThis.markers[len].closePopup();
+        });*/
+        this.markers[len].on('click', (e) => {
+            $("#inspect").text(parentThis.points[len].description);
+            $("a[href='#feed']").removeClass("active");
+            $("a[href='#inspect']").addClass("active");
+            if (parentThis.currentItinerary.getMode()){
+                parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.points[len]);
+            }
         });
         this.markers[len].addTo(map);
     }
@@ -99,14 +108,25 @@ class PointOfInterest{
                 draggable: false
             }
         );
-        this.itineraryStartMarkers[len].bindPopup(this.itineraryStartPoints[len].label.toString());
+        /*this.itineraryStartMarkers[len].bindPopup(this.itineraryStartPoints[len].label.toString());
         this.itineraryStartMarkers[len].on('mouseover', () => {
             parentThis.itineraryStartMarkers[len].openPopup();
         });
         this.itineraryStartMarkers[len].on('mouseout', () => {
             parentThis.itineraryStartMarkers[len].closePopup();
+        });*/
+        this.itineraryStartMarkers[len].off('click');
+
+        this.itineraryStartMarkers[len].on('click', (e) => {
+            $("#inspect").text(parentThis.itineraryStartPoints[len].label);
+            $("a[href='#feed']").removeClass("active");
+            $("a[href='#inspect']").addClass("active");
+            if (parentThis.currentItinerary.getMode()){
+                parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.itineraryStartPoints[len].inputWaypoints[0]);
+            }
         });
         this.itineraryStartMarkers[len].addTo(map);
+
     }
 
     setWikipediaMarker(latLng){
@@ -124,75 +144,22 @@ class PointOfInterest{
                 draggable: false
             }
         );
-        this.wikipediaMarkers[len].bindPopup(this.wikipediaPoints[len].title.toString());
+        /*this.wikipediaMarkers[len].bindPopup(this.wikipediaPoints[len].title.toString());
         this.wikipediaMarkers[len].on('mouseover', () => {
             parentThis.wikipediaMarkers[len].openPopup();
         });
         this.wikipediaMarkers[len].on('mouseout', () => {
             parentThis.wikipediaMarkers[len].closePopup();
+        });*/
+        this.wikipediaMarkers[len].on('click', () => {
+            $("#inspect").text(parentThis.wikipediaPoints[len].title.toString());
+            $("a[href='#feed']").removeClass("active");
+            $("a[href='#inspect']").addClass("active");
+            if (parentThis.currentItinerary.getMode()){
+                parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.wikipediaPoints[len]);
+            }
         });
         this.wikipediaMarkers[len].addTo(map);
-    }
-
-    setMarker(latLng, type){
-        var parentThis = this;
-        if (type == 0){
-            var len = this.markers.length;
-            this.markers[len] = new L.Marker(
-                latLng,
-                {
-                    draggable: false
-                }
-            );
-            this.markers[len].bindPopup(this.points[len].description.toString());
-            this.markers[len].on('mouseover', () => {
-                parentThis.markers[len].openPopup();
-            });
-            this.markers[len].on('mouseout', () => {
-                parentThis.markers[len].closePopup();
-            });
-            this.markers[len].addTo(map);
-        }
-        if (type == 1){
-            var len = this.itineraryStartMarkers.length;
-            this.itineraryStartMarkers[len] = new L.Marker(
-                latLng,
-                {
-                    draggable: false
-                }
-            );
-            this.itineraryStartMarkers[len].bindPopup(this.itineraryStartPoints[len].label.toString());
-            this.itineraryStartMarkers[len].on('mouseover', () => {
-                parentThis.itineraryStartMarkers[len].openPopup();
-            });
-            this.itineraryStartMarkers[len].on('mouseout', () => {
-                parentThis.itineraryStartMarkers[len].closePopup();
-            });
-            this.itineraryStartMarkers[len].addTo(map);
-        }
-        if (type == 2){
-            var len = this.wikipediaMarkers.length;
-            var icon = L.icon({
-                iconUrl: "./img/wikipedia.svg"
-            });
-            this.wikipediaMarkers[len] = new L.Marker(
-                latLng,
-                {
-                    icon: icon
-                },
-                {
-                    draggable: false
-                }
-            );
-            this.wikipediaMarkers[len].bindPopup(this.wikipediaPoints[len].title.toString());
-            this.wikipediaMarkers[len].on('mouseover', () => {
-                parentThis.wikipediaMarkers[len].openPopup();
-            });
-            this.wikipediaMarkers[len].on('mouseout', () => {
-                parentThis.wikipediaMarkers[len].closePopup();
-            });
-            this.wikipediaMarkers[len].addTo(map);
-        }
     }
 
     setSearchMarker(point){

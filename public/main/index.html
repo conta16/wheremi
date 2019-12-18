@@ -62,7 +62,7 @@
       <div class="col">
         <div class="float-right">
           <button class="btn btn-primary" type="button">Help</button>
-          <button class="btn btn-primary" type="button">Login</button>
+          <a href="/login"><button class="btn btn-primary" type="button">Login</button></a>
         </div>
       </div>
     </div>
@@ -70,13 +70,13 @@
     <div class="col">
     <ul class="nav nav-tabs btn-block" role="tablist">
       <li class="nav-item">
-        <a class="nav-link active text-secondary" href="#home" role="tab" data-toggle="tab">home</a>
+        <a class="nav-link active text-secondary" href="#feed" role="tab" data-toggle="tab">feed</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-secondary" href="#buzz" role="tab" data-toggle="tab">buzz</a>
+        <a class="nav-link text-secondary" href="#inspect" role="tab" data-toggle="tab">inspect</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-secondary" href="#references" role="tab" data-toggle="tab">references</a>
+        <a class="nav-link text-secondary" href="#profile" role="tab" data-toggle="tab">profile</a>
       </li>
     </ul>
   </div>
@@ -84,7 +84,7 @@
 
     <!-- Tab panes -->
     <div class="tab-content">
-      <div role="tabpanel" class="tab-pane fade in active" id="home">
+      <div role="tabpanel" class="tab-pane fade in active" id="feed">
         <div class="card mt-3">
           <div class="card-horizontal">
             <img class="card-img w-50" src="../img/1280px-Prague_Skyline.jpg" alt="Card image cap">
@@ -94,84 +94,11 @@
           </div>
         </div>
       </div>
-      <div role="tabpanel" class="tab-pane fade" id="buzz">bbb</div>
-      <div role="tabpanel" class="tab-pane fade" id="references">ccc</div>
+      <div role="tabpanel" class="tab-pane fade" id="inspect"></div>
+      <div role="tabpanel" class="tab-pane fade" id="profile"></div>
     </div>
   </div>
 
-    <!--<div class="container" id="menu">
-      <div style="display: block!important"><h2>Dynamic Tabs</h2>
-
-      </div>
-      <ul class="nav nav-tabs" style="display: block">
-        <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
-        <li><a data-toggle="tab" href="#menu1">Menu 1</a></li>
-        <li><a data-toggle="tab" href="#menu2">Menu 2</a></li>
-        <li><a data-toggle="tab" href="#menu3">Menu 3</a></li>
-      </ul>
-
-      <div class="tab-content">
-        <div id="home" class="tab-pane fade in active">
-          <div class="container-fluid">
-            <div class="row">
-                <div class="col-12 mt-3">
-                    <div class="card">
-                        <div class="card-horizontal">
-                            <div class="img-square-wrapper">
-                                <img class="img-fluid" src="http://via.placeholder.com/300x180" alt="Card image cap">
-                            </div>
-                            <div class="card-body">
-                                <h4 class="card-title">Card title</h4>
-                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <small class="text-muted">Last updated 3 mins ago</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        </div>
-        <div id="menu1" class="tab-pane fade">
-          <h3>Menu 1</h3>
-          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-        </div>
-        <div id="menu2" class="tab-pane fade">
-          <h3>Menu 2</h3>
-          <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
-        </div>
-        <div id="menu3" class="tab-pane fade">
-          <h3>Menu 3</h3>
-          <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-        </div>
-      </div>
-    </div>-->
-<!-- <div id="sidecard" class="container-fluid">
-  <div class="row">
-      <div class="col-12 mt-3">
-          <div class="card">
-              <div class="card-horizontal">
-                  <div class="">
-                      <img class="img-thumbnail" src="./img/1280px-Prague_Skyline.jpg" alt="Card image cap">
-                  </div>
-                  <div class="card-body">
-                      <h4 class="card-title">Card title</h4>
-                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  </div>
-              </div>
-              <div class="card-footer">
-                  <small class="text-muted">Last updated 3 mins ago</small>
-              </div>
-          </div>
-      </div>
-  </div>
-</div>-->
-
-    <!--<button style="width: 300px; height: 20px" onclick="createMode()">create itinerary mode</button>
-    <button style="width: 300px; height: 20px" onclick="ldItinerary()">load itinerary</button>
-    <button style="width: 300px; height: 20px" onclick="createPoint()">create point</button>
-    <button style="width: 300px; height: 20px" onclick="populateCards(0)">cardtest</button>-->
     <script type="text/javascript" src="./navigator/artyom.window.min.js"></script>
     <script type="text/javascript" src="./wikipedia/wikipedia.js"></script>
     <script type="text/javascript" src="./leaflet/Leaflet.Control.Custom.js"></script>

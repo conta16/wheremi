@@ -168,6 +168,9 @@ function createMode(){
 		pointsOfInterest.removeAllMarkers();
 		itinerary.setWaypoints([]);
 		map.on('click', (e) => {
+			pointsOfInterest.loadPoints();
+			map.on('zoomend', loadPoints);
+			map.on('drag', loadPoints);
 			if (itinerary.getBlock()) itinerary.setBlock(0);
 			else {
 				e.latLng = e.latlng;
@@ -179,6 +182,7 @@ function createMode(){
 		itinerary.setMode(!mode);
 		map.off('click');
 		itinerary.setWaypoints([]);
+
 		pointsOfInterest.loadPoints();
 		map.on('zoomend', loadPoints);
 		map.on('drag', loadPoints);
