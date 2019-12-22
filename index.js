@@ -7,6 +7,7 @@ const url = require('url');
 var crypto = require('crypto');
 var path = require('path');
 var StrategyGoogle = require('passport-google-oauth20').Strategy;
+var fs = require('fs');
 
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
@@ -604,15 +605,24 @@ app.post('/', function (req, res){
         var label = JSON.parse(req.body.label);
         var waypoints = JSON.parse(req.body.waypoints);
         var route = JSON.parse(req.body.route);
+	//var regex = /^data:.+\/(.+);base64,(.*)$/;
 
-        /*var waypoints = JSON.parse(req.body.waypoints);
+	//var data_url = [];
 
-        for (var i=0; i<req.body.length; i++){
-		obj.waypoints.push({"lat": waypoints[i].lat, "lng": waypoints[i].lng});
-        }*/
-	for (var i in waypoints)
+	for (var i in waypoints){
 		if (i == 0) waypoints[i].startItinerary = true;
 		else waypoints[i].startItinerary = false;
+		/*for (var j in waypoints[i].img){
+			var matches = waypoints[i].img[j].match(regex);
+			var ext = matches[1];
+			var base64_data = matches[2];
+			var buffer = new Buffer(base64_data, 'base64');
+			fs.writeFile(__dirname + '/uploads', buffer, function (err) {
+				if (err) throw err;
+  				console.log("success");
+			});
+		}*/
+	}
 	MongoClient.connect(urldb, {useUnifiedTopology: true}, async function(err,db){
 		if (err) throw err;
 	        var tmp = {
@@ -703,7 +713,7 @@ app.use('/upload', function(req, res, next){
 });
 
 
-app.listen(3000, function(){
+app.listen(3000,'0.0.0.0', function(){
 	console.log('server listening on 3000...');
 });
 

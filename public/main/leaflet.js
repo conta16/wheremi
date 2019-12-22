@@ -18,7 +18,7 @@ map.on('drag', function() {
 	map.panInsideBounds(bound, { animate: false });
 });
 
-Paul=new Artyom()
+Paul=new Artyom();
 
 Paul.initialize({
 	lang: 'en', //todo: change language based on location or user preferences
@@ -32,6 +32,54 @@ Paul.initialize({
 	// e.g to trigger Good Morning, you need to say "Jarvis Good Morning"
 	name: "Paul"
 });
+
+var itineraryHTML = '<div id="carouselExampleIndicators" class="carousel slide mb-1 mt-1" data-ride="carousel">'+
+'<div class="carousel-inner w-100" style="height: 300px !important"></div>'+
+'<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">'+
+  '<span class="carousel-control-prev-icon" aria-hidden="true"></span>'+
+  '<span class="sr-only">Previous</span>'+
+'</a>'+
+'<a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">'+
+  '<span class="carousel-control-next-icon" aria-hidden="true"></span>'+
+  '<span class="sr-only">Next</span>'+
+'</a>'+
+'</div>'+
+
+'<form action="//jquery-file-upload.appspot.com/" method="post" enctype="multipart/form-data" id="exportisexcel" class="form-horizontal">'+
+'<div class="form-group">'+
+
+  '<div class="panel-body">'+
+	  '<div class="filesloader-wrap">'+
+			  '<div class="fileupload-buttonbar">'+
+					'<span class="btn btn-primary fileinput-button">'+
+						'<i class="fa fa-plus"></i>'+
+						'<span>Add files...</span>'+
+						'<input id="f" type="file" multiple/>'+
+					'</span>'+
+			  '</div>'+                 
+	  '</div>'+
+  '</div>'+
+
+'</div>'+
+
+'<div class="form-group">'+
+  '<label for="title">Title:</label>'+
+  '<textarea class="form-control" id="title"></textarea>'+
+'</div>'+
+
+'<div class="form-group">'+
+  '<label for="description">Description:</label>'+
+  '<textarea class="form-control" id="description" rows="3"></textarea>'+
+'</div>'+
+'</form>';
+
+var cardHTML = '<div class="card mt-3">'+
+'<div class="card-horizontal">'+
+  '<img class="card-img w-50" src="" alt="Card image cap">'+
+  '<div class="card-body overflow-auto">'+
+  '</div>'+
+'</div>'+
+'</div>';
 
 //////////////// DAVIDE - locate control ////////////
 
@@ -155,36 +203,6 @@ $(document).ready(function() {
 
 	//$('#fileupload').fileupload({ dataType: 'json' });
 
-
-	$('#f').change(function () {
-		if (this.files.length > 0) {
-
-			$.each(this.files, function (index, value) {
-				var reader = new FileReader();
-
-				reader.onload = function (e) {
-					//var img = new Image();
-					var slideItem;
-					var indicator;
-					if (index == 0){
-						slideItem = "<div class='carousel-item active'><img class='d-inline-block w-100' style='height:300px' src='"+e.target.result+"' alt=''></div>";
-						//indicator = "<li data-target='#carouselExampleIndicators' data-slide-to='0' style='height: 300px' class='active'></li>";
-					}
-					else{
-						slideItem = "<div class='carousel-item'><img class='d-inline-block w-100' src='"+e.target.result+"' alt=''></div>";
-						//indicator = "<li data-target='#carouselExampleIndicators' data-slide-to='"+index+"' class=''></li>";
-					}
-					//img.src = e.target.result;
-
-					//img.setAttribute('style', 'width:100%; height: 30%');    // you can adjust the image size by changing the width value. 
-					$('.carousel-inner').append(slideItem);
-					//$('.carousel-indicators').append(indicator);
-				};
-				reader.readAsDataURL(this);
-			});
-		}
-	});
-
 	map.on('zoomend', loadPoints);
 	
 	map.on('drag', loadPoints);
@@ -206,11 +224,22 @@ function createMode(){
 			if (itinerary.getBlock()) itinerary.setBlock(0);
 			else {
 				e.latLng = e.latlng;
+				var waypoints = itinerary.getWaypoints();
+				/*if ($('#title')[0]) {
+					waypoints[waypoints.length-1].title = $("#title").val();
+					waypoints[waypoints.length-1].description = $("#description").val();
+					for (var i in $('.carousel-item')){
+						if ($('.carousel-item img')[0]) waypoints[waypoints.length-1].img.push($('.carousel-item img').eq(i).attr("src"));
+					}
+				}*/
+				//$('#inspect').html(itineraryHTML);
 				itinerary.pushWaypoints([e.latLng]);
+				itinerary.c = true;
 			}
 		});
 	}
 	else{
+		$('#inspect').html("");
 		itinerary.setMode(!mode);
 		map.off('click');
 		itinerary.setWaypoints([]);
@@ -221,6 +250,7 @@ function createMode(){
 	}
 }
 function ldItinerary(){
+	$('#inspect').html("");
 	itinerary.postItineraryToDB("prova");
 	itinerary.setWaypoints([]);
 }
@@ -269,166 +299,42 @@ function eventFire(el, etype){
 	}
   }
 
-  /*(function() {
-	'use strict';
-	var FileSelect, GenerateNoty, tplJs;
-  
-	tplJs = (function() {
-	  function tplJs(_at_id) {
-		this.id = _at_id;
-		this.source = $(this.id).html();
-		this.template = Handlebars.compile(this.source);
-	  }
-  
-	  tplJs.prototype.tplLoad = function(context) {
-		return this.template(context);
-	  };
-  
-	  return tplJs;
-  
-	})();
-  
-	GenerateNoty = (function() {
-	  function GenerateNoty() {
-		this.theme = 'bootstrapTheme';
-		this.animat = {
-		  open: 'animated bounceInRight',
-		  close: 'animated bounceOutRight',
-		  easing: 'swing',
-		  speed: 500
-		};
-	  }
-  
-	  GenerateNoty.prototype.NotyTime = function(text, type, maxVisible, layout, timeOut) {
-		var _self;
-		if (maxVisible == null) {
-		  maxVisible = 4;
-		}
-		if (layout == null) {
-		  layout = 'topRight';
-		}
-		if (timeOut == null) {
-		  timeOut = 3000;
-		}
-		_self = this;
-		return new Noty({
-		  text: text,
-		  type: type,
-		  dismissQueue: true,
-		  progressBar: true,
-		  layout: layout,
-		  timeout: timeOut,
-		  closeWith: ['click'],
-		  theme: _self.theme,
-		  maxVisible: maxVisible,
-		  animation: _self.animat
-		}).show();
-	  };
-  
-	  GenerateNoty.prototype.NotyBtn = function(text, type, btnOk, btnCancel, layout) {
-		var _self;
-		if (layout == null) {
-		  layout = 'topRight';
-		}
-		_self = this;
-		return new Noty({
-		  text: text,
-		  type: type,
-		  theme: _self.theme,
-		  layout: layout,
-		  buttons: [btnOk, btnCancel]
-		});
-	  };
-  
-	  return GenerateNoty;
-  
-	})();
-  
-	FileSelect = (function() {
-	  FileSelect.prototype.ValidFile = ['XLS', 'XLSX', 'CSV'];
-  
-	  function FileSelect(_at_tag) {
-		var _self;
-		this.tag = _at_tag;
-		_self = this;
-		$(this.tag).fileupload({
-		  acceptFileTypes: /(\.|\/)(xls?x|csv)$/i,
-		  filesContainer: $('.files'),
-		  uploadTemplate: function(o) {
-			var rows;
-			rows = $();
-			$.each(o.files, function(index, file) {
-			  var data, row, tpl;
-			  tpl = new tplJs('#template-upload');
-			  data = {
-				o: o,
-				file: file
-			  };
-			  row = tpl.tplLoad(data);
-			  return rows = rows.add(row);
-			});
-			return rows;
-		  },
-		  downloadTemplate: function(o) {
-			var rows;
-			rows = $();
-			$.each(o.files, function(index, file) {
-			  var data, row, tpl;
-			  tpl = new tplJs('#template-download');
-			  data = {
-				o: o,
-				file: file,
-				size: _self.formatFileSize(file.size)
-			  };
-			  row = tpl.tplLoad(data);
-			  return rows = rows.add(row);
-			});
-			return rows;
-		  },
-		  progress: function(e, data) {
-			var lineload;
-			lineload = parseInt(data.loaded / data.total * 100, 10);
-			if (data.context) {
-			  data.context.each(function() {
-				console.log(lineload);
-				$(this).find('.progress').attr('aria-valuenow', lineload).css('width', lineload + '%').text(lineload + '%');
-			  });
-			}
-		  },
-		  success: function(data) {
-			var message;
-			message = new GenerateNoty;
-			console.log(data);
-			return message.NotyTime('<div class="activity-item"><div class="activity"><i class="fa fa-lock text-success"></i> <span>File ' + " " + ' upload!</span></div> </div>', 'success');
-		  },
-		  error: function(jqXHR, textStatus, errorThrown) {
-			console.log(jqXHR);
-			console.log(textStatus);
-			console.log(errorThrown);
-		  }
-		});
-	  }
-  
-	  FileSelect.prototype.formatFileSize = function(bytes) {
-		if (typeof bytes !== 'number') {
-		  return '';
-		}
-		if (bytes >= 1000000000) {
-		  return (bytes / 1000000000).toFixed(2) + ' GB';
-		}
-		if (bytes >= 1000000) {
-		  return (bytes / 1000000).toFixed(2) + ' MB';
-		}
-		return (bytes / 1000).toFixed(2) + ' KB';
-	  };
-  
-	  return FileSelect;
-  
-	})();
-  
-	$(document).ready(function() {
-	  var SelectFile;
-	  SelectFile = new FileSelect('#exportisexcel');
+  function loadMenu(waypoints, index, write_permit = true){
+	$('#inspect').html(itineraryHTML);
+	if (!write_permit) {$('textarea').attr('readonly','readonly'); $("#f").attr("disabled", "disabled");}
+  	var slideItem;
+  	for (var i in waypoints[index].img){
+	  if (i==0) slideItem = "<div class='carousel-item active'><img class='d-inline-block w-100' style='height:300px;' src='"+waypoints[index].img[0]+"' alt=''></div>";
+	  else slideItem = "<div class='carousel-item'><img class='d-inline-block w-100' style='height:300px;' src='"+waypoints[index].img[i]+"' alt=''></div>";
+	  $('.carousel-inner').append(slideItem);
+  	}
+  	$('#title').val(waypoints[index].title);
+  	$('#description').val(waypoints[index].description);
+  	$('#title').on('input', function(){
+	  waypoints[index].title = $('#title').val();
+ 	});
+  	$('#description').on('input', function(){
+	  waypoints[index].description = $('#description').val();
+  	});
+  	document.addEventListener('loadimg', (event) => {
+	  var fd = new FormData();  
+	  fd.append('file', event.detail.files[0]); 
+	  console.log(event.detail.files[0]);
+	  console.log(fd);
+	  waypoints[index].img.push(event.detail.src);
+	  waypoints[index].files.push(event.detail.files);
 	});
-  
-	}).call(this);*/
+  }
+  var num_cards = 0;
+
+  function clearCards(){
+	  $('#feed').html("");
+	  num_cards = 0;
+  }
+
+  function loadCard(waypoints, index){
+	$('#feed').html($('#feed').html()+cardHTML);
+	num_cards++;
+	$('div.card:nth-child('+num_cards+') img').attr('src', waypoints[index].img[0]);
+	$('div.card:nth-child('+num_cards+') .card-body').text(waypoints[index].title);
+  }

@@ -6,7 +6,7 @@ class Itinerary {
         this.id = "";
         this.childrenId = [];
         this.markers = [];
-        this.url = "http://localhost:3000";
+        this.url = "http://192.168.1.10:3000";
         this.control = undefined;
         this.mode = 0; //0 when in visit mode, 1 when in create itinerary mode
         this.block = 0; //to prevent click event after drag event
@@ -23,6 +23,27 @@ class Itinerary {
             document.dispatchEvent(f);
         });
         this.control.addTo(map);
+
+        $(document).on('change','#f', function () {
+            var files = this.files;
+            if (this.files.length > 0) {
+    
+                $.each(this.files, function (index, value) {
+                    var reader = new FileReader();
+    
+                    reader.onload = function (e) {
+                        var event = new CustomEvent('loadimg', { 'detail': {'files': files, 'src': e.target.result}});
+                        var slideItem;
+                        if ($('.carousel-item')[0]) slideItem = "<div class='carousel-item'><img class='d-inline-block w-100' style='height:300px;' src='"+e.target.result+"' alt=''></div>";
+                        else slideItem = "<div class='carousel-item active'><img class='d-inline-block w-100' style='height:300px;' src='"+e.target.result+"' alt=''></div>";
+                        $('.carousel-inner').append(slideItem);
+                        document.dispatchEvent(event);
+                    };
+    
+                    reader.readAsDataURL(this);
+                });
+            }
+        });
     }
 
     pushWaypoints(waypoints, point){
@@ -34,6 +55,9 @@ class Itinerary {
                 },
                 latLng: Object.assign({},waypoints[i]),
                 _initHooksCalled : true,
+                files: [],
+                img: [],
+                title: "",
                 description: ""
             }
             if (i==0 && point) obj._id = point._id;
@@ -47,11 +71,15 @@ class Itinerary {
         this.pushWaypoints(waypoints);
     }
 
-    getWaypoints(){
+    getLatlngs(){
         var tmp = [];
         for (var i in this.waypoints)
             tmp.push(this.waypoints[i].latLng);
         return tmp.slice(0);
+    }
+
+    getWaypoints(){
+        return this.waypoints;
     }
 
     removeWaypoints(pos, delta){
@@ -145,6 +173,7 @@ class Itinerary {
                 label: JSON.stringify(parentThis.label),
                 waypoints: JSON.stringify(parentThis.waypoints),
                 route: JSON.stringify(parentThis.route)
+
             },
             async: true,
             success: function(){
@@ -175,7 +204,7 @@ class Itinerary {
 
             parentThis.markers[index].on('dragend', (e) => {
                 parentThis.removeWaypoints(index,1);
-                var tmp = parentThis.getWaypoints();
+                var tmp = parentThis.getLatlngs();
                 tmp.splice(index,0,e.target._latlng);
                 parentThis.setWaypoints(tmp);
                 //parentThis.showOnMap(false);
@@ -184,16 +213,34 @@ class Itinerary {
                 }, 500); //serious doubts
             });
             parentThis.markers[index].on('click', (e) => {
-                
-            });
-            /*parentThis.markers[index].bindPopup(parentThis.waypoints[index].description.toString());
-            parentThis.markers[index].on('mouseover', () => {
-                parentThis.markers[index].openPopup();
-            });
-            parentThis.markers[index].on('mouseout', () => {
-                parentThis.markers[index].closePopup();
-            });*/
 
+                var waypoints = parentThis.waypoints;
+                if (parentThis.mode) loadMenu(waypoints, index);
+                else loadMenu(waypoints, index, false);
+                /*$('#inspect').html(itineraryHTML);
+                var slideItem;
+                for (var i in waypoints[index].img){
+                    if (i==0) slideItem = "<div class='carousel-item active'><img class='d-inline-block w-100' style='height:300px;' src='"+waypoints[index].img[0]+"' alt=''></div>";
+                    else slideItem = "<div class='carousel-item'><img class='d-inline-block w-100' style='height:300px;' src='"+waypoints[index].img[i]+"' alt=''></div>";
+                    $('.carousel-inner').append(slideItem);
+                }
+                $('#title').val(waypoints[index].title);
+                $('#description').val(waypoints[index].description);
+                $('#title').on('input', function(){
+                    waypoints[index].title = $('#title').val();
+                });
+                $('#description').on('input', function(){
+                    waypoints[index].description = $('#description').val();
+                });
+                document.addEventListener('loadimg', (event) => {
+                    var fd = new FormData();  
+                    fd.append('file', event.detail.files[0]); 
+                    console.log(event.detail.files[0]);
+                    console.log(fd);
+                    waypoints[index].img.push(event.detail.src);
+                    waypoints[index].files.push(event.detail.files);
+                }, false);*/
+            });
         });
     }
 
