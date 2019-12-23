@@ -47,11 +47,6 @@ app.use(function(req, res, next) {
   next();
 });
 
-/* MONGOOSE SETUP */
-
-mongoose.connect('mongodb://localhost:27017/sitedb');
-
-
 //////////////////////////////
 const mailjet = require ('node-mailjet').connect('187677886ad82be8f094bad7c90a2226', '62d76471b6fe4669d28ac46ff2f539b4')
 
@@ -402,7 +397,7 @@ app.post('/passwordrecover', function(req, res){
       return "Sorry, we are in trouble with our database";
     }
     if (!user || user.password==""){
-      res.redirect("/passwordrecover?success=false");
+      return res.redirect(url.format({pathname: "/passwordrecover", query: {success: false}}));
     }
     if (user){
       PasswordsBeingUpdated.deleteOne({userid: user._id}, function(err, data){
@@ -425,7 +420,6 @@ app.post('/passwordrecover', function(req, res){
       })
     }
   });
-  res.render('passwordrecover');
 });
 
 // app.get('/passwordtoken', function(req,res){
@@ -437,6 +431,9 @@ app.get('/passwordtoken', function(req, res){
   if (!req.query.user || !req.query.token){
     res.redirect("/");
   }
+	res.render("setnewpassword");
+});
+/*
   PasswordsBeingUpdated.findOne({userid: req.query.user, passwordToken: req.query.token}, function(err, data){
     console.log(data);
     if (err){
@@ -460,7 +457,7 @@ app.get('/passwordtoken', function(req, res){
     }
   })
 });
-
+*/
 app.get('/setnewpassword', function (req,res){
   res.render('setnewpassword');
 })
@@ -716,6 +713,3 @@ app.use('/upload', function(req, res, next){
 app.listen(3000,'0.0.0.0', function(){
 	console.log('server listening on 3000...');
 });
-
-
-

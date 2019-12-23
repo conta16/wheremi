@@ -14,7 +14,7 @@ class PointOfInterest{
         this.searchPoint = {};
         this.searchPointMarker = {}
         this.maxPoints = maxPoints;
-        this.url = "http://192.168.1.10:3000";
+        this.url = "http://localhost:3000";
     }
 
     getItinerary(){
