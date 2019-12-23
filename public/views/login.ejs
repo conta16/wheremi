@@ -124,6 +124,14 @@ body {
   padding-right: 0%;
   padding-left: 35%;
 }
+.btn {
+  font-size: 80%;
+  border-radius: 5rem;
+  letter-spacing: .1rem;
+  font-weight: bold;
+  padding: 1rem;
+  transition: all 0.2s;
+}
 </style>
 <body>
 	<div class="container">
@@ -134,12 +142,12 @@ body {
 			  <h5 class="card-title text-center">Sign In</h5>
 				<form class="form-signin" action="/login" method="post">
 				<div class="form-label-group">
-				  <input type="text" id="inputEmail" class="form-control" placeholder="Username" required autofocus name ="username">
+				  <input type="text" id="inputEmail" class="form-control" placeholder="Username" autofocus name ="username">
 				  <label for="inputEmail">Username</label>
 				</div>
   
 				<div class="form-label-group">
-				  <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name ="password">
+				  <input type="password" id="inputPassword" class="form-control" placeholder="Password" name ="password">
 				  <label for="inputPassword">Password</label>
 				</div>
   
@@ -147,12 +155,12 @@ body {
 				  <input type="checkbox" class="custom-control-input" id="customCheck1">
 				  <label class="custom-control-label" for="customCheck1">Remember password</label>
 				</div>--><!--tolta perchè non so se la implementiamo (checkbox "remember pw")-->
-				<button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign in</button>
-				<button class="btn btn-lg btn-primary btn-block text-uppercase sign-up" type="submit" a href="/register">Sign up</button><!--controlla l' a href se funziona-->
+        <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign in</button>
+        </form>
+				<a href="/register"><button class="btn btn-lg btn-primary btn-block text-uppercase sign-up" >Sign up</button></a><!--controlla l' a href se funziona-->
 				<hr class="my-4">
 				<button class="btn btn-lg btn-google btn-block text-uppercase" type="submit"><i class="fab fa-google mr-2"></i> Sign in with Google</button>
 				<button class="btn btn-lg btn-facebook btn-block text-uppercase" type="submit"><i class="fab fa-facebook-f mr-2"></i> Sign in with Facebook</button>
-			  </form>
 			</div>
 		  </div>
 		</div>
