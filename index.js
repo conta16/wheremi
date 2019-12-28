@@ -121,9 +121,14 @@ var sha512 = function(password, salt){
 // (`username` and `password`) submitted by the user.  The function must verify
 // that the password is correct and then invoke `cb` with a user object, which
 // will be set at `req.user` in route handlers after authentication.
-passport.use(new Strategy(
+passport.use(new Strategy({
+    usernameField: 'email',
+    passwordField: 'password'
+  },
   function(username, password, cb) {
-    UserDetails.findOne({username: username}, function(err, user) {
+		console.log(username);
+    UserDetails.findOne({email: username}, function(err, user) {
+			console.log(user);
       if (err) { return cb(err); }
       if (!user) { return cb(null, false); }
       if (user.password != sha512(password, user.salt).passwordHash) { return cb(null, false); }
@@ -300,6 +305,7 @@ app.get('/login',
   });
 
 app.post('/login', function (req, res, next){
+	console.log(req.body);
   passport.authenticate('local', function (err, user, info){
     if (err)
       return next(err);
@@ -394,6 +400,7 @@ app.post('/passwordrecover', function(req, res){
   console.log(req.body);
   UserDetails.findOne({email: req.body.email}, function(err, user){
     if (err){
+			console.log(err);
       return "Sorry, we are in trouble with our database";
     }
     if (!user || user.password==""){
@@ -412,8 +419,8 @@ app.post('/passwordrecover', function(req, res){
               return "Sorry, we are in trouble with our database";
             }
             if (data){
-              sendmail("noreply@site181951.tw.cs.unibo.it", "Where M I", user.email, user.name+" "+user.surname, "Password reset link", "","<h3>Dear "+user.name+",clicking the link below you'll be able to reset your password:<br /> <a href='"+baseURL+"passwordtoken?user="+user._id+"&token="+data.passwordToken+"'>"+baseURL+"passwordtoken?user="+user._id+"&token="+data.passwordToken+"</a>");
-              return;
+              sendmail("noreply@site181951.tw.cs.unibo.it", "Where M I", user.email, user.name+" "+user.surname, "Password reset link", "","<h3>Dear "+user.name+",clicking the link below you'll be able to reset your password:<br /> <a href='"+baseURL+"setnewpassword?user="+user._id+"&token="+data.passwordToken+"'>"+baseURL+"setnewpassword?user="+user._id+"&token="+data.passwordToken+"</a>");
+              return res.render("passwordrecover");
             }
           });
         }
@@ -459,8 +466,28 @@ app.get('/passwordtoken', function(req, res){
 });
 */
 app.get('/setnewpassword', function (req,res){
+	if (!req.query.user || !req.query.token)
+		res.redirect("/");
   res.render('setnewpassword');
-})
+});
+
+app.post('/setnewpassword', function(req, res){
+	console.log(req.body);
+	PasswordsBeingUpdated.deleteOne({userid: req.body.userid, passwordToken: req.body.passwordToken}, function(err, data){
+		if (err)
+			return "Sorry, we are in trouble with our database";
+		else {
+			var salt=genRandomString(32);
+			UserDetails.findOneAndUpdate({_id: req.body.userid}, {password: sha512(req.body.password, salt).passwordHash, salt: salt}, function(err, data){
+				if (err){
+					console.log("Sorry, we are in trouble with our database");
+				}
+				return res.redirect("/login");
+			});
+			console.log(data);
+		}
+});
+});
 
 app.get('/profile',
   require('connect-ensure-login').ensureLoggedIn(),
