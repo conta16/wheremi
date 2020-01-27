@@ -1,3 +1,5 @@
+var screen = 1; //whether map or menu is shown in small devices
+
 var map = L.map('map', {
     // Set latitude and longitude of the map center (required)
     center: [44.7,10.633333],
@@ -144,7 +146,7 @@ L.control.custom({
 
 L.control.custom({
 	position: 'topleft',
-	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/create_itin.svg" width="26px" height="26px"></img></a>',
+	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/travel.png" width="26px" height="26px"></img></a>',
 	classes : 'leaflet-control leaflet-bar',
 	events : {
 		click : function(e){
@@ -156,7 +158,7 @@ L.control.custom({
 
 L.control.custom({
 	position: 'topleft',
-	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/load.svg" width="26px" height="26px"></img></a>',
+	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/upload.png" width="26px" height="26px"></img></a>',
 	classes : 'leaflet-control leaflet-bar',
 	events : {
 		click : function(e){
@@ -166,9 +168,9 @@ L.control.custom({
 }).addTo(map);
 
 
-L.control.custom({
+/*L.control.custom({
 	position: 'topleft',
-	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/create_point.svg" width="26px" height="26px"></img></a>',
+	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/create_point.png" width="26px" height="26px"></img></a>',
 	classes : 'leaflet-control leaflet-bar',
 	events : {
 		click : function(e){
@@ -187,7 +189,7 @@ L.control.custom({
 			ldPoint();
 		},
 	}
-}).addTo(map);
+}).addTo(map);*/
 
 
 ////////////////////////////
@@ -217,14 +219,26 @@ function createMode(){
 		map.off('drag', loadPoints);
 		pointsOfInterest.removeAllMarkers();
 		itinerary.setWaypoints([]);
+		L.control.custom({
+			position: 'topleft',
+			content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/load_point.svg" width="26px" height="26px"></img></a>',
+			classes : 'leaflet-control leaflet-bar',
+			events : {
+				click : function(e){
+					itinerary.removePoint();
+
+				},
+			}
+		}).addTo(map);
 		map.on('click', (e) => {
-			pointsOfInterest.loadPoints();
-			map.on('zoomend', loadPoints);
-			map.on('drag', loadPoints);
-			if (itinerary.getBlock()) itinerary.setBlock(0);
-			else {
-				e.latLng = e.latlng;
-				var waypoints = itinerary.getWaypoints();
+			if (itinerary.getMode() != 2){
+				pointsOfInterest.loadPoints();
+				map.on('zoomend', loadPoints);
+				map.on('drag', loadPoints);
+				if (itinerary.getBlock()) itinerary.setBlock(0);
+				else {
+					e.latLng = e.latlng;
+					var waypoints = itinerary.getWaypoints();
 				/*if ($('#title')[0]) {
 					waypoints[waypoints.length-1].title = $("#title").val();
 					waypoints[waypoints.length-1].description = $("#description").val();
@@ -233,8 +247,9 @@ function createMode(){
 					}
 				}*/
 				//$('#inspect').html(itineraryHTML);
-				itinerary.pushWaypoints([e.latLng]);
-				itinerary.c = true;
+					itinerary.pushWaypoints([e.latLng]);
+					itinerary.c = true;
+				}
 			}
 		});
 	}
@@ -251,11 +266,12 @@ function createMode(){
 }
 function ldItinerary(){
 	$('#inspect').html("");
-	itinerary.postItineraryToDB("prova");
+	if (itinerary.getWaypoints().length > 1) itinerary.postItineraryToDB("prova");
+	else itinerary.postPoint();
 	itinerary.setWaypoints([]);
 }
 
-function createPoint(){
+/*function createPoint(){
 	var mode = itinerary.getMode();
 	if (mode){
 		map.off('click');
@@ -266,16 +282,16 @@ function createPoint(){
 	map.on('click', (e) => {
 		pointsOfInterest.addPoint(e.latlng);
 	});
-}
+}*/
 
 function apply(){
 	pointsOfInterest.addedPoint.description = $("#popupInput").val();
 	console.log($("#popupInput"));
 }
 
-function ldPoint(){
+/*function ldPoint(){
 	pointsOfInterest.postAddedPoint();
-}
+}*/
 //var collapsibleElem = document.querySelector('.collapsible');
 //var collapsibleInstance = M.Collapsible.init(collapsibleElem, options);
 
@@ -337,4 +353,18 @@ function eventFire(el, etype){
 	num_cards++;
 	$('div.card:nth-child('+num_cards+') img').attr('src', waypoints[index].img[0]);
 	$('div.card:nth-child('+num_cards+') .card-body').text(waypoints[index].title);
+  }
+
+  function change(){
+	if (!screen){
+		$('body').addClass("mp");
+		$('body').removeClass("me");
+		screen = 1;
+	}
+	else{
+		$('body').addClass("me");
+		$('body').removeClass("mp");
+		screen = 0;
+	}
+	console.log("im in screen");
   }

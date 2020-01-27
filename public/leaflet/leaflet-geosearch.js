@@ -501,7 +501,9 @@ const Control = {
       }*/
       this.options.provider.itinerary.getRouteFromDB(result._id)
       .then((data) => {
-        this.options.provider.itinerary.setRoute(data.route);
+        console.log("this is data");
+        console.log(data);
+        this.options.provider.itinerary.setRoute(data);
       })
       .catch(() => {});
     }

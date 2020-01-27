@@ -40,15 +40,19 @@
 
     <title>wheremi</title>
   </head>
-  <body onload="handleOnLoad()">
+  <body onload="handleOnLoad()" class="mp">
     <noscript>
       <strong>We're sorry but our website doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
-    <div id="map-wrapper" style="position:fixed">
-      <div id="map"></div>
+
+    <div id="map-wrapper" style="position:fixed; text-align:center; ">
+      <div id="map">
+      </div>
+      <button class="btn btn-primary" id="invisible" type="button" onclick="change()">change</button>
+
     </div>
 
-    <div class="container-fluid" id="menu">
+    <div class="container-fluid" id="menu" style="text-align: center">
       <div class="row mt-2 mb-2">
       <div class="col">
         <div class="float-right">
@@ -72,6 +76,7 @@
     </ul>
   </div>
       </div>
+      <button class="btn btn-primary" id="invisible2" type="button" onclick="change()">change</button>
 
     <!-- Tab panes -->
     <div class="tab-content">
@@ -83,7 +88,6 @@
       <div role="tabpanel" class="tab-pane fade in" id="profile"></div>
     </div>
     </div>
-
 
 
     <script type="text/javascript" src="./navigator/artyom.window.min.js"></script>

@@ -6,9 +6,9 @@ class Itinerary {
         this.id = "";
         this.childrenId = [];
         this.markers = [];
-        this.url = "http://192.168.1.10:3000";
+        this.url = "http://localhost:3000";
         this.control = undefined;
-        this.mode = 0; //0 when in visit mode, 1 when in create itinerary mode
+        this.mode = 0; //0 when in visit mode, 1 when in create itinerary mode, 2 when in delete mode
         this.block = 0; //to prevent click event after drag event
         this.init_itinerary();
     }
@@ -48,8 +48,9 @@ class Itinerary {
 
     pushWaypoints(waypoints, point){
         var obj;
+        console.log(point);
         for (var i in waypoints){
-            obj = {                
+            if (!point) obj = {                
                 options : {
                     "allowUTurn" : false
                 },
@@ -58,7 +59,11 @@ class Itinerary {
                 files: [],
                 img: [],
                 title: "",
-                description: ""
+                description: "",
+                write_permit: true
+            }
+            else {
+                obj = point;
             }
             if (i==0 && point) obj._id = point._id;
             this.waypoints.push(Object.assign({}, obj));
@@ -82,15 +87,15 @@ class Itinerary {
         return this.waypoints;
     }
 
-    removeWaypoints(pos, delta){
-        this.waypoints.splice(pos, delta);
+    removeWaypoint(pos){
+        this.waypoints.splice(pos, 1);
     }
 
     showOnMap(markerUpdate = true){
 
         var tmp = [];
         for (var i in this.waypoints)
-            tmp.push(this.waypoints[i].latLng);
+            tmp.push(this.waypoints[i]);
 
         this.setLabel("");
         this.control.setWaypoints(tmp.slice(0));
@@ -136,7 +141,7 @@ class Itinerary {
         this.control.setAlternatives(this.route);
         var tmp = [];
         for (var i in this.waypoints){
-            tmp.push(this.waypoints[i].latLng);
+            tmp.push(this.waypoints[i]);
         }
 
         this.setMarkers(tmp);
@@ -189,12 +194,19 @@ class Itinerary {
         var parentThis = this;
         //var index = this.markers.length;
         for (var i in waypoints){
+            var icon = L.icon({
+                iconUrl: "./img/itmarker.png",
+                iconSize: [40,40],
+                iconAnchor: [20,40]
+            });
             this.markers[i] = new L.Marker(
-                waypoints[i],
+                waypoints[i].latLng,
                 {
-                    draggable: parentThis.mode? true : false,
+                    icon: icon
                 }
             ).addTo(map);
+            if (parentThis.mode) this.markers[i].dragging.enable();
+            else this.markers[i].dragging.disable();
         }
 
         this.markers.forEach((obj, index) => {
@@ -203,7 +215,7 @@ class Itinerary {
             });
 
             parentThis.markers[index].on('dragend', (e) => {
-                parentThis.removeWaypoints(index,1);
+                parentThis.removeWaypoint(index);
                 var tmp = parentThis.getLatlngs();
                 tmp.splice(index,0,e.target._latlng);
                 parentThis.setWaypoints(tmp);
@@ -213,34 +225,32 @@ class Itinerary {
                 }, 500); //serious doubts
             });
             parentThis.markers[index].on('click', (e) => {
-
                 var waypoints = parentThis.waypoints;
-                if (parentThis.mode) loadMenu(waypoints, index);
-                else loadMenu(waypoints, index, false);
-                /*$('#inspect').html(itineraryHTML);
-                var slideItem;
-                for (var i in waypoints[index].img){
-                    if (i==0) slideItem = "<div class='carousel-item active'><img class='d-inline-block w-100' style='height:300px;' src='"+waypoints[index].img[0]+"' alt=''></div>";
-                    else slideItem = "<div class='carousel-item'><img class='d-inline-block w-100' style='height:300px;' src='"+waypoints[index].img[i]+"' alt=''></div>";
-                    $('.carousel-inner').append(slideItem);
+                if (parentThis.mode && waypoints[index].write_permit == true){
+                    loadMenu(waypoints, index);
                 }
-                $('#title').val(waypoints[index].title);
-                $('#description').val(waypoints[index].description);
-                $('#title').on('input', function(){
-                    waypoints[index].title = $('#title').val();
-                });
-                $('#description').on('input', function(){
-                    waypoints[index].description = $('#description').val();
-                });
-                document.addEventListener('loadimg', (event) => {
-                    var fd = new FormData();  
-                    fd.append('file', event.detail.files[0]); 
-                    console.log(event.detail.files[0]);
-                    console.log(fd);
-                    waypoints[index].img.push(event.detail.src);
-                    waypoints[index].files.push(event.detail.files);
-                }, false);*/
+                else loadMenu(waypoints, index, false);
             });
+        });
+    }
+
+    postPoint(){
+        var parentThis = this;
+        this.waypoints[0].startItinerary = false;
+        $.ajax({
+            url: parentThis.url+"/postAdded",
+            method: "POST",
+            async: true,
+            dataType: "json",
+            data: {
+                point: JSON.stringify(parentThis.waypoints[0])
+            },
+            success: () => {
+                console.log("added point posted successfully");
+            },
+            error: () => {
+                console.log("added point posted unsuccessfully");
+            }
         });
     }
 
@@ -248,6 +258,43 @@ class Itinerary {
         while(this.markers.length > 0){
             map.removeLayer(this.markers[0]);
             this.markers.splice(0,1);
+        }
+    }
+
+    removeMarker(pos){
+        map.removeLayer(this.markers[pos]);
+        this.markers.splice(pos,1);
+    }
+
+    removePoint(){
+        var parentThis = this;
+        var parse = []; //when a marker is deleted, it messes up the events. this fixes it
+        if (this.mode == 1)
+        {
+            this.setMode(2);
+            this.markers.forEach((obj, index) => {
+                parse.push(index);
+                parentThis.markers[index].off('click');
+                parentThis.markers[index].on('click', (e) => {
+                    parentThis.removeWaypoint(parse[index]);
+                    parentThis.removeMarker(parse[index]);
+                    parentThis.showOnMap(false);
+                    for (var i = parse.length-1; i>index; i--) parse[i]--;
+                    parse[index]=-1;
+                });
+
+            });
+        }
+        else {
+            this.setMode(1);
+            this.markers.forEach((obj,index) => {
+                parentThis.markers[index].off('click');
+                parentThis.markers[index].on('click', (e) => {
+                    var waypoints = parentThis.waypoints;
+                    if (parentThis.mode) loadMenu(waypoints, index);
+                    else loadMenu(waypoints, index, false);
+                });
+            });
         }
     }
 
