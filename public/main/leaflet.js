@@ -75,9 +75,9 @@ var itineraryHTML = '<div id="carouselExampleIndicators" class="carousel slide m
 '</div>'+
 '</form>';
 
-var cardHTML = '<div class="card mt-3">'+
+var cardHTML = '<div class="card mt-3" style="height:20%" onclick="cardClicked(this)" data-key="">'+
 '<div class="card-horizontal">'+
-  '<img class="card-img w-50" src="" alt="Card image cap">'+
+  '<img class="card-img w-50" style="height: 200px" src="" alt="Card image cap">'+
   '<div class="card-body overflow-auto">'+
   '</div>'+
 '</div>'+
@@ -167,6 +167,18 @@ L.control.custom({
 	}
 }).addTo(map);
 
+var removeButton = 	L.control.custom({
+	position: 'topleft',
+	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/load_point.svg" width="26px" height="26px"></img></a>',
+	classes : 'leaflet-control leaflet-bar',
+	events : {
+		click : function(e){
+			itinerary.removePoint();
+
+		},
+	}
+});
+
 
 /*L.control.custom({
 	position: 'topleft',
@@ -219,17 +231,7 @@ function createMode(){
 		map.off('drag', loadPoints);
 		pointsOfInterest.removeAllMarkers();
 		itinerary.setWaypoints([]);
-		L.control.custom({
-			position: 'topleft',
-			content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/load_point.svg" width="26px" height="26px"></img></a>',
-			classes : 'leaflet-control leaflet-bar',
-			events : {
-				click : function(e){
-					itinerary.removePoint();
-
-				},
-			}
-		}).addTo(map);
+		removeButton.addTo(map);
 		map.on('click', (e) => {
 			if (itinerary.getMode() != 2){
 				pointsOfInterest.loadPoints();
@@ -258,7 +260,7 @@ function createMode(){
 		itinerary.setMode(!mode);
 		map.off('click');
 		itinerary.setWaypoints([]);
-
+		map.removeControl(removeButton);
 		pointsOfInterest.loadPoints();
 		map.on('zoomend', loadPoints);
 		map.on('drag', loadPoints);
@@ -317,6 +319,12 @@ function eventFire(el, etype){
 
   function loadMenu(waypoints, index, write_permit = true){
 	$('#inspect').html(itineraryHTML);
+	$("a[href='#feed']").removeClass("active");
+	$("a[href='profile']").removeClass("active");
+	$("a[href='#inspect']").addClass("active");
+	$("#feed").removeClass("active show");
+	$("#profile").removeClass("active show");
+	$("#inspect").addClass("active show");
 	if (!write_permit) {$('textarea').attr('readonly','readonly'); $("#f").attr("disabled", "disabled");}
   	var slideItem;
   	for (var i in waypoints[index].img){
@@ -349,10 +357,32 @@ function eventFire(el, etype){
   }
 
   function loadCard(waypoints, index){
-	$('#feed').html($('#feed').html()+cardHTML);
-	num_cards++;
-	$('div.card:nth-child('+num_cards+') img').attr('src', waypoints[index].img[0]);
-	$('div.card:nth-child('+num_cards+') .card-body').text(waypoints[index].title);
+	if (!waypoints.inputWaypoints){
+		$('#feed').html($('#feed').html()+cardHTML);
+		num_cards++;
+		$('div.card:nth-child('+num_cards+') img').attr('data-key', num_cards);
+		if (waypoints[index].img[0]) $('div.card:nth-child('+num_cards+') img').attr('src', waypoints[index].img[0]);
+		else $('div.card:nth-child('+num_cards+') img').attr('src', "./img/Question_Mark.svg");
+		$('div.card:nth-child('+num_cards+') .card-body').text(waypoints[index].title);
+		$('div.card:nth-child('+num_cards+')').click();
+	}
+	else{
+		$('#feed').html($('#feed').html()+cardHTML);
+		num_cards++;
+		$('div.card:nth-child('+num_cards+')').attr('data-key', num_cards);
+		if (waypoints.inputWaypoints[0].img[0]) $('div.card:nth-child('+num_cards+') img').attr('src', waypoints.inputWaypoints[0].img[0]);
+		else $('div.card:nth-child('+num_cards+') img').attr('src', "./img/Question_Mark.svg");
+		$('div.card:nth-child('+num_cards+') .card-body').text(waypoints.inputWaypoints[0].title);
+		/*console.log($('div.card:nth-child('+num_cards+') > div > img'));
+		$('div.card:nth-child('+num_cards+') > div > img').click(function(e){
+			console.log("this"); console.log(this);
+		});*/
+	}
+  }
+
+  function cardClicked(item){
+	var datakey = $(item).attr("data-key");
+	if (datakey) pointsOfInterest.onclick_card(datakey-1);
   }
 
   function change(){

@@ -54,6 +54,7 @@ class PointOfInterest{
                             })
                             .catch(() => {});
                     });
+                    loadCard(parentThis.itineraryStartPoints[index], 0);
                 });
                 parentThis.points.forEach((obj,index) => {
                     if (parentThis.markers[index]) parentThis.markers[index].on('click', () => {
@@ -120,7 +121,11 @@ class PointOfInterest{
             do_nothing = parentThis.check_in_waypoints(len);
             $("#inspect").text(parentThis.points[len].description);
             $("a[href='#feed']").removeClass("active");
+            $("a[href='profile']").removeClass("active");
             $("a[href='#inspect']").addClass("active");
+            $("#feed").removeClass("active show");
+            $("#profile").removeClass("active show");
+            $("#inspect").addClass("active show");
             if (!do_nothing) if (parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.points[len]);
             }
@@ -174,14 +179,37 @@ class PointOfInterest{
             do_nothing = parentThis.check_in_waypoints(len,1);
             $("#inspect").text(parentThis.itineraryStartPoints[len].label);
             $("a[href='#feed']").removeClass("active");
+            $("a[href='profile']").removeClass("active");
             $("a[href='#inspect']").addClass("active");
+            $("#feed").removeClass("active show");
+            $("#profile").removeClass("active show");
+            $("#inspect").addClass("active show");
             if (!do_nothing && parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.itineraryStartPoints[len].inputWaypoints[0]);
             }
         });
         var do_nothing = this.check_in_waypoints(len,1);
         if(!do_nothing) this.itineraryStartMarkers[len].addTo(map);
+    }
 
+    onclick_card(datakey){
+        //var do_nothing;
+        //do_nothing = parentThis.check_in_waypoints(len,1);
+        var parentThis = this;
+        $("#inspect").text(this.itineraryStartPoints[datakey].label);
+        $("a[href='#feed']").removeClass("active");
+        $("a[href='profile']").removeClass("active");
+        $("a[href='#inspect']").addClass("active");
+        $("#feed").removeClass("active show");
+        $("#profile").removeClass("active show");
+        $("#inspect").addClass("active show");
+        this.removeSearchMarker();
+        this.currentItinerary.getRouteFromDB(this.itineraryStartPoints[datakey]._id)
+            .then((data) => {
+                parentThis.currentItinerary.setRoute(data);
+                loadMenu(data.inputWaypoints, data.inputWaypoints.length-1, false);
+            })
+            .catch(() => {});
     }
 
     setWikipediaMarker(latLng){
@@ -209,7 +237,11 @@ class PointOfInterest{
         this.wikipediaMarkers[len].on('click', () => {
             $("#inspect").text(parentThis.wikipediaPoints[len].title.toString());
             $("a[href='#feed']").removeClass("active");
+            $("a[href='profile']").removeClass("active");
             $("a[href='#inspect']").addClass("active");
+            $("#feed").removeClass("active show");
+            $("#profile").removeClass("active show");
+            $("#inspect").addClass("active show");
             if (parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.wikipediaPoints[len]);
             }
@@ -256,7 +288,11 @@ class PointOfInterest{
         this.yt_markers[len].on('click', () => {
             $("#inspect").text(parentThis.yt_points[len].snippet.title.toString());
             $("a[href='#feed']").removeClass("active");
+            $("a[href='profile']").removeClass("active");
             $("a[href='#inspect']").addClass("active");
+            $("#feed").removeClass("active show");
+            $("#profile").removeClass("active show");
+            $("#inspect").addClass("active show");
             if (parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.wikipediaPoints[len]);
             }

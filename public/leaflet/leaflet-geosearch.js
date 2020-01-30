@@ -799,7 +799,7 @@ class ResultList {
     removeClassName(container, 'active');
   }
 
-  onClick (target) {
+  onClick = ({ target } = {}) => {
     const { handleClick } = this.props;
     const { container } = this.elements;
 
@@ -843,3 +843,4 @@ form.addEventListener('submit', async (event) => {
   const results = await provider.search({ query: input.value });
   console.log(results); // » [{}, {}, {}, ...]
 });*/
+
