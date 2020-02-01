@@ -10,7 +10,7 @@ var map = L.map('map', {
 });
 
 var WorldStreetMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri',
 	noWrap: true
 }).addTo(map);
 

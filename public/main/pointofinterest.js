@@ -134,20 +134,6 @@ class PointOfInterest{
         if (!do_nothing) this.markers[len].addTo(map);
     }
 
-    check_in_waypoints(len, type = 0){
-        var it_waypoints = this.currentItinerary.getWaypoints();
-        for (var i in it_waypoints)
-            if (type == 0){
-                if (it_waypoints[i]._id && it_waypoints[i]._id == this.points[len]._id)
-                    return true;
-            }
-            else if (type == 1){
-                if (it_waypoints[i]._id && it_waypoints[i]._id == this.itineraryStartPoints[len].waypoints[0])
-                    return true;
-            }
-        return false;
-    }
-
     setItineraryMarker(latLng){
         var parentThis = this;
         var len = this.itineraryStartMarkers.length;
@@ -193,8 +179,7 @@ class PointOfInterest{
     }
 
     onclick_card(datakey){
-        //var do_nothing;
-        //do_nothing = parentThis.check_in_waypoints(len,1);
+
         var parentThis = this;
         $("#inspect").text(this.itineraryStartPoints[datakey].label);
         $("a[href='#feed']").removeClass("active");
@@ -349,7 +334,7 @@ class PointOfInterest{
         if (this.addedPointMarker) map.removeLayer(this.addedPointMarker);
     }
 
-    addPoint(latLng){
+    /*addPoint(latLng){
         var popup = "<input id='popupInput' type='text'><button onclick='apply()'>Apply</button>";
         var customOptions =
         {
@@ -369,5 +354,19 @@ class PointOfInterest{
             "startItinerary": false,
             "description": ""
         }
+    }*/
+
+    check_in_waypoints(len, type = 0){
+        var it_waypoints = this.currentItinerary.getWaypoints();
+        for (var i in it_waypoints)
+            if (type == 0){
+                if (it_waypoints[i]._id && it_waypoints[i]._id == this.points[len]._id)
+                    return true;
+            }
+            else if (type == 1){
+                if (it_waypoints[i]._id && it_waypoints[i]._id == this.itineraryStartPoints[len].waypoints[0])
+                    return true;
+            }
+        return false;
     }
 }
