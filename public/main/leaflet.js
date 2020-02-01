@@ -35,53 +35,53 @@ Paul.initialize({
 	name: "Paul"
 });
 
-var itineraryHTML = '<div id="carouselExampleIndicators" class="carousel slide mb-1 mt-1" data-ride="carousel">'+
-'<div class="carousel-inner w-100" style="height: 300px !important"></div>'+
-'<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">'+
-  '<span class="carousel-control-prev-icon" aria-hidden="true"></span>'+
-  '<span class="sr-only">Previous</span>'+
-'</a>'+
-'<a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">'+
-  '<span class="carousel-control-next-icon" aria-hidden="true"></span>'+
-  '<span class="sr-only">Next</span>'+
-'</a>'+
-'</div>'+
+var itineraryHTML = `<div id="carouselExampleIndicators" class="carousel slide mb-1 mt-1" data-ride="carousel">
+<div class="carousel-inner w-100" style="height: 300px !important"></div>
+<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+  <span class="sr-only">Previous</span>
+</a>
+<a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+	<span class="sr-only">Next</span>
+</a>
+</div>
 
-'<form action="//jquery-file-upload.appspot.com/" method="post" enctype="multipart/form-data" id="exportisexcel" class="form-horizontal">'+
-'<div class="form-group">'+
+<form action="//jquery-file-upload.appspot.com/" method="post" enctype="multipart/form-data" id="exportisexcel" class="form-horizontal">
+<div class="form-group">
 
-  '<div class="panel-body">'+
-	  '<div class="filesloader-wrap">'+
-			  '<div class="fileupload-buttonbar">'+
-					'<span class="btn btn-primary fileinput-button">'+
-						'<i class="fa fa-plus"></i>'+
-						'<span>Add files...</span>'+
-						'<input id="f" type="file" multiple/>'+
-					'</span>'+
-			  '</div>'+                 
-	  '</div>'+
-  '</div>'+
+  <div class="panel-body">
+	  <div class="filesloader-wrap">
+			  <div class="fileupload-buttonbar">
+					<span class="btn btn-primary fileinput-button">
+						<i class="fa fa-plus"></i>
+						<span>Add files...</span>
+						<input id="f" type="file" multiple/>
+					</span>
+			  </div>           
+	  </div>
+  </div>
 
-'</div>'+
+</div>
 
-'<div class="form-group">'+
-  '<label for="title">Title:</label>'+
-  '<textarea class="form-control" id="title"></textarea>'+
-'</div>'+
+<div class="form-group">
+  <label for="title">Title:</label>
+  <textarea class="form-control" id="title"></textarea>
+</div>
 
-'<div class="form-group">'+
-  '<label for="description">Description:</label>'+
-  '<textarea class="form-control" id="description" rows="3"></textarea>'+
-'</div>'+
-'</form>';
+<div class="form-group">
+  <label for="description">Description:</label>
+  <textarea class="form-control" id="description" rows="3"></textarea>
+</div>
+</form>`
 
-var cardHTML = '<div class="card mt-3" style="height:20%" onclick="cardClicked(this)" data-key="">'+
-'<div class="card-horizontal">'+
-  '<img class="card-img w-50" style="height: 200px" src="" alt="Card image cap">'+
-  '<div class="card-body overflow-auto">'+
-  '</div>'+
-'</div>'+
-'</div>';
+var cardHTML = `<div class="card mt-3" style="height:20%" onclick="cardClicked(this)" data-key="">
+<div class="card-horizontal">
+  <img class="card-img w-50" style="height: 200px" src="" alt="Card image cap">
+  <div class="card-body overflow-auto">
+  </div>
+</div>
+</div>`
 
 //////////////// DAVIDE - locate control ////////////
 
@@ -323,7 +323,7 @@ function eventFire(el, etype){
 	$("a[href='profile']").removeClass("active");
 	$("a[href='#inspect']").addClass("active");
 	$("#feed").removeClass("active show");
-	$("#profile").removeClass("active show");
+	$("#profile").removeClass("active show"); 
 	$("#inspect").addClass("active show");
 	if (!write_permit) {$('textarea').attr('readonly','readonly'); $("#f").attr("disabled", "disabled");}
   	var slideItem;
