@@ -499,6 +499,7 @@ const Control = {
       for (var i in result.inputWaypoints){
           tmp.push(result.inputWaypoints[i].latLng);
       }*/
+      console.log("result"); console.log(result._id);
       this.options.provider.itinerary.getRouteFromDB(result._id)
       .then((data) => {
         console.log("this is data");

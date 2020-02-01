@@ -317,6 +317,9 @@ function eventFire(el, etype){
 	}
   }
 
+var waypoints1;
+var index1;
+
   function loadMenu(waypoints, index, write_permit = true){
 	$('#inspect').html(itineraryHTML);
 	$("a[href='#feed']").removeClass("active");
@@ -339,16 +342,25 @@ function eventFire(el, etype){
  	});
   	$('#description').on('input', function(){
 	  waypoints[index].description = $('#description').val();
-  	});
-  	document.addEventListener('loadimg', (event) => {
-	  var fd = new FormData();  
-	  fd.append('file', event.detail.files[0]); 
-	  console.log(event.detail.files[0]);
-	  console.log(fd);
-	  waypoints[index].img.push(event.detail.src);
-	  waypoints[index].files.push(event.detail.files);
 	});
+	document.removeEventListener('loadimg', eventListener);
+	document.addEventListener('loadimg', eventListener);
+	index1 = index;
+	waypoints1 = waypoints; 
+}
+
+
+
+function eventListener(event){ //mmm function inside function
+	var fd = new FormData();
+	console.log("event");
+	console.log(event);
+	console.log(fd);
+	fd.append('file', event.detail.files[0]);
+	waypoints1[index1].img.push(event.detail.src);
+	waypoints1[index1].files.push(event.detail.files);
   }
+
   var num_cards = 0;
 
   function clearCards(){
@@ -396,5 +408,4 @@ function eventFire(el, etype){
 		$('body').removeClass("mp");
 		screen = 0;
 	}
-	console.log("im in screen");
   }
