@@ -35,6 +35,12 @@
     <script type="text/javascript">
       handleOnLoad = function() {
         L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@0.7.7/dist/images/';
+        if (user){
+          var x = document.getElementById("buttonLogout");
+          x.style.display = "inline";
+          var y = document.getElementById("buttonLogin");
+          y.style.display = "none";
+        }
       }
     </script>
 
@@ -58,7 +64,8 @@
       <div class="col">
         <div class="float-right">
           <a href="./"><img class="" src="./img/paul.svg" style="width:15%; height:15%" class="float-right"/></a>
-          <a href="/login"><button class="btn btn-primary" type="button">Login</button></a>
+          <a href="/login"><button class="btn btn-primary" type="button" id="buttonLogin">Login</button></a>
+          <a href="/logout"><button class="btn btn-primary" type="button" id="buttonLogout" style="display:none;">Logout</button></a>
         </div>
       </div>
       </div>
