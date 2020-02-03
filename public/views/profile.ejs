@@ -1,124 +1,129 @@
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+<!------ Include the above in your HEAD tag ---------->
+
+<!--
+User Profile Sidebar by @keenthemes
+A component of Metronic Theme - #1 Selling Bootstrap 3 Admin Theme in Themeforest: http://j.mp/metronictheme
+Licensed under MIT
+-->
 <style>
-	:root {
-  --input-padding-x: 1.5rem;
-  --input-padding-y: .75rem;
+    body {
+  background: #F1F3FA;
 }
 
-body {
-  background:  white;
-  /*background: linear-gradient(to right, #0062E6, #33AEFF);*/
+/* Profile container */
+.profile {
+  margin: 20px;
+}
+
+/* Profile sidebar */
+.profile-sidebar {
+  padding: 20px 0 10px 0;
+  background: #fff;
+}
+
+.profile-userpic img {
+  float: none;
+  margin: 0 auto;
+  width: 50%;
+  height: 50%;
+}
+
+.profile-usertitle {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.profile-usertitle-name {
+  color: #5a7391;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+
+.profile-usertitle-job {
+  color: #5b9bd1;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+    
+.profile-usermenu {
+  margin-top: 30px;
+  margin-left: 1%;
+    border-color: red;
+    border-width: 1px;
+    border-style: solid;
 }
 
 
-.row{
-  padding-top: 10%;
-  padding-right: 0%;
-  padding-left: 35%;
+/* Profile Content */
+.profile-content {
+  padding: 20px;
+  background: #fff;
+  min-height: 460px;
 }
-.btn {
-  font-size: 80%;
-  border-radius: 5rem;
-  letter-spacing: .1rem;
-  font-weight: bold;
-  padding: 1rem;
-  transition: all 0.2s;
-}
-.margined{
-    margin-top: 1%;
-    margin-right: 5%;
-    margin-bottom: 1%;
-    margin-left: 5%;
-}
-.padded{
-    padding-top: 1%;
-    padding-right: 5%;
-    padding-bottom: 1%;
-    padding-left: 5%;
-
-}
-.img-container{
-    margin-left: 25%;
-    margin-right: 25%;
+    .card-container{
+        height: 200px;
+        overflow: scroll;
+    }
+    .image-cropper {
+    width: 150px;
+    height: 150px;
+    position: relative;
+    overflow: hidden;
     border-radius: 50%;
-    width: 50%;
-    height: 30%;
-}
-.username-container{
-    background-color:  white;
-    height: 5%;
-    width: 90%;
-    text-align: center;
-}
-.bio-container{
-    width: 90%;
-    height: 6%;
-    text-align: left;
-}
-.bio-p{
-    font-size: 10pt;
-}
-.itineraries-container{
-    height: 28%;
-    width: 90%;
-    overflow-y: scroll;
-}
-.container{
-    background: burlywood;
-}
+    margin-left: 20%;
+    }
+    .profile-pic {
+    height: 100%;
+    width: auto;
+    display: inline;
+    margin: 0 auto;
+    margin-left: -25%;
+    
+    }
+    
 
 </style>
 <body>
-	<div class="container">
-            <div class="img-container padded margined">
-                <img src="../img/64x64.png"></img>
+<div class="container">
+    <div class="row profile">
+        <div class="col-md-3"></div>
+        <div class="col-md-3">
+			<div class="profile-sidebar">
+				<!-- SIDEBAR USERPIC -->
+				<div class=" image-cropper">
+					<img src="../img/standard_profile.jpg" class="profile-pic">
+				</div>
+				<!-- END SIDEBAR USERPIC -->
+				<!-- SIDEBAR USER TITLE -->
+				<div class="profile-usertitle">
+					<div class="profile-usertitle-name bigger">
+						Toyoki
+					</div>
+					<div class="profile-usertitle-job">
+						culotetteculo
+					</div>
+				</div>
+				<!-- END SIDEBAR USER TITLE -->
+				<!-- SIDEBAR MENU -->
+				<div class="profile-usermenu">
+					<div class="card-container">
+                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut labore repellendus exercitationem corporis commodi, nisi est optio molestiae, harum consequuntur nemo error blanditiis veritatis veniam tenetur et maiores ullam quisquam.<br>
+                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut labore repellendus exercitationem corporis commodi, nisi est optio molestiae, harum consequuntur nemo error blanditiis veritatis veniam tenetur et maiores ullam quisquam.<br>
+                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut labore repellendus exercitationem corporis commodi, nisi est optio molestiae, harum consequuntur nemo error blanditiis veritatis veniam tenetur et maiores ullam quisquam.<br>
+                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut labore repellendus exercitationem corporis commodi, nisi est optio molestiae, harum consequuntur nemo error blanditiis veritatis veniam tenetur et maiores ullam quisquam.<br>
+                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut labore repellendus exercitationem corporis commodi, nisi est optio molestiae, harum consequuntur nemo error blanditiis veritatis veniam tenetur et maiores ullam quisquam.<br>
+                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut labore repellendus exercitationem corporis commodi, nisi est optio molestiae, harum consequuntur nemo error blanditiis veritatis veniam tenetur et maiores ullam quisquam.<br>
+                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut labore repellendus exercitationem corporis commodi, nisi est optio molestiae, harum consequuntur nemo error blanditiis veritatis veniam tenetur et maiores ullam quisquam.<br>
+                        </div>
+				</div>
+				<!-- END MENU -->
             </div>
-             <div class="username-container padded margined"><h5 class="">Toyoki</h5></div>
-             <div class="bio-container padded margined"><p class="bio-p padded">questa è la mia bio lalalala</p></div>
-             <div class="itineraries-container padded margined"><p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil facilis facere, dolore minima officia incidunt perspiciatis ipsam aliquam officiis, illum quo, dolorem repellendus autem dolor nulla hic ullam porro quam.</p><br>
-                                                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil facilis facere, dolore minima officia incidunt perspiciatis ipsam aliquam officiis, illum quo, dolorem repellendus autem dolor nulla hic ullam porro quam.</p><br>
-                                                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil facilis facere, dolore minima officia incidunt perspiciatis ipsam aliquam officiis, illum quo, dolorem repellendus autem dolor nulla hic ullam porro quam.</p><br>
-                                                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil facilis facere, dolore minima officia incidunt perspiciatis ipsam aliquam officiis, illum quo, dolorem repellendus autem dolor nulla hic ullam porro quam.</p><br>
-                                                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil facilis facere, dolore minima officia incidunt perspiciatis ipsam aliquam officiis, illum quo, dolorem repellendus autem dolor nulla hic ullam porro quam.</p><br>
-                                                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil facilis facere, dolore minima officia incidunt perspiciatis ipsam aliquam officiis, illum quo, dolorem repellendus autem dolor nulla hic ullam porro quam.</p><br>
-                                                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil facilis facere, dolore minima officia incidunt perspiciatis ipsam aliquam officiis, illum quo, dolorem repellendus autem dolor nulla hic ullam porro quam.</p><br>
-                                                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil facilis facere, dolore minima officia incidunt perspiciatis ipsam aliquam officiis, illum quo, dolorem repellendus autem dolor nulla hic ullam porro quam.</p><br>
-                                                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil facilis facere, dolore minima officia incidunt perspiciatis ipsam aliquam officiis, illum quo, dolorem repellendus autem dolor nulla hic ullam porro quam.</p><br>
-                                                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil facilis facere, dolore minima officia incidunt perspiciatis ipsam aliquam officiis, illum quo, dolorem repellendus autem dolor nulla hic ullam porro quam.</p><br>
-                                                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil facilis facere, dolore minima officia incidunt perspiciatis ipsam aliquam officiis, illum quo, dolorem repellendus autem dolor nulla hic ullam porro quam.</p><br>
-                                                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil facilis facere, dolore minima officia incidunt perspiciatis ipsam aliquam officiis, illum quo, dolorem repellendus autem dolor nulla hic ullam porro quam.</p><br>
-                                                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil facilis facere, dolore minima officia incidunt perspiciatis ipsam aliquam officiis, illum quo, dolorem repellendus autem dolor nulla hic ullam porro quam.</p><br>
-             </div>
-            </div>
-  </body>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--<p>
-ID: <%= user.id %><br/>
-Username: <%= user.username %><br/>
-Name: <%= user.displayName %><br/>
-<% if (user.emails) { %>
-Email: <%= user.emails[0].value %><br/>
-<% } %>
-</p>
-<a href="/logout">Log out</a>-->
+            <div class="col-md-3"></div>
+        </div>
+</body>
