@@ -32,7 +32,8 @@
     "vue": "^2.6.10",
     "vue-sidebar-menu": "^4.4.0",
     "vue-slideout-panel": "^3.0.0",
-    "vuesax": "^3.11.1"
+    "vuesax": "^3.11.1",
+    "youtube-video-api": "^0.3.7"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.0.0",

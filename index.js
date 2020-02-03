@@ -11,7 +11,7 @@ var fs = require('fs');
 
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
-var urldb = "mongodb://localhost:27017/";
+var urldb = "mongodb://localhost:27017/sitedb";
 var express = require("express");
 var cors = require('cors');
 var upload = require('jquery-file-upload-middleware');
@@ -61,7 +61,7 @@ const baseURL=protocol+baseDomain;
 
 /* MONGOOSE SETUP */
 
-mongoose.connect('mongodb://localhost:27017/sitedb');
+mongoose.connect(urldb);
 
 const Schema = mongoose.Schema;
 
@@ -79,12 +79,20 @@ var passwordBeingUpdatedModel={
   attempts: Number
 }
 
+var googleTokenModel={
+	email: String,
+	accessToken: String,
+	refreshToken: String
+}
+
 const UserDetail = new Schema(userModel);
 const UserDetails = mongoose.model('userInfo', UserDetail, 'userInfo');
 const userToBeVerifiedModel = Object.assign(userModel, {verificationKey: String});
 const UserToBeVerified = new Schema(userToBeVerifiedModel);
 const UsersToBeVerified = mongoose.model('usersToBeVerified', UserToBeVerified, 'usersToBeVerified');
 const PasswordsBeingUpdated = mongoose.model('passwordsBeingUpdated', passwordBeingUpdatedModel, 'passwordsBeingUpdated');
+const GoogleToken = new Schema(googleTokenModel);
+const GoogleTokens = mongoose.model('GoogleTokens', GoogleToken, 'GoogleTokens');
 
 /**
  * generates random string of characters i.e salt
@@ -182,7 +190,7 @@ passport.use(new GoogleStrategy({
     callbackURL: "/auth/google/callback"
   },function(accessToken, refreshToken, profile, done) {
     console.log(profile);
-    UserDetails.findOne({ email: profile.email }, function (err, user) {
+    UserDetails.findOne({ email: profile.emails[0].value }, function (err, user) {
       console.log(user);
       if (err)
         return done (err)
@@ -192,7 +200,7 @@ passport.use(new GoogleStrategy({
           'name': profile.name.givenName,
           'surname': profile.name.familyName,
           'password': "",
-          'email': profile.email,
+          'email': profile.emails[0].value,
           'salt': ""
         }, function(err, user) {
           if(err) {
@@ -203,9 +211,12 @@ passport.use(new GoogleStrategy({
             return done(err, false, {success: false, message: "User creation failed."});
           }
           confirmMail(user);
+					GoogleTokens.update({'email': profile.emails[0].value}, {accessToken: accessToken, refreshToken: refreshToken, email: profile.emails[0].value}, {upsert: true}, function(err, token){console.log(err, token)});
           done(null, user);
         });
       }
+			GoogleTokens.update({'email': profile.emails[0].value}, {accessToken: accessToken, refreshToken: refreshToken, email: profile.emails[0].value}, {upsert: true}, function(err, token){console.log(err, token)});
+			done(null, user);
     });
   }));
       // return done(null, {"username" : "davide", "password" : "c6e7eb6b2eb57b0fd7695c758a2be6ae7b33e4d9d1fe0ceaa2e822b47ad10cbc0d1f5f1a6b0bc391434e9357f8b10309d58a642e4d0f57ed71df604ad2e723d7", "name" : "davide", "surname" : "davoli", "email" : "davide@pollomoltofritto.tk", "salt" : "4466a6ea27d4707bf8831c995cbc6b76", "__v" : 0 });
@@ -385,8 +396,9 @@ app.get('/logout',
     });
 
   app.get('/auth/google', passport.authenticate('google', { scope: [
-        'https://www.googleapis.com/auth/userinfo.profile',
-        'https://www.googleapis.com/auth/userinfo.email'
+		'https://www.googleapis.com/auth/userinfo.profile',
+		'https://www.googleapis.com/auth/userinfo.email',
+		'https://www.googleapis.com/auth/youtube'
     ]}));
 
 app.get('/auth/google/callback',
