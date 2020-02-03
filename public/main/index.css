@@ -88,9 +88,9 @@ input.header{
   #invisible2 {
     z-index: 10;
     position: fixed;
-    margin: 5% auto; /* Will not center vertically and won't work in IE6/7. */
-    top: 87%;
-    left: 0;
+    /*margin: 5% auto; /* Will not center vertically and won't work in IE6/7. */
+    top: 90%;
+    left: 44%;
     right: 0;
     display: inline;
   }

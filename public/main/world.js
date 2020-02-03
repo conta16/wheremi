@@ -2,7 +2,15 @@ class World {
     constructor(){
         this.itinerary = new Itinerary();
         this.pointsOfInterest = new PointOfInterest(this.itinerary, 5);
-        this.user = new Users();
+        this.user = new Users(this.itinerary);
+    }
+
+    setAccount(obj){
+        this.user.setAccount(obj);
+    }
+
+    getAccount(){
+        return this.user.getAccount();
     }
 
     getItinerary(){

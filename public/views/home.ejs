@@ -1,5 +1,15 @@
 <% if (!user) { %>
 	<p>Welcome! Please <a href="/login">log in</a>.</p>
 <% } else { %>
-	<p>Hello, <%= user.username %>. View your <a href="/profile">profile</a>.</p>
+	<!--<div><%-user%></div>-->
+	<!--<div id="data" data-n = "<%-user%>" />-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		//var use = $("#data").data("n");
+		//console.log(use);
+		
+		localStorage.setItem("account", '<%-JSON.stringify(user)%>');
+		//setTimeout(() => {window.location.href = "/"}, 3000);
+		//window.location.href = "/";
+	</script>
 <% } %>

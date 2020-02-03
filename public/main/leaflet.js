@@ -10,7 +10,7 @@ var map = L.map('map', {
 });
 
 var WorldStreetMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri',
 	noWrap: true
 }).addTo(map);
 
@@ -144,7 +144,7 @@ L.control.custom({
 	}
 }).addTo(map);
 
-L.control.custom({
+var create = L.control.custom({
 	position: 'topleft',
 	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/travel.png" width="26px" height="26px"></img></a>',
 	classes : 'leaflet-control leaflet-bar',
@@ -153,10 +153,10 @@ L.control.custom({
 			createMode();
 		},
 	}
-}).addTo(map);
+}); //visible when user logged in
 
 
-L.control.custom({
+var upload = L.control.custom({
 	position: 'topleft',
 	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/upload.png" width="26px" height="26px"></img></a>',
 	classes : 'leaflet-control leaflet-bar',
@@ -165,7 +165,7 @@ L.control.custom({
 			ldItinerary();
 		},
 	}
-}).addTo(map);
+}); //visible when user logged in
 
 var removeButton = 	L.control.custom({
 	position: 'topleft',
@@ -216,7 +216,12 @@ $(document).ready(function() {
 	pointsOfInterest.loadPoints();
 
 	//$('#fileupload').fileupload({ dataType: 'json' });
-
+	if (typeof(Storage) !== "undefined" && localStorage.getItem("account")){
+		console.log(localStorage.getItem("account"));
+		world.setAccount(localStorage.getItem("account"));
+		create.addTo(map);
+		upload.addTo(map);
+	}
 	map.on('zoomend', loadPoints);
 	
 	map.on('drag', loadPoints);
@@ -317,6 +322,9 @@ function eventFire(el, etype){
 	}
   }
 
+var waypoints1;
+var index1;
+
   function loadMenu(waypoints, index, write_permit = true){
 	$('#inspect').html(itineraryHTML);
 	$("a[href='#feed']").removeClass("active");
@@ -339,16 +347,25 @@ function eventFire(el, etype){
  	});
   	$('#description').on('input', function(){
 	  waypoints[index].description = $('#description').val();
-  	});
-  	document.addEventListener('loadimg', (event) => {
-	  var fd = new FormData();  
-	  fd.append('file', event.detail.files[0]); 
-	  console.log(event.detail.files[0]);
-	  console.log(fd);
-	  waypoints[index].img.push(event.detail.src);
-	  waypoints[index].files.push(event.detail.files);
 	});
+	document.removeEventListener('loadimg', eventListener);
+	document.addEventListener('loadimg', eventListener);
+	index1 = index;
+	waypoints1 = waypoints; 
+}
+
+
+
+function eventListener(event){ //mmm function inside function
+	var fd = new FormData();
+	console.log("event");
+	console.log(event);
+	console.log(fd);
+	fd.append('file', event.detail.files[0]);
+	waypoints1[index1].img.push(event.detail.src);
+	waypoints1[index1].files.push(event.detail.files);
   }
+
   var num_cards = 0;
 
   function clearCards(){
@@ -396,5 +413,4 @@ function eventFire(el, etype){
 		$('body').removeClass("mp");
 		screen = 0;
 	}
-	console.log("im in screen");
   }

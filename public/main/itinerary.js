@@ -1,5 +1,6 @@
 class Itinerary {
     constructor(){
+        this.user_id = {};
         this.label = "";
         this.waypoints = [];
         this.route = [];
@@ -44,6 +45,9 @@ class Itinerary {
                 });
             }
         });
+    }
+    setUserID(user){
+        this.user_id = user;
     }
 
     pushWaypoints(waypoints, point){
@@ -165,6 +169,10 @@ class Itinerary {
         });
     }
 
+    getId(){
+        return this.id;
+    }
+
     postItineraryToDB(name){
         var parentThis = this;
         var parentUrl = this.url;
@@ -177,11 +185,14 @@ class Itinerary {
             data: {
                 label: JSON.stringify(parentThis.label),
                 waypoints: JSON.stringify(parentThis.waypoints),
-                route: JSON.stringify(parentThis.route)
-
+                route: JSON.stringify(parentThis.route),
+                user_id: JSON.stringify(parentThis.user_id)
             },
             async: true,
-            success: function(){
+            success: function(data){
+                parentThis.id = data;
+                var event = new CustomEvent("it_added", {});
+                document.dispatchEvent(event);
                 console.log("posted successfully");
             },
             error: function(){
