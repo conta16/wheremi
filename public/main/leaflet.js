@@ -31,7 +31,7 @@ Paul.initialize({
 	listen: false, // Start to listen commands !
 
 	// If providen, you can only trigger a command if you say its name
-	// e.g to trigger Good Morning, you need to say "Paul Good Morning"
+	// e.g to trigger Good Morning, you need to say "Jarvis Good Morning"
 	name: "Paul"
 });
 
@@ -58,7 +58,7 @@ var itineraryHTML = `<div id="carouselExampleIndicators" class="carousel slide m
 						<span>Add files...</span>
 						<input id="f" type="file" multiple/>
 					</span>
-			  </div>           
+			  </div>
 	  </div>
   </div>
 
@@ -124,7 +124,7 @@ const searchControl = new GeoSearchControl({
 /*const choiceControl = new ChoiceControl({
     provider: provider,
 });*/
-	  
+
 map.addControl(searchControl);
 //map.addControl(choiceControl);
 
@@ -223,7 +223,7 @@ $(document).ready(function() {
 		upload.addTo(map);
 	}
 	map.on('zoomend', loadPoints);
-	
+
 	map.on('drag', loadPoints);
 
 });
@@ -232,7 +232,7 @@ function createMode(){
 	var mode = itinerary.getMode();
 	if (!mode){
 		itinerary.setMode(!mode);
-		map.off('zoomend', loadPoints); 
+		map.off('zoomend', loadPoints);
 		map.off('drag', loadPoints);
 		pointsOfInterest.removeAllMarkers();
 		itinerary.setWaypoints([]);
@@ -331,7 +331,7 @@ var index1;
 	$("a[href='profile']").removeClass("active");
 	$("a[href='#inspect']").addClass("active");
 	$("#feed").removeClass("active show");
-	$("#profile").removeClass("active show"); 
+	$("#profile").removeClass("active show");
 	$("#inspect").addClass("active show");
 	if (!write_permit) {$('textarea').attr('readonly','readonly'); $("#f").attr("disabled", "disabled");}
   	var slideItem;
@@ -351,7 +351,7 @@ var index1;
 	document.removeEventListener('loadimg', eventListener);
 	document.addEventListener('loadimg', eventListener);
 	index1 = index;
-	waypoints1 = waypoints; 
+	waypoints1 = waypoints;
 }
 
 
