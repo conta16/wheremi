@@ -63,7 +63,7 @@ const baseURL=protocol+baseDomain;
 
 /* MONGOOSE SETUP */
 
-mongoose.connect(urldb);
+mongoose.connect(urldb, { useNewUrlParser: true, useUnifiedTopology: true});
 
 const Schema = mongoose.Schema;
 
