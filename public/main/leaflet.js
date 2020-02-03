@@ -144,7 +144,7 @@ L.control.custom({
 	}
 }).addTo(map);
 
-L.control.custom({
+var create = L.control.custom({
 	position: 'topleft',
 	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/travel.png" width="26px" height="26px"></img></a>',
 	classes : 'leaflet-control leaflet-bar',
@@ -153,10 +153,10 @@ L.control.custom({
 			createMode();
 		},
 	}
-}).addTo(map);
+}); //visible when user logged in
 
 
-L.control.custom({
+var upload = L.control.custom({
 	position: 'topleft',
 	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/upload.png" width="26px" height="26px"></img></a>',
 	classes : 'leaflet-control leaflet-bar',
@@ -165,7 +165,7 @@ L.control.custom({
 			ldItinerary();
 		},
 	}
-}).addTo(map);
+}); //visible when user logged in
 
 var removeButton = 	L.control.custom({
 	position: 'topleft',
@@ -216,7 +216,12 @@ $(document).ready(function() {
 	pointsOfInterest.loadPoints();
 
 	//$('#fileupload').fileupload({ dataType: 'json' });
-
+	if (typeof(Storage) !== "undefined" && localStorage.getItem("account")){
+		console.log(localStorage.getItem("account"));
+		world.setAccount(localStorage.getItem("account"));
+		create.addTo(map);
+		upload.addTo(map);
+	}
 	map.on('zoomend', loadPoints);
 	
 	map.on('drag', loadPoints);

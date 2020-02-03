@@ -501,6 +501,7 @@ app.get('/profile',
 
 //
 app.get('/', function(req,res){
+	console.log(req);
 	res.sendFile(path.join(__dirname, './public/main', 'index.html'));
 });
 
@@ -625,10 +626,11 @@ app.get('/route', function(req, res){
 	});
 });
 
-app.post('/', function (req, res){
+app.post('/', function (req, response){
         var label = JSON.parse(req.body.label);
         var waypoints = JSON.parse(req.body.waypoints);
         var route = JSON.parse(req.body.route);
+	var user_id = JSON.parse(req.body.user_id);
 	//var regex = /^data:.+\/(.+);base64,(.*)$/;
 
 	//var data_url = [];
@@ -636,23 +638,15 @@ app.post('/', function (req, res){
 	for (var i in waypoints){
 		if (i == 0) waypoints[i].startItinerary = true;
 		else waypoints[i].startItinerary = false;
-		/*for (var j in waypoints[i].img){
-			var matches = waypoints[i].img[j].match(regex);
-			var ext = matches[1];
-			var base64_data = matches[2];
-			var buffer = new Buffer(base64_data, 'base64');
-			fs.writeFile(__dirname + '/uploads', buffer, function (err) {
-				if (err) throw err;
-  				console.log("success");
-			});
-		}*/
+		waypoints[i].user_id = user_id;
 	}
 	MongoClient.connect(urldb, {useUnifiedTopology: true}, async function(err,db){
 		if (err) throw err;
 	        var tmp = {
         	        label: label,
                 	waypoints: [], // not waypoints: waypoints because in the db the waypoints property will only contain the waypoints id
-                	route: route
+                	route: route,
+			user_id: user_id
         	};
 		var dbo = db.db("sitedb");
 		var promise = new Promise(async function(resolve, reject) {
@@ -674,10 +668,18 @@ app.post('/', function (req, res){
 		});
 
 		var w = await promise;
-                dbo.collection("itineraries").insertOne(w, (err,res) => {
-			if (err) throw err;
-                });
-
+      dbo.collection("itineraries").insertOne(w, (err,res) => {
+          if (err) throw err;
+          dbo.collection("userInfo").update({
+          },
+          {
+            $push: {
+              itinerary_id: res.insertedId,
+              points_id: { $each: w.waypoints }
+            }
+          });
+        	response.status(200).send(ObjectId(res.insertedId));
+	    });
 	});
 });
 
