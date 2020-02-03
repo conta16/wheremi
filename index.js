@@ -504,7 +504,8 @@ app.get('/profile',
 //
 app.get('/', function(req,res){
 	console.log(req);
-	res.sendFile(path.join(__dirname, './public/main', 'index.html'));
+	res.render('index', {user: req.user});
+		// res.sendFile(path.join(__dirname, './public/main', 'index.html'));
 });
 
 app.get('/search', function (req, res){

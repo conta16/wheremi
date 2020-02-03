@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.css" />
+    <link rel="stylesheet" type="text/css" href="./leaflet/leaflet-search.css" />
+    <link rel="stylesheet" type="text/css" href="./main/index.css"/>
+    <link rel="stylesheet" type="text/css" href="./leaflet/leaflet-routing-machine.css" />
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"  crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"  crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"  crossorigin="anonymous"></script>
+
+    <link rel="icon" href="./img/favicon.ico">
+    <link rel="stylesheet" href="./main/jquery.fileupload.css">
+    <!--<link rel="stylesheet" href="./main/jquery.fileupload-ui.css">-->
+    <!--<link rel="stylesheet" href="./main/jquery.fileupload-noscript.css">
+    <link rel="stylesheet" href="./main/jquery.fileupload-ui-noscript.css">-->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.js"></script>
+    <script src="./leaflet/leaflet-geosearch.js"></script>
+    <script src="./main/jquery.ui.widget.js"></script>
+    <script src="./main/jquery.iframe-transport.js"></script>
+    <script src="./main/jquery.fileupload.js"></script>
+
+    <script type="text/javascript">
+      handleOnLoad = function() {
+        L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@0.7.7/dist/images/';
+      }
+    </script>
+
+    <title>wheremi</title>
+  </head>
+  <body onload="handleOnLoad()" class="mp">
+    <noscript>
+      <strong>We're sorry but our website doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+
+    <div id="map-wrapper" style="position:fixed; text-align:center; ">
+      <div id="map">
+      </div>
+      <!--<button class="btn btn-primary" id="invisible" type="button" onclick="change()">change</button>-->
+      <img src="./img/paul.svg" onclick="change()" id="invisible" style="width:15%; height:15%"/>
+
+    </div>
+
+    <div class="container-fluid" id="menu" style="text-align: center">
+      <div class="row mt-2 mb-2">
+      <div class="col">
+        <div class="float-right">
+          <a href="./"><img class="" src="./img/paul.svg" style="width:15%; height:15%" class="float-right"/></a>
+          <% if (!user) { %>
+          <a href="/login"><button class="btn btn-primary" type="button" id="buttonLogin">Login</button></a>
+          <% } else { %>
+          <a href="/logout"><button class="btn btn-primary" type="button" id="buttonLogout">Logout</button></a>
+          <% } %>
+        </div>
+      </div>
+      </div>
+      <div class="row">
+    <div class="col">
+    <ul class="nav nav-tabs btn-block" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active text-secondary" href="#feed" role="tab" data-toggle="tab">Feed</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-secondary" href="#inspect" role="tab" data-toggle="tab">Inspect</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-secondary" href="#profile" role="tab" data-toggle="tab">Profile</a>
+      </li>
+    </ul>
+  </div>
+      </div>
+      <!--<button class="btn btn-primary" id="invisible2" type="button" onclick="change()">change</button>-->
+      <img src="./img/paul.svg" onclick="change()" id="invisible2" style="width:15%; height:15%"/>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane fade in active show" id="feed">
+
+      </div>
+      <div role="tabpanel" class="tab-pane fade in" id="inspect">
+      </div>
+      <div role="tabpanel" class="tab-pane fade in" id="profile"></div>
+    </div>
+    </div>
+
+    <script type="text/javascript" src="./navigator/artyom.window.min.js"></script>
+    <script type="text/javascript" src="./youtube/leafletmods.js"></script>
+    <script type="text/javascript" src="./youtube/ytsearcher.js"></script>
+    <script type="text/javascript" src="./wikipedia/wikipedia.js"></script>
+    <script type="text/javascript" src="./leaflet/Leaflet.Control.Custom.js"></script>
+    <script type="text/javascript" src="./leaflet/leaflet-routing-machine.js"></script>
+    <script type="text/javascript" src="./main/itinerary.js"></script>
+    <script type="text/javascript" src="./main/pointofinterest.js"></script>
+    <script type="text/javascript" src="./navigator/navigatorController.js"></script>
+    <script type="text/javascript" src="./navigator/pollonavigator.js"></script>
+    <script type="text/javascript" src="./leaflet/L0.Control.Locate.js"></script>
+    <script type="text/javascript" src="./main/users.js"></script>
+    <script type="text/javascript" src="./main/world.js"></script>
+    <script type="text/javascript" src="./main/leaflet.js"></script>
+
+  </body>
+</html>
