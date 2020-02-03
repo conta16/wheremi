@@ -33,15 +33,32 @@
     <script src="./main/jquery.fileupload.js"></script>
 
     <script type="text/javascript">
+      function login_logout(){
+        $.ajax({
+          url: './check',
+          method: 'GET',
+          success: function (res){
+            var x = document.getElementById('buttonLogin');
+            var y = document.getElementById('buttonLogout');
+            if (res){
+              x.style.display = 'none';
+              y.style.display = 'inline';
+            }
+          }
+        })
+      }
+      function unlock_buttons(){
+        var x = document.getElementById('buttonLogin');
+        var y = document.getElementById('buttonLogout');
+        x.removeAttribute("disabled");
+        y.removeAttribute("disabled");
+      }
       handleOnLoad = function() {
         L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@0.7.7/dist/images/';
-        if (user){
-          var x = document.getElementById("buttonLogout");
-          x.style.display = "inline";
-          var y = document.getElementById("buttonLogin");
-          y.style.display = "none";
-        }
+        login_logout();
+        unlock_buttons();
       }
+      
     </script>
 
     <title>wheremi</title>
@@ -64,8 +81,8 @@
       <div class="col">
         <div class="float-right">
           <a href="./"><img class="" src="./img/paul.svg" style="width:15%; height:15%" class="float-right"/></a>
-          <a href="/login"><button class="btn btn-primary" type="button" id="buttonLogin">Login</button></a>
-          <a href="/logout"><button class="btn btn-primary" type="button" id="buttonLogout" style="display:none;">Logout</button></a>
+          <a href="/login"><button class="btn btn-primary" type="button" id="buttonLogin" disabled="disabled">Login</button></a>
+          <a href="/logout"><button class="btn btn-primary" type="button" id="buttonLogout" style="display:none;" disabled="disabled">Logout</button></a>
         </div>
       </div>
       </div>
@@ -73,13 +90,13 @@
     <div class="col">
     <ul class="nav nav-tabs btn-block" role="tablist">
       <li class="nav-item">
-        <a class="nav-link active text-secondary" href="#feed" role="tab" data-toggle="tab">feed</a>
+        <a class="nav-link active text-secondary" href="#feed" role="tab" data-toggle="tab">Feed</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-secondary" href="#inspect" role="tab" data-toggle="tab">inspect</a>
+        <a class="nav-link text-secondary" href="#inspect" role="tab" data-toggle="tab">Inspect</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-secondary" href="#profile" role="tab" data-toggle="tab">profile</a>
+        <a class="nav-link text-secondary" href="#profile" role="tab" data-toggle="tab">Profile</a>
       </li>
     </ul>
   </div>

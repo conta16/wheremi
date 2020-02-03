@@ -31,7 +31,7 @@ Paul.initialize({
 	listen: false, // Start to listen commands !
 
 	// If providen, you can only trigger a command if you say its name
-	// e.g to trigger Good Morning, you need to say "Jarvis Good Morning"
+	// e.g to trigger Good Morning, you need to say "Paul Good Morning"
 	name: "Paul"
 });
 

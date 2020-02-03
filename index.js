@@ -697,6 +697,12 @@ app.post("/postAdded", function(req,res){
 	});
 });
 
+app.get("/check",function(req,res){
+  if (req.user){
+    res.send(new Buffer('1'));
+  }
+});
+
 upload.configure({
         uploadDir: __dirname + '/public/uploads',
         uploadUrl: '/uploads',
