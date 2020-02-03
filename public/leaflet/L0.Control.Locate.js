@@ -263,10 +263,10 @@ You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
             },
             followCompassStyle: {},
             /** The CSS class for the icon. For example fa-location-arrow or fa-map-marker */
-            icon: 'fa fa-map-marker',
+            icon: 'img/marker.svg',
             iconLoading: 'fa fa-spinner fa-spin',
             /** The element to be created for icons. For example span or i */
-            iconElementTag: 'span',
+            iconElementTag: 'img',
             /** Padding around the accuracy circle. */
             circlePadding: [0, 0],
             /** Use metric units. */
@@ -279,7 +279,9 @@ You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
             createButtonCallback: function (container, options) {
                 var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', container);
                 link.title = options.strings.title;
-                var icon = L.DomUtil.create(options.iconElementTag, options.icon, link);
+                var icon = L.DomUtil.create(options.iconElementTag, "", link);
+                icon.setAttribute("src", options.icon);
+                icon.setAttribute("height", "25px");
                 return { link: link, icon: icon };
             },
             /** This event is called in case of any location error that is not a time out error. */
@@ -618,7 +620,7 @@ You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
             var radius = this._event.accuracy;
             var latlng = this._event.latlng;
 
-            this._drawCompass();  // in order to have the position marker in the top of the stack and make it draggable. 
+            this._drawCompass();  // in order to have the position marker in the top of the stack and make it draggable.
 
             // circle with the radius of the location's accuracy
             if (this.options.drawCircle) {

@@ -316,7 +316,7 @@ app.post('/login', function (req, res, next){
         if (loginErr) {
           return next(loginErr);
         }
-        return res.render("home",{user: user});
+        return res.redirect('/');
       });
     })(req, res, next);
 });
