@@ -9,6 +9,7 @@
     "start": "vue-cli-service serve --open"
   },
   "dependencies": {
+    "@sendgrid/mail": "^6.5.1",
     "blueimp-file-upload": "^10.5.0",
     "connect-ensure-login": "^0.1.1",
     "cookie-parser": "^1.4.4",

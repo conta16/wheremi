@@ -8,6 +8,9 @@ var crypto = require('crypto');
 var path = require('path');
 var StrategyGoogle = require('passport-google-oauth20').Strategy;
 var fs = require('fs');
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey("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")
+
 
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
@@ -48,7 +51,6 @@ app.use(function(req, res, next) {
 });
 
 //////////////////////////////
-const mailjet = require ('node-mailjet').connect('187677886ad82be8f094bad7c90a2226', '62d76471b6fe4669d28ac46ff2f539b4')
 
 var Strategy = require('passport-local').Strategy;
 var RegisterStrategy = require('passport-local-register').Strategy;
@@ -145,35 +147,23 @@ passport.use(new Strategy({
   }));
 
 function sendmail(from, alias, to, name, subject, text, html){
-  const request = mailjet
-  .post("send", {'version': 'v3.1'})
-  .request({
-    "Messages":[
-      {
-        "From": {
-          "Email": from,
-          "Name": alias
-        },
-        "To": [
-          {
-            "Email": to,
-            "Name": name
-          }
-        ],
-        "Subject": subject,
-        "TextPart": text,
-        "HTMLPart": html,
-        "CustomID": ""
-      }
-    ]
-  })
-  request
-    .then((result) => {
-      return result.body;
-    })
-    .catch((err) => {
-      return err;
-    })
+	var msg={};
+	if (from)
+			msg.from=from;
+	if (alias)
+			msg.fromname=alias;
+	if (to)
+			msg.to=to;
+	if (text)
+			msg.text=txt;
+	if (html)
+			msg.html=html;
+	if (subject)
+		msg.subject=subject;
+	else
+		msg.subject="nosubject";
+	console.log(msg);
+	sgMail.send(msg);
 }
 
 function confirmMail(user){
