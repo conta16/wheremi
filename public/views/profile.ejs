@@ -91,8 +91,8 @@ Licensed under MIT
 </style>
 <script type="text/javascript">
   function aggiornaBio(){
-    var x = document.getElementbyId('bioAggiornata');
-    $.post("/newbio",x.val(), function(data){
+    var x = $('#bioAggiornata');
+    $.post("/newbio",{newbio: x.val()}, function(data){
             if(data==='done')
               {
                 alert("bio update ok");
@@ -100,11 +100,6 @@ Licensed under MIT
           });
   }
 
- /* app.post('/newbio', function(req,res){
-    var newbio = req.body;
-    req.user.bio = newbio;
-});
-va in index.js*/
  
 
 
@@ -127,16 +122,15 @@ va in index.js*/
 					<div class="profile-usertitle-name bigger">
 						<%=user.username %>
 					</div>
-					<div class="profile-usertitle-job">
+					<div class="profile-usertitle-job input-group">
             <% if (!user.bio) { %>
               
-              <input type="text" name="newBio" placeholder="Inserisci la tua nuova bio!" class="bio-container" id="bioAggiornata"></input>
-              <button class="btn btn-primary" type="button" onclick="aggiornaBio">Salva</button>
+              <input type="text" name="newBio" placeholder="Inserisci la tua nuova bio!" class="bio-container" id="bioAggiornata" style ="height: 35px;">
+              <span class="input-group-btn" style="border-radius: 4px;"><button class="btn btn-primary" type="button" onclick="aggiornaBio()" style="line-height: 21px;">Salva</button></span>
               
               <% } else { %>
               <span class = "bio-span"><%=user.bio %></span>
             <% } %>
-            
 					</div>
 				</div>
 				<!-- END SIDEBAR USER TITLE -->
