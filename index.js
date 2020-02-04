@@ -79,7 +79,8 @@ var userModel ={
       surname: String,
       email: String,
       salt: String,
-			token: String
+      token: String,
+      bio: String
     };
 var passwordBeingUpdatedModel={
   userid: String,
@@ -204,6 +205,7 @@ passport.use(new GoogleStrategy({
           'password': "",
           'email': profile.emails[0].value,
           'salt': "",
+          'bio': "",
 					'token': genRandomString(64)
         }, function(err, user) {
           if(err) {
@@ -268,6 +270,7 @@ passport.use(new RegisterStrategy({
             'password': salt.passwordHash,
             'email': req.body.email,
             'salt':salt.salt,
+            'bio':'', 
             'verificationKey': vk
           }, function(err, user) {
             if(err) {
@@ -404,7 +407,8 @@ app.get('/logout',
                     surname: data.surname,
                     email: data.email,
                     salt: data.salt,
-										token: ""
+                    token: "",
+                    bio: ""
                   }, function (err, data){
               if (err){
                 console.log(err);
@@ -510,6 +514,17 @@ app.get('/setnewpassword', function (req,res){
 	if (!req.query.user || !req.query.token)
 		res.redirect("/");
   res.render('setnewpassword');
+});
+
+app.post('/newbio', function(req,res){
+  console.log("body:", req.body);
+  var res=UserDetails.findOneAndUpdate({email: req.user.email}, {bio: req.body.newbio}, function(err, data){
+    if (err){
+      console.log("Sorry, we are in trouble with our database");
+    }
+    console.log("data:", data);
+    return res.send("done");
+  });
 });
 
 app.post('/setnewpassword', function(req, res){
