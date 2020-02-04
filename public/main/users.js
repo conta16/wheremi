@@ -22,7 +22,7 @@ class Users{
         //var o = obj[0]+'"'+obj[2]+'"'+obj.slice(4); //json properties must have double quotes instead of single ones
         //console.log("o");
         //console.log(o);
-        this.account = JSON.parse(obj);
+        this.account = obj;
         console.log(this.account);
 
         this.itinerary.setUserID(this.account._id);

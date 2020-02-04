@@ -61,6 +61,7 @@
           <% if (!user) { %>
           <a href="/login"><button class="btn btn-primary float-right" type="button" id="buttonLogin" style="height: 100%;">Login</button></a>
           <% } else { %>
+            <div data-n = '<%-JSON.stringify(user)%>'' id="data" style="display: none"></div>
           <a href="/logout"><button class="btn btn-primary float-right" type="button" id="buttonLogout">Logout</button></a>
           <% } %>
         </div>

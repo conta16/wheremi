@@ -276,7 +276,8 @@ const Control = {
           this.options.provider.itinerary.removeMarkers();
           if (bool){
             input.value = result.label;
-            this.singleSearch({ query: result.label, data: result }, bool);
+            console.log("handlclick"); console.log(result);
+            this.singleSearch({ query: {"label": result.label, "username": result.user[0].username}, data: result }, bool);
           }
           else {
             input.value = result.label;
@@ -445,7 +446,7 @@ const Control = {
     const { provider } = this.options;
 
     const results = await provider.search2(query, bool);
-
+    console.log("results"); console.log(results);
     if (results && results.length > 0) {
       this.showResult(results[0], query, bool);
     }
@@ -675,7 +676,7 @@ class OpenStreetMapProvider extends BaseProvider {
     }
     else {
       var dbResponse = {};
-      await this.itinerary.GSItineraryFromDB(query).then((data) => {
+      await this.itinerary.GSItineraryFromDB(query.label, query.username).then((data) => {
         dbResponse = data;
       }).catch(() => {});
       return dbResponse.result;
@@ -715,6 +716,7 @@ class OpenStreetMapProvider extends BaseProvider {
 /*ResultList*/
 
 const cx = (...classnames) => classnames.join(' ').trim();
+var pthis;
 
 class ResultList {
   constructor({ handleClick = () => {}, classNames = {} } = {}) {
@@ -722,6 +724,7 @@ class ResultList {
     this.selected = -1;
     this.results = [];
     this.bool = 0;
+    pthis = this;
 
     const container = createElement('div', cx('results', classNames.container));
     const resultItem = createElement('div', cx());
@@ -753,7 +756,9 @@ class ResultList {
       child.setAttribute('data-key', idx);
       child.setAttribute('data-key2', ids);
       child.setAttribute('data-type', 'dbresponse');
-      child.innerHTML = result.label;
+      if (result.user[0])child.innerHTML = result.label + " - (" + result.user[0].username+")";
+      else child.innerHTML = result.label;
+
       container.appendChild(child);
       idx+=1;
     });
@@ -801,8 +806,8 @@ class ResultList {
   }
 
   onClick ({ target } = {}) {
-    const { handleClick } = this.props;
-    const { container } = this.elements;
+    const { handleClick } = pthis.props;
+    const { container } = pthis.elements;
 
     if (target.parentNode !== container || !target.hasAttribute('data-key')) {
       return;
@@ -812,15 +817,15 @@ class ResultList {
 
     if (target.getAttribute('data-type') == 'dbresponse'){
       const ids = target.getAttribute('data-key2');
-      result = this.results.dbResponse[ids];
-      this.bool = 1;
+      result = pthis.results.dbResponse[ids];
+      pthis.bool = 1;
     }
     else {
       const ids = target.getAttribute('data-key2');
-      result = this.results.places[ids];
-      this.bool = 0;
+      result = pthis.results.places[ids];
+      pthis.bool = 0;
     }
-    handleClick({ result }, this.bool);
+    handleClick({ result }, pthis.bool);
   };
 }
 

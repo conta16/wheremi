@@ -216,9 +216,11 @@ $(document).ready(function() {
 	pointsOfInterest.loadPoints();
 
 	//$('#fileupload').fileupload({ dataType: 'json' });
-	if (typeof(Storage) !== "undefined" && localStorage.getItem("account")){
-		console.log(localStorage.getItem("account"));
-		world.setAccount(localStorage.getItem("account"));
+	if (typeof(Storage) !== "undefined" && $("div#data").data("n")){
+		//console.log(localStorage.getItem("account"));
+		var use = $("#data").data("n");
+		console.log(use);
+		world.setAccount(use);
 		create.addTo(map);
 		upload.addTo(map);
 	}
@@ -273,7 +275,7 @@ function createMode(){
 }
 function ldItinerary(){
 	$('#inspect').html("");
-	if (itinerary.getWaypoints().length > 1) itinerary.postItineraryToDB("prova");
+	if (itinerary.getWaypoints().length > 1) itinerary.postItineraryToDB("prova1");
 	else itinerary.postPoint();
 	itinerary.setWaypoints([]);
 }

@@ -155,11 +155,21 @@ class Itinerary {
         this.label = label;
     }
 
-    GSItineraryFromDB(query){ //get and show itinerary from mongodb
+    GSItineraryFromDB(label, username){ //get and show itinerary from mongodb
         var parentUrl = this.url;
-        return new Promise(function(resolve,reject) {
+        if (username) return new Promise(function(resolve,reject) {
             $.ajax({
-                url: parentUrl+"/search?query="+query.toString(),
+                url: parentUrl+"/search?label="+label.toString()+"&username="+username.toString(),
+                method: "GET",
+                async: true,
+                dataType: "json",
+                success: (data) =>{console.log(data);resolve(data)},
+                error: (err) => {reject(err)}
+            });
+        });
+        else return new Promise(function(resolve,reject) {
+            $.ajax({
+                url: parentUrl+"/search?label="+label.toString(),
                 method: "GET",
                 async: true,
                 dataType: "json",
