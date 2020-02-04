@@ -136,9 +136,7 @@ passport.use(new Strategy({
     passwordField: 'password'
   },
   function(username, password, cb) {
-		console.log(username);
     UserDetails.findOne({email: username}, function(err, user) {
-			console.log(user);
       if (err) { return cb(err); }
       if (!user) { return cb(null, false); }
       if (user.password != sha512(password, user.salt).passwordHash) { return cb(null, false); }
@@ -162,7 +160,6 @@ function sendmail(from, alias, to, name, subject, text, html){
 		msg.subject=subject;
 	else
 		msg.subject="nosubject";
-	console.log(msg);
 	sgMail.send(msg);
 }
 
@@ -179,9 +176,7 @@ passport.use(new GoogleStrategy({
     clientSecret: "eiRQREZjOXviY_mIibKVxRa_",
     callbackURL: "/auth/google/callback"
   },function(accessToken, refreshToken, profile, done) {
-    console.log(profile);
     UserDetails.findOne({ email: profile.emails[0].value }, function (err, user) {
-      console.log(user);
       if (err)
         return done (err)
       if (!user){
@@ -201,7 +196,7 @@ passport.use(new GoogleStrategy({
             return done(err, false, {success: false, message: "User creation failed."});
           }
           confirmMail(user);
-					GoogleTokens.update({'email': profile.emails[0].value}, {accessToken: accessToken, refreshToken: refreshToken, email: profile.emails[0].value}, {upsert: true}, function(err, token){console.log(err, token)});
+					GoogleTokens.update({'email': profile.emails[0].value}, {accessToken: accessToken, refreshToken: refreshToken, email: profile.emails[0].value}, {upsert: true}, function(err, token){});
           done(null, user);
         });
       }
@@ -219,15 +214,12 @@ passport.use(new RegisterStrategy({
       'email' : req.body.email
     }, function(err, user) {
       if (err) {
-        console.log("a");
         return done(err);
       }
       if (!user) {
-        console.log("b");
         return done(); // see section below
       }
       if (user) {
-        console.log("c");
         return done(null, false);
       }
     });
@@ -236,7 +228,6 @@ passport.use(new RegisterStrategy({
     function fun (){
       var vk = genRandomString(32);
       UsersToBeVerified.findOne({verificationKey: vk}, function(err, data){
-        console.log(data);
         if (err){
           return alert("Sorry, we are in trouble with our database");
           }
@@ -306,6 +297,7 @@ app.get('/login',
   });
 
 app.post('/login', function (req, res, next){
+	console.log("ccccccccccccccccccccccccccccccccccc");
 	console.log(req.body);
   passport.authenticate('local', function (err, user, info){
     if (err)
@@ -513,7 +505,7 @@ app.get('/search', function (req, res){
 		if (err) throw err;
 		var dbo = db.db("sitedb");
 		//Find the first document in the customers collection:
-		dbo.collection("itineraries").aggregate([
+		if (req.query.username) dbo.collection("itineraries").aggregate([
                         {
                                 $lookup:{
                                         from: "pointOfInterest",
@@ -522,16 +514,52 @@ app.get('/search', function (req, res){
                                         as: "inputWaypoints"
                                 },
                         },
+                        {
+                          $lookup:{
+                            from: "userInfo",
+                            localField: "user_id",
+                            foreignField: "_id",
+                            as: "user"
+                          },
+                        },
 			{
 				$match: {
-					'label': {$regex: ".*"+req.query.query+".*"}
+          'label': {$regex: ".*"+req.query.label+".*"},
+          'user.0.username': {$regex: ".*"+req.query.username+".*"}
 				}
 			}
 		]).toArray(function(err, result) {
 			if (err) throw err;
 			res.send({result});
 			db.close();
-		});
+    });
+    else dbo.collection("itineraries").aggregate([
+      {
+              $lookup:{
+                      from: "pointOfInterest",
+                      localField: "waypoints",
+                      foreignField: "_id",
+                      as: "inputWaypoints"
+              },
+      },
+      {
+        $lookup:{
+          from: "userInfo",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "user"
+        },
+      },
+{
+$match: {
+'label': {$regex: ".*"+req.query.label+".*"},
+}
+}
+]).toArray(function(err, result) {
+if (err) throw err;
+res.send({result});
+db.close();
+});
 	});
 });
 
@@ -649,7 +677,7 @@ app.post('/', function (req, response){
         	        label: label,
                 	waypoints: [], // not waypoints: waypoints because in the db the waypoints property will only contain the waypoints id
                 	route: route,
-			user_id: user_id
+			user_id: ObjectId(user_id)
         	};
 		var dbo = db.db("sitedb");
 		var promise = new Promise(async function(resolve, reject) {
@@ -700,6 +728,8 @@ app.post("/postAdded", function(req,res){
 
 app.get("/check",function(req,res){
   if (req.user){
+    var r = new Buffer('1');
+    console.log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
     res.send(new Buffer('1'));
   }
 });
