@@ -56,7 +56,7 @@ var itineraryHTML = `<div id="carouselExampleIndicators" class="carousel slide m
 					<span class="btn btn-primary fileinput-button">
 						<i class="fa fa-plus"></i>
 						<span>Add files...</span>
-						<input id="f" type="file" multiple/>
+						<input id="f" type="file" accept="image/*" multiple/>
 					</span>
 			  </div>
 	  </div>
@@ -73,15 +73,26 @@ var itineraryHTML = `<div id="carouselExampleIndicators" class="carousel slide m
   <label for="description">Description:</label>
   <textarea class="form-control" id="description" rows="3"></textarea>
 </div>
-</form>`
+</form>`;
 
 var cardHTML = `<div class="card mt-3" style="height:20%" onclick="cardClicked(this)" data-key="">
 <div class="card-horizontal">
   <img class="card-img w-50" style="height: 200px" src="" alt="Card image cap">
-  <div class="card-body overflow-auto">
+  <div class="card-body overflow-auto" style="text-align: left">
   </div>
 </div>
-</div>`
+</div>`;
+
+var profileHTML = `<div class='container' style='position: relative'>
+<div class='container' style="">
+<label for='uploadpic'>
+	<img class="rounded-circle" style="height:200px; width:200px" alt="100x100" id="profilepic" src="./img/unknown_person.png" data-holder-rendered="true">
+</label>
+<input id="uploadpic" type="file" style='display: none'/>
+</div>
+<p class='h5' id="username"></p>
+<div id="itineraries"></div>
+</div>`;
 
 //////////////// DAVIDE - locate control ////////////
 
@@ -219,10 +230,43 @@ $(document).ready(function() {
 	if (typeof(Storage) !== "undefined" && $("div#data").data("n")){
 		//console.log(localStorage.getItem("account"));
 		var use = $("#data").data("n");
-		console.log(use);
+		$('div#profile').html(profileHTML);
+		$('#profilepic').attr('src',use.profilepic);
+		$('p#username').html(use.username);
 		world.setAccount(use);
 		create.addTo(map);
 		upload.addTo(map);
+
+		$(document).on('change','#uploadpic', function () {
+			var file = this.files;
+			console.log("akkkkkkkkkkkkksssssss");
+            if (this.files.length == 1) {
+    
+                //$.each(this.files, function (index, value) {
+                    var reader = new FileReader();
+    
+                    reader.onload = function (e) {
+						$('img#profilepic').attr('src', e.target.result);
+                        $.ajax({
+							url: 'http://localhost:3000/changeprofilepic',
+							method: 'POST',
+							dataType: 'json',
+							data: {
+								pic: JSON.stringify(e.target.result),
+								id: JSON.stringify(use._id)
+							},
+							success: () => {
+								console.log("pic changed");
+							},
+							error: () => {
+								console.log("error in changing pic");
+							}
+						});
+                    };
+                    reader.readAsDataURL(file[0]);
+                //});
+            }
+        });
 	}
 	map.on('zoomend', loadPoints);
 
@@ -376,22 +420,24 @@ function eventListener(event){ //mmm function inside function
   }
 
   function loadCard(waypoints, index){
-	if (!waypoints.inputWaypoints){
+
+	if (!waypoints[index].inputWaypoints){
 		$('#feed').html($('#feed').html()+cardHTML);
 		num_cards++;
-		$('div.card:nth-child('+num_cards+') img').attr('data-key', num_cards);
+		$('div.card:nth-child('+num_cards+') img').attr('data-key', index);
 		if (waypoints[index].img[0]) $('div.card:nth-child('+num_cards+') img').attr('src', waypoints[index].img[0]);
 		else $('div.card:nth-child('+num_cards+') img').attr('src', "./img/Question_Mark.svg");
-		$('div.card:nth-child('+num_cards+') .card-body').text(waypoints[index].title);
-		$('div.card:nth-child('+num_cards+')').click();
+		$('div.card:nth-child('+num_cards+') .card-body').html("<div class='container'><h5 class='card-title'>"+waypoints[index].title+"</h5><h6 class='card-subtitle text-muted'><small> Point by "+waypoints[index].username+"</small></h6></div>");
+		//$('div.card:nth-child('+num_cards+')').click();
 	}
 	else{
 		$('#feed').html($('#feed').html()+cardHTML);
 		num_cards++;
-		$('div.card:nth-child('+num_cards+')').attr('data-key', num_cards);
-		if (waypoints.inputWaypoints[0].img[0]) $('div.card:nth-child('+num_cards+') img').attr('src', waypoints.inputWaypoints[0].img[0]);
+		$('div.card:nth-child('+num_cards+')').attr('data-key', index);
+		//if (type) $('div.card:nth-child('+num_cards+')').css("background-color", "#ffe6cc");
+		if (waypoints[index].inputWaypoints[0].img[0]) $('div.card:nth-child('+num_cards+') img').attr('src', waypoints[index].inputWaypoints[0].img[0]);
 		else $('div.card:nth-child('+num_cards+') img').attr('src', "./img/Question_Mark.svg");
-		$('div.card:nth-child('+num_cards+') .card-body').text(waypoints.inputWaypoints[0].title);
+		$('div.card:nth-child('+num_cards+') .card-body').html("<div class='container'><h5 class='card-title'>"+waypoints[index].inputWaypoints[0].title+"</h5><h6 class='card-subtitle text-muted'><small>Itinerary by "+waypoints[index].username+"</small></h6></div>");
 		/*console.log($('div.card:nth-child('+num_cards+') > div > img'));
 		$('div.card:nth-child('+num_cards+') > div > img').click(function(e){
 			console.log("this"); console.log(this);
@@ -401,7 +447,7 @@ function eventListener(event){ //mmm function inside function
 
   function cardClicked(item){
 	var datakey = $(item).attr("data-key");
-	if (datakey) pointsOfInterest.onclick_card(datakey-1);
+	if (datakey) pointsOfInterest.onclick_card(datakey);
   }
 
   function change(){

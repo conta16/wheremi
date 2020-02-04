@@ -1,6 +1,6 @@
 function wikiSearcher(options){
 
-    parent = this;
+    parentT = this;
   
     function init(){
       for (var i in options){
@@ -42,7 +42,7 @@ function wikiSearcher(options){
   
       if (pages) requestAndCallback(wiki_url, function(res){
            for (var i in res.query.pages){
-                 res.query.pages[i].latLng={lat: parent.posDictionary[i].lat, lng: parent.posDictionary[i].lng};
+                 res.query.pages[i].latLng={lat: parentT.posDictionary[i].lat, lng: parentT.posDictionary[i].lng};
                  }
       if (intro) options.introCallback(res);
       else options.pageCallback(res);
@@ -65,13 +65,13 @@ function wikiSearcher(options){
       get_url=options.wiki_search_url;
       get_url=parse_params(get_url, params);
   
-    requestAndCallback(get_url, function(res){parent.get_wikipage(res.query.geosearch, true)}, function(a,b,c){console.log(a,b,c)})
+    requestAndCallback(get_url, function(res){console.log(res.query.geosearch);parentT.get_wikipage(res.query.geosearch, true)}, function(a,b,c){console.log(a,b,c)})
     }
   
     this.dictionarize = function(){
-      parent.posDictionary={};
-      for (var i in parent.lastResponse.query.geosearch){
-          parent.posDictionary[parent.lastResponse.query.geosearch[i].pageid]={lat: parent.lastResponse.query.geosearch[i].lat, lng: parent.lastResponse.query.geosearch[i].lon}
+      parentT.posDictionary={};
+      for (var i in parentT.lastResponse.query.geosearch){
+          parentT.posDictionary[parentT.lastResponse.query.geosearch[i].pageid]={lat: parentT.lastResponse.query.geosearch[i].lat, lng: parentT.lastResponse.query.geosearch[i].lon}
           }
       }
   
@@ -87,7 +87,7 @@ function wikiSearcher(options){
   
       get_url=options.wiki_search_url;
       get_url=parse_params(get_url, params);
-      requestAndCallback(get_url, function(res){if (res.query==undefined) return; parent.lastResponse=Object.assign({}, res); parent.dictionarize(); parent.get_wikipage(res.query.geosearch, true)}, function(a,b,c){console.log(a,b,c)})
+      requestAndCallback(get_url, function(res){if (res.query==undefined) return; parentT.lastResponse=Object.assign({}, res); parentT.dictionarize(); parentT.get_wikipage(res.query.geosearch, true)}, function(a,b,c){console.log(a,b,c)})
       }
   
       this.bboxFromLeaflet=function(map){
@@ -100,8 +100,8 @@ function wikiSearcher(options){
       }
   
       this.searchOnMap= function(map, num){
-        bounds= parent.bboxFromLeaflet(map);
-        parent.get_wiki_bbox({num: num, coords1: bounds.coords1, coords2: bounds.coords2});
+        bounds= parentT.bboxFromLeaflet(map);
+        parentT.get_wiki_bbox({num: num, coords1: bounds.coords1, coords2: bounds.coords2});
       }
   }
 

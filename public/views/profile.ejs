@@ -89,6 +89,28 @@ Licensed under MIT
     
 
 </style>
+<script type="text/javascript">
+  function aggiornaBio(){
+    var x = document.getElementbyId('bioAggiornata');
+    $.post("/newbio",x.val(), function(data){
+            if(data==='done')
+              {
+                alert("bio update ok");
+              }
+          });
+  }
+
+ /* app.post('/newbio', function(req,res){
+    var newbio = req.body;
+    req.user.bio = newbio;
+});
+va in index.js*/
+ 
+
+
+
+
+</script>
 <body>
 <div class="container">
     <div class="row profile">
@@ -103,24 +125,26 @@ Licensed under MIT
 				<!-- SIDEBAR USER TITLE -->
 				<div class="profile-usertitle">
 					<div class="profile-usertitle-name bigger">
-						Toyoki
+						<%=user.username %>
 					</div>
 					<div class="profile-usertitle-job">
-						culotetteculo
+            <% if (!user.bio) { %>
+              
+              <input type="text" name="newBio" placeholder="Inserisci la tua nuova bio!" class="bio-container" id="bioAggiornata"></input>
+              <button class="btn btn-primary" type="button" onclick="aggiornaBio">Salva</button>
+              
+              <% } else { %>
+              <span class = "bio-span"><%=user.bio %></span>
+            <% } %>
+            
 					</div>
 				</div>
 				<!-- END SIDEBAR USER TITLE -->
 				<!-- SIDEBAR MENU -->
 				<div class="profile-usermenu">
 					<div class="card-container">
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut labore repellendus exercitationem corporis commodi, nisi est optio molestiae, harum consequuntur nemo error blanditiis veritatis veniam tenetur et maiores ullam quisquam.<br>
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut labore repellendus exercitationem corporis commodi, nisi est optio molestiae, harum consequuntur nemo error blanditiis veritatis veniam tenetur et maiores ullam quisquam.<br>
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut labore repellendus exercitationem corporis commodi, nisi est optio molestiae, harum consequuntur nemo error blanditiis veritatis veniam tenetur et maiores ullam quisquam.<br>
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut labore repellendus exercitationem corporis commodi, nisi est optio molestiae, harum consequuntur nemo error blanditiis veritatis veniam tenetur et maiores ullam quisquam.<br>
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut labore repellendus exercitationem corporis commodi, nisi est optio molestiae, harum consequuntur nemo error blanditiis veritatis veniam tenetur et maiores ullam quisquam.<br>
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut labore repellendus exercitationem corporis commodi, nisi est optio molestiae, harum consequuntur nemo error blanditiis veritatis veniam tenetur et maiores ullam quisquam.<br>
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut labore repellendus exercitationem corporis commodi, nisi est optio molestiae, harum consequuntur nemo error blanditiis veritatis veniam tenetur et maiores ullam quisquam.<br>
-                        </div>
+                
+          </div>
 				</div>
 				<!-- END MENU -->
             </div>

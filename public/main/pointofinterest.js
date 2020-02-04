@@ -54,18 +54,40 @@ class PointOfInterest{
                             })
                             .catch(() => {});
                     });
-                    loadCard(parentThis.itineraryStartPoints[index], 0);
+                    $.ajax({
+                        url: parentThis.url+"/getUsername?id="+parentThis.itineraryStartPoints[index].user_id.toString(),
+                        method: "GET",
+                        dataType: "json",
+                        success: (data) => {
+                            parentThis.itineraryStartPoints[index].username = data[0].username;
+                            loadCard(parentThis.itineraryStartPoints, index);
+                        },
+                        error: () => {
+                            console.log("error in getting username");
+                        } 
+                    });
+                        
                 });
                 parentThis.points.forEach((obj,index) => {
                     if (parentThis.markers[index]) parentThis.markers[index].on('click', () => {
                         loadMenu(parentThis.points, index, false);
                     });
-                    loadCard(parentThis.points, index);
+                    $.ajax({
+                        url: parentThis.url+"/getUsername?id="+parentThis.points[index].user_id.toString(),
+                        method: "GET",
+                        dataType: "json",
+                        success: (data) => {
+                            parentThis.points[index].username = data[0].username;
+                            loadCard(parentThis.points, index, 0);
+                        },
+                        error: () => {
+                            console.log("error in getting username");
+                        } 
+                    });
                 });
 
                 this.wikipediaPoints = []; //with wikipedia stuff here, wikipedia links are loaded only if database responds successfully. Maybe it can be changed
                 var options = {wiki_search_url: "https://en.wikipedia.org/w/api.php", introCallback: function(a){
-                    console.log("yooooooooooooo");
                     if (a){
                         for (var i in a.query.pages)
                             parentThis.wikipediaPoints.push(a.query.pages[i]);
@@ -88,7 +110,7 @@ class PointOfInterest{
                         }
                 }};
                 var yt = new YTSearcher(yt_options);
-                yt.videoOnMap(map, {});
+                yt.videoOnMap(map, 10);
                 while(parentThis.yt_markers.length > 0) parentThis.removeYtMarker(0);       
 
             },
@@ -220,9 +242,9 @@ class PointOfInterest{
             parentThis.wikipediaMarkers[len].closePopup();
         });*/
         this.wikipediaMarkers[len].on('click', () => {
-            $("#inspect").text(parentThis.wikipediaPoints[len].title.toString());
+            $("#inspect").html("<div class='container'><h2>"+parentThis.wikipediaPoints[len].title.toString()+"</h2><p>"+parentThis.wikipediaPoints[len].extract.toString()+"</p></div>");
             $("a[href='#feed']").removeClass("active");
-            $("a[href='profile']").removeClass("active");
+            $("a[href='#profile']").removeClass("active");
             $("a[href='#inspect']").addClass("active");
             $("#feed").removeClass("active show");
             $("#profile").removeClass("active show");

@@ -9,6 +9,10 @@ var path = require('path');
 var StrategyGoogle = require('passport-google-oauth20').Strategy;
 var fs = require('fs');
 const sgMail = require('@sendgrid/mail');
+var cookieparser = require ('cookie-parser');
+var CookieStrategy = require('passport-cookie');
+var authCookie = "wH3r3M1k33p1nGMyK00k135";
+
 sgMail.setApiKey("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")
 
 
@@ -31,6 +35,7 @@ app.use(require('morgan')('combined'));
 //app.use(require('body-parser').urlencoded({ extended: true }));
 app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
 
+app.use(cookieparser());
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json({
@@ -63,7 +68,7 @@ const baseURL=protocol+baseDomain;
 
 /* MONGOOSE SETUP */
 
-mongoose.connect(urldb);
+mongoose.connect(urldb, { useNewUrlParser: true, useUnifiedTopology: true});
 
 const Schema = mongoose.Schema;
 
@@ -73,7 +78,8 @@ var userModel ={
       name: String,
       surname: String,
       email: String,
-      salt: String
+      salt: String,
+			token: String
     };
 var passwordBeingUpdatedModel={
   userid: String,
@@ -140,6 +146,12 @@ passport.use(new Strategy({
       if (err) { return cb(err); }
       if (!user) { return cb(null, false); }
       if (user.password != sha512(password, user.salt).passwordHash) { return cb(null, false); }
+			UserDetails.findOneAndUpdate({email: username}, {token: genRandomString(64)}, function(err, user){
+				if (err)
+					return cb(err);
+				if (!user)
+					return cb (null, false);
+			});
       return cb(null, user);
     });
   }));
@@ -186,7 +198,8 @@ passport.use(new GoogleStrategy({
           'surname': profile.name.familyName,
           'password': "",
           'email': profile.emails[0].value,
-          'salt': ""
+          'salt': "",
+					'token': genRandomString(64)
         }, function(err, user) {
           if(err) {
             return done(err);
@@ -198,8 +211,18 @@ passport.use(new GoogleStrategy({
           confirmMail(user);
 					GoogleTokens.update({'email': profile.emails[0].value}, {accessToken: accessToken, refreshToken: refreshToken, email: profile.emails[0].value}, {upsert: true}, function(err, token){});
           done(null, user);
+					// GoogleTokens.update({'email': profile.emails[0].value}, {accessToken: accessToken, refreshToken: refreshToken, email: profile.emails[0].value}, {upsert: true}, function(err, token){console.log(err, token)});
+          // done(null, user);
         });
       }
+		if (user){
+			UserDetails.findOneAndUpdate({email: profile.emails[0].value}, {token: genRandomString(64)}, function(err, user){
+				if (err)
+					return done(err);
+				if (!user)
+					return done(null, false);
+			});
+		}
 			GoogleTokens.update({'email': profile.emails[0].value}, {accessToken: accessToken, refreshToken: refreshToken, email: profile.emails[0].value}, {upsert: true}, function(err, token){console.log(err, token)});
 			done(null, user);
     });
@@ -261,6 +284,19 @@ passport.use(new RegisterStrategy({
   }
 ));
 
+passport.use(new CookieStrategy({cookieName: authCookie},
+  function(token, done) {
+		console.log(token);
+    UserDetails.findOne({ token: token }, function(err, user) {
+			console.log(user);
+			console.log(err);
+      if (err) { return done(err); }
+      if (!user) { return done(null, false); }
+      return done(null, user);
+    });
+  }
+));
+
 // Configure Passport authenticated session persistence.
 //
 // In order to restore authentication state across HTTP requests, Passport needs
@@ -308,6 +344,7 @@ app.post('/login', function (req, res, next){
         if (loginErr) {
           return next(loginErr);
         }
+				res.cookie(authCookie, user.token, {maxAge: 1000*60*60*24*14});
         return res.redirect('/');
       });
     })(req, res, next);
@@ -337,6 +374,7 @@ app.post('/register', function (req, res, next){
 
 app.get('/logout',
   function(req, res){
+		res.clearCookie(authCookie);
     req.logout();
     res.redirect('/');
   });
@@ -360,7 +398,8 @@ app.get('/logout',
                     name: data.name,
                     surname: data.surname,
                     email: data.email,
-                    salt: data.salt
+                    salt: data.salt,
+										token: ""
                   }, function (err, data){
               if (err){
                 console.log(err);
@@ -384,7 +423,10 @@ app.get('/logout',
     ]}));
 
 app.get('/auth/google/callback',
-  passport.authenticate('google', {successRedirect: "/", failureRedirect:"/login"}));
+  passport.authenticate('google', {failureRedirect:"/login"}), function(req, res){
+		res.cookie(authCookie, req.user.token, {maxAge: 1000*60*60*24*14});
+		return res.redirect('/');
+	});
 
 app.get('/passwordrecover', function(req, res){
   res.render('passwordrecover');
@@ -495,7 +537,9 @@ app.get('/profile',
 
 //
 app.get('/', function(req,res){
-	console.log(req);
+	passport.authenticate("cookie", { session: false }, function(err, user, info){
+		res.render('index', {user: req.user});
+	});
 	res.render('index', {user: req.user});
 		// res.sendFile(path.join(__dirname, './public/main', 'index.html'));
 });
@@ -563,6 +607,25 @@ db.close();
 	});
 });
 
+app.get('/getUsername', function(req, res){
+  MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err,db){
+    if (err) throw err;
+    var dbo = db.db("sitedb");
+    dbo.collection("userInfo").find({
+      "_id": ObjectId(req.query.id)
+    },{
+      fields: {
+        "username": 1
+      }
+    }).toArray(function(err, result){
+      if (err) throw err;
+      //console.log("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"); console.log(result);
+      res.send(result);
+      //db.close();
+    });
+  });
+});
+
 app.get('/about', function (req, res){
 	var obj = {};
 	MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err, db) {
@@ -592,7 +655,8 @@ app.get('/about', function (req, res){
 					_id: 1,
 					label: 1,
           				inputWaypoints: 1,
-          				waypoints: 1
+                  waypoints: 1,
+                  user_id: 1
 				}
 			}
 
@@ -631,8 +695,32 @@ app.get('/about', function (req, res){
 /*db.collection.find().sort({age:-1}).limit(1) // for MAX
 db.collection.find().sort({age:+1}).limit(1) // for MIN*/
 
+app.post('/changeprofilepic', function(req, res){
+  var pic = JSON.parse(req.body.pic);
+  var id = JSON.parse(req.body.id);
+  id = ObjectId(id);
+  console.log(pic);
+  console.log(id);
+
+  MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("sitedb");
+    dbo.collection("userInfo").update({
+      "_id": id
+    },{
+      $set: {
+        'profilepic': pic
+      }
+    }, function(err, res){
+      if (err) throw err;
+      db.close();
+    });
+  });
+});
+
 app.get('/route', function(req, res){
-	var tmp = ObjectId(req.query.id);
+  var tmp = ObjectId(req.query.id);
+  console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");console.log(tmp);
 	MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err, db) {
 		if (err) throw err;
                 var dbo = db.db("sitedb");

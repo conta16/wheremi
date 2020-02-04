@@ -40,7 +40,7 @@ class Itinerary {
                         $('.carousel-inner').append(slideItem);
                         document.dispatchEvent(event);
                     };
-    
+                    console.log(this);
                     reader.readAsDataURL(this);
                 });
             }
@@ -124,6 +124,7 @@ class Itinerary {
 
     getRouteFromDB(id){
         var parentThis = this;
+        console.log("getroute");console.log(id);
         return new Promise((resolve, reject) => {
             $.ajax({
                 url: parentThis.url+"/route?id="+id,
