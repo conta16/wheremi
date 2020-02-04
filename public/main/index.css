@@ -82,15 +82,21 @@ input.header{
   #invisible {
     z-index: 10;
     position: relative;
-    top: 90%;
+    top: 87%;
+    position: fixed;
+    /*margin: 5% auto; /* Will not center vertically and won't work in IE6/7. */
+    top: 87%;
+    left: 42.5%;
+    max-width: 80px;
     display: initial;
   }
   #invisible2 {
     z-index: 10;
     position: fixed;
     /*margin: 5% auto; /* Will not center vertically and won't work in IE6/7. */
-    top: 90%;
-    left: 44%;
+    top: 87%;
+    left: 42.5%;
+    max-width: 80px;
     right: 0;
     display: inline;
   }

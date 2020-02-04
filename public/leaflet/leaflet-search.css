@@ -6,7 +6,7 @@
 }
 
 .leaflet-control-geosearch {
-  min-width: 320px;
+  min-width: 318px;
   overflow: hidden;
   border: 1.3px solid;
 }
@@ -87,7 +87,7 @@
   float: left;
   top: -2px;
   left: 0px;
-  border-radius: 7px 7px 7px 7px;
+  border-radius: 4px 4px 4px 4px;
   box-shadow: none;
   background-color: #fff;
   background-clip: padding-box;
@@ -238,17 +238,17 @@
     width:100%;
   }
   .leaflet-control-geosearch {
-    width: 100%;
+    width:96%;
   }
   .leaflet-control-geosearch form{
-    width: 96%;
+    width: 100%;
   }
   .leaflet-control-geosearch form input{
     position: relative;
-    min-width: 100%;
+    min-width: 96%;
   }
   .leaflet-control-geosearch .leaflet-bar-part {
-    left: 88%;
+    left: 92%;
   }
   .leaflet-control-geosearch .results > * {
     width:100%;
