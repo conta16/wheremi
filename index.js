@@ -871,15 +871,41 @@ function removeFields(obj, fields){
 	return newobj;
 }
 
-app.get('/user', function(req, res){
-	if (req.user){
-		var a=removeFields(req.user._doc, ["password", "salt"])
-		return res.send(a);
-	}
-	else {
-		return res.send ("{}");
-	}
+function loggedin(req){
+	return !(!req.isAuthenticated || !req.isAuthenticated())
+}
+
+app.get('/user',
+	function(req, res){
+		if (!(!req.isAuthenticated || !req.isAuthenticated())){
+			var a=removeFields(req.user._doc, ["password", "salt", "token"])
+			return res.send(a);
+		}
+		else {
+			return res.send ("{}");
+		}
 })
+
+app.get('/users', function(req, res){
+	if (loggedin(req)){
+		MongoClient.connect(urldb, function(err, db) {
+  		if (err) throw err;
+  		var dbo = db.db("sitedb");
+  		var query = {};
+  		dbo.collection("userInfo").find(query).toArray(function(err, result) {
+    		if (err) throw err;
+				var a=[]
+				for (var i in result){
+					a[i]=removeFields(result[i], ["password", "salt", "token"]);
+				}
+				return res.send(a);
+    		db.close();
+  		});
+		});
+	}
+	else
+		return res.send ("{}");
+});
 
 /// Redirect all to home except post
 app.get('/upload', function( req, res ){
