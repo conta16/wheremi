@@ -82,7 +82,8 @@
   </div>
       </div>
       <!--<button class="btn btn-primary" id="invisible2" type="button" onclick="change()">change</button>-->
-      <img src="./img/paul.svg" onclick="change()" id="invisible2" style="width:15%; height:15%"/>
+    
+          <img src="./img/paul.svg" onclick="change()" id="invisible2" style="width:15%; height:15%;"/>
 
     <!-- Tab panes -->
     <div class="tab-content h-100">
@@ -94,11 +95,11 @@
       <div role="tabpanel" class="tab-pane fade-in h-100" id="profile">
         <%if(user){%>
         <style>
-
-        /* Profile container */
-        .profile {
+        :root{
+          --width-column: 100%;
+          --width-percent-column: calc(var(--width-column)/100);
+          --width-25-column: calc(var(--width-percent-column)*25);
         }
-
         /* Profile sidebar */
         .profile-sidebar {
           padding: 20px 0 10px 0;
@@ -131,11 +132,8 @@
         }
 
         .profile-usermenu {
-          margin-top: 30px;
+          margin-top: 1%;
           margin-left: 1%;
-            border-color: red;
-            border-width: 1px;
-            border-style: solid;
         }
 
 
@@ -155,15 +153,24 @@
             position: relative;
             overflow: hidden;
             border-radius: 50%;
+            display: inline-block; 
+            margin: 0 auto;
             }
             .profile-pic {
             height: 100%;
             width: auto;
             display: inline;
             margin-left: -25%;
-
             }
-
+            .bio-span{ 
+              display: block;
+              width: 100%;
+              text-align: center;
+            }
+            .centering{
+              width: 100%; 
+              text-align: center;
+            }
 
         </style>
         <script type="text/javascript">
@@ -180,14 +187,16 @@
 
         </script>
         <body width="100%" height="100%">
-        <div class="container">
+        <div class="container ">
             <div class="row profile">
                 <div class="col-lg-12">
         			<div class="profile-sidebar">
-        				<!-- SIDEBAR USERPIC -->
-        				<div class=" image-cropper">
+                <!-- SIDEBAR USERPIC -->
+                <div class ="centering">
+        				<div class="image-cropper">
         					<img src="../img/standard_profile.jpg" class="profile-pic">
-        				</div>
+                </div>
+              </div>
         				<!-- END SIDEBAR USERPIC -->
         				<!-- SIDEBAR USER TITLE -->
         				<div class="profile-usertitle">
