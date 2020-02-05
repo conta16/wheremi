@@ -192,10 +192,13 @@
                 <div class="col-lg-12">
         			<div class="profile-sidebar">
                 <!-- SIDEBAR USERPIC -->
+                <label for ="uploadpic">
                 <div class ="centering">
         				<div class="image-cropper">
         					<img src="../img/standard_profile.jpg" class="profile-pic">
                 </div>
+                </label>
+                <input id="uploadpic" type="file" style='display: none'/>
               </div>
         				<!-- END SIDEBAR USERPIC -->
         				<!-- SIDEBAR USER TITLE -->
@@ -205,9 +208,10 @@
         					</div>
         					<div class="profile-usertitle-job input-group">
                     <% if (!user.bio) { %>
-
+                      <span class = "bio-span">
                       <input type="text" name="newBio" placeholder="Inserisci la tua nuova bio!" class="bio-container" id="bioAggiornata" style ="height: 35px;">
                       <span class="input-group-btn" style="border-radius: 4px;"><button class="btn btn-primary" type="button" onclick="aggiornaBio()" style="line-height: 21px;">Salva</button></span>
+                      </span>
 
                       <% } else { %>
                       <span class = "bio-span"><%=user.bio %></span>
