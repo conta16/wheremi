@@ -853,13 +853,28 @@ upload.configure({
     uploadUrl: '/uploads'
 });
 
+function removeFields(obj, fields){
+	function notin(item, list){
+		for (var i in list){
+			if (list[i]==item)
+				return false;
+		}
+		return true;
+	}
+	var newobj={};
+	var keyobj=Object.keys(obj);
+	for (var i in keyobj){
+			if (notin(keyobj[i], fields)){
+				newobj[keyobj[i]]=obj[keyobj[i]];
+			}
+	}
+	return newobj;
+}
+
 app.get('/user', function(req, res){
-	console.log (req.user);
 	if (req.user){
-		delete req.user.password;
-		delete req.user.salt;
-		delete req.user.token;
-		return res.send(req.user);
+		var a=removeFields(req.user._doc, ["password", "salt"])
+		return res.send(a);
 	}
 	else {
 		return res.send ("{}");
