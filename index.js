@@ -264,7 +264,7 @@ passport.use(new RegisterStrategy({
             'password': salt.passwordHash,
             'email': req.body.email,
             'salt':salt.salt,
-            'bio':'', 
+            'bio':'',
             'verificationKey': vk
           }, function(err, user) {
             if(err) {
@@ -852,6 +852,19 @@ upload.configure({
     uploadDir: __dirname + '/public/uploads/',
     uploadUrl: '/uploads'
 });
+
+app.get('/user', function(req, res){
+	console.log (req.user);
+	if (req.user){
+		delete req.user.password;
+		delete req.user.salt;
+		delete req.user.token;
+		return res.send(req.user);
+	}
+	else {
+		return res.send ("{}");
+	}
+})
 
 /// Redirect all to home except post
 app.get('/upload', function( req, res ){
