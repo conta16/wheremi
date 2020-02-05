@@ -882,7 +882,7 @@ app.get('/user',
 			return res.send(a);
 		}
 		else {
-			return res.send ("{}");
+			return res.send ({});
 		}
 })
 

@@ -230,53 +230,64 @@ function loadPoints(){
 
 var buttonMode = 0;
 
+document.addEventListener('userLogged', function(e){
+  //console.log(localStorage.getItem("account"));
+  world.setAccount(e);
+  create.addTo(map);
+  upload.addTo(map);
+
+  $(document).on('change','#uploadpic', function () {
+    var file = this.files;
+    console.log("akkkkkkkkkkkkksssssss");
+          if (this.files.length == 1) {
+
+              //$.each(this.files, function (index, value) {
+                  var reader = new FileReader();
+
+                  reader.onload = function (e) {
+          $('img#profilepic').attr('src', e.target.result);
+                      $.ajax({
+            url: '/changeprofilepic',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+              pic: JSON.stringify(e.target.result),
+              id: JSON.stringify(use._id)
+            },
+            success: () => {
+              console.log("pic changed");
+            },
+            error: () => {
+              console.log("error in changing pic");
+            }
+          });
+                  };
+                  reader.readAsDataURL(file[0]);
+              //});
+          }
+      });
+});
+
+function checkLoggedIn() {
+  var a=false
+    $.ajax({
+      url: "/user",
+      method: "GET",
+      success: function(data){
+        if (data!={}){
+          var event =new CustomEvent('userLogged', {account: data});
+          document.dispatchEvent(event);
+        }
+      }
+    });
+}
+
 $(document).ready(function() {
 	pointsOfInterest.loadPoints();
 
 	//$('#fileupload').fileupload({ dataType: 'json' });
-	if (typeof(Storage) !== "undefined" && $("div#data").data("n")){
-		//console.log(localStorage.getItem("account"));
-		var use = $("#data").data("n");
-		$('div#profile').html(profileHTML);
-		$('#profilepic').attr('src',use.profilepic);
-		$('p#username').html(use.username);
-		world.setAccount(use);
-		create.addTo(map);
-		upload.addTo(map);
-
-		$(document).on('change','#uploadpic', function () {
-			var file = this.files;
-			console.log("akkkkkkkkkkkkksssssss");
-            if (this.files.length == 1) {
-    
-                //$.each(this.files, function (index, value) {
-                    var reader = new FileReader();
-    
-                    reader.onload = function (e) {
-						$('img#profilepic').attr('src', e.target.result);
-                        $.ajax({
-							url: 'http://localhost:3000/changeprofilepic',
-							method: 'POST',
-							dataType: 'json',
-							data: {
-								pic: JSON.stringify(e.target.result),
-								id: JSON.stringify(use._id)
-							},
-							success: () => {
-								console.log("pic changed");
-							},
-							error: () => {
-								console.log("error in changing pic");
-							}
-						});
-                    };
-                    reader.readAsDataURL(file[0]);
-                //});
-            }
-        });
-	}
+	checkLoggedIn();
 	map.on('zoomend', loadPoints);
-
 	map.on('drag', loadPoints);
 
 });
