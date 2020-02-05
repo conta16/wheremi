@@ -64,16 +64,19 @@ var itineraryHTML = `<div id="carouselExampleIndicators" class="carousel slide m
 
 </div>
 
-<div class="form-group">
+<div class="form-group p">
   <label for="title">Title:</label>
   <textarea class="form-control" id="title"></textarea>
 </div>
 
-<div class="form-group">
+<div class="form-group p">
   <label for="description">Description:</label>
   <textarea class="form-control" id="description" rows="3"></textarea>
 </div>
-</form>`;
+</form>
+
+<div class="nopermit"></div>
+`;
 
 var cardHTML = `<div class="card mt-3" style="height:20%" onclick="cardClicked(this)" data-key="">
 <div class="card-horizontal">
@@ -379,7 +382,8 @@ var index1;
 	$("#feed").removeClass("active show");
 	$("#profile").removeClass("active show");
 	$("#inspect").addClass("active show");
-	if (!write_permit) {$('textarea').attr('readonly','readonly'); $("#f").attr("disabled", "disabled");}
+	if (!write_permit) {$('.p').css('display','none'); $(".fileinput-button").css("display", "none"); $(".nopermit").css("display", "inline");}
+	else {$('.p').css('display','inline'); $(".fileinput-button").css("display", "inline"); $(".nopermit").css("display", "none");}
   	var slideItem;
   	for (var i in waypoints[index].img){
 	  if (i==0) slideItem = "<div class='carousel-item active'><img class='d-inline-block w-100' style='height:300px;' src='"+waypoints[index].img[0]+"' alt=''></div>";
@@ -387,7 +391,8 @@ var index1;
 	  $('.carousel-inner').append(slideItem);
   	}
   	$('#title').val(waypoints[index].title);
-  	$('#description').val(waypoints[index].description);
+	$('#description').val(waypoints[index].description);
+	$('.nopermit').html("<p class='h2'>"+waypoints[index].title+"</p><p class='h6'>"+waypoints[index].description+"</p>");  
   	$('#title').on('input', function(){
 	  waypoints[index].title = $('#title').val();
  	});
