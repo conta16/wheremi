@@ -264,7 +264,7 @@ passport.use(new RegisterStrategy({
             'password': salt.passwordHash,
             'email': req.body.email,
             'salt':salt.salt,
-            'bio':'', 
+            'bio':'',
             'verificationKey': vk
           }, function(err, user) {
             if(err) {
@@ -513,7 +513,7 @@ app.get('/setnewpassword', function (req,res){
 
 app.post('/newbio', function(req,res){
   console.log("body:", req.body);
-  var res=UserDetails.findOneAndUpdate({email: req.user.email}, {bio: req.body.newbio}, function(err, data){
+  UserDetails.findOneAndUpdate({email: req.user.email}, {bio: req.body.newbio}, function(err, data){
     if (err){
       console.log("Sorry, we are in trouble with our database");
     }
@@ -853,6 +853,60 @@ upload.configure({
     uploadUrl: '/uploads'
 });
 
+function removeFields(obj, fields){
+	function notin(item, list){
+		for (var i in list){
+			if (list[i]==item)
+				return false;
+		}
+		return true;
+	}
+	var newobj={};
+	var keyobj=Object.keys(obj);
+	for (var i in keyobj){
+			if (notin(keyobj[i], fields)){
+				newobj[keyobj[i]]=obj[keyobj[i]];
+			}
+	}
+	return newobj;
+}
+
+function loggedin(req){
+	return !(!req.isAuthenticated || !req.isAuthenticated())
+}
+
+app.get('/user',
+	function(req, res){
+		if (!(!req.isAuthenticated || !req.isAuthenticated())){
+			var a=removeFields(req.user._doc, ["password", "salt", "token"])
+			return res.send(a);
+		}
+		else {
+			return res.send ({});
+		}
+})
+
+app.get('/users', function(req, res){
+	if (loggedin(req)){
+		MongoClient.connect(urldb, function(err, db) {
+  		if (err) throw err;
+  		var dbo = db.db("sitedb");
+  		var query = {};
+  		dbo.collection("userInfo").find(query).toArray(function(err, result) {
+    		if (err) throw err;
+				var a=[]
+				for (var i in result){
+					a[i]=removeFields(result[i], ["password", "salt", "token"]);
+				}
+				return res.send(a);
+    		db.close();
+  		});
+		});
+	}
+	else
+		return res.send ("{}");
+});
+
 /// Redirect all to home except post
 app.get('/upload', function( req, res ){
 	res.redirect('/');
@@ -880,6 +934,13 @@ app.use('/upload', function(req, res, next){
     })(req, res, next);
 });
 
+app.get('/profile', function(req,res){
+  if (loggedin(req)){
+    return res.render("profile", req.user);
+  }else{
+    return res.render("profile", null);
+  }
+});
 
 app.listen(3000,'0.0.0.0', function(){
 	console.log('server listening on 3000...');
