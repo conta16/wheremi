@@ -513,7 +513,7 @@ app.get('/setnewpassword', function (req,res){
 
 app.post('/newbio', function(req,res){
   console.log("body:", req.body);
-  var res=UserDetails.findOneAndUpdate({email: req.user.email}, {bio: req.body.newbio}, function(err, data){
+  UserDetails.findOneAndUpdate({email: req.user.email}, {bio: req.body.newbio}, function(err, data){
     if (err){
       console.log("Sorry, we are in trouble with our database");
     }

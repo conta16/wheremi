@@ -82,7 +82,7 @@
   </div>
       </div>
       <!--<button class="btn btn-primary" id="invisible2" type="button" onclick="change()">change</button>-->
-    
+
           <img src="./img/paul.svg" onclick="change()" id="invisible2" style="width:15%; height:15%;"/>
 
     <!-- Tab panes -->
@@ -153,7 +153,7 @@
             position: relative;
             overflow: hidden;
             border-radius: 50%;
-            display: inline-block; 
+            display: inline-block;
             margin: 0 auto;
             }
             .profile-pic {
@@ -162,13 +162,13 @@
             display: inline;
             margin-left: -25%;
             }
-            .bio-span{ 
+            .bio-span{
               display: block;
               width: 100%;
               text-align: center;
             }
             .centering{
-              width: 100%; 
+              width: 100%;
               text-align: center;
             }
 
@@ -192,14 +192,16 @@
                 <div class="col-lg-12">
         			<div class="profile-sidebar">
                 <!-- SIDEBAR USERPIC -->
+                <div>
                 <label for ="uploadpic">
                 <div class ="centering">
         				<div class="image-cropper">
-        					<img src="../img/standard_profile.jpg" class="profile-pic">
+        					<img src="../img/standard_profile.jpg" class="profile-pic" id="profilepic">
                 </div>
                 </label>
                 <input id="uploadpic" type="file" style='display: none'/>
               </div>
+            </div>
         				<!-- END SIDEBAR USERPIC -->
         				<!-- SIDEBAR USER TITLE -->
         				<div class="profile-usertitle">

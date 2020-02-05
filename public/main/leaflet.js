@@ -229,23 +229,26 @@ function loadPoints(){
 }
 
 var buttonMode = 0;
+var use={};
 
 document.addEventListener('userLogged', function(e){
   //console.log(localStorage.getItem("account"));
-  world.setAccount(e);
+  world.setAccount(e.detail.account);
   create.addTo(map);
   upload.addTo(map);
+  console.log(e);
+  use=Object.assign({}, e.detail.account);
+  $('img#profilepic').attr('src', e.detail.account.profilepic);
+
 
   $(document).on('change','#uploadpic', function () {
     var file = this.files;
     console.log("akkkkkkkkkkkkksssssss");
           if (this.files.length == 1) {
-
               //$.each(this.files, function (index, value) {
                   var reader = new FileReader();
-
                   reader.onload = function (e) {
-          $('img#profilepic').attr('src', e.target.result);
+                    $('img#profilepic').attr('src', e.target.result);
                       $.ajax({
             url: '/changeprofilepic',
             method: 'POST',
@@ -275,7 +278,7 @@ function checkLoggedIn() {
       method: "GET",
       success: function(data){
         if (data!={}){
-          var event =new CustomEvent('userLogged', {account: data});
+          var event =new CustomEvent('userLogged', {detail: {account:data}});
           document.dispatchEvent(event);
         }
       }
