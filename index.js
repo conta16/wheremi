@@ -934,6 +934,13 @@ app.use('/upload', function(req, res, next){
     })(req, res, next);
 });
 
+app.get('/profile', function(req,res){
+  if (loggedin(req)){
+    return res.render("profile", req.user);
+  }else{
+    return res.render("profile", null);
+  }
+});
 
 app.listen(3000,'0.0.0.0', function(){
 	console.log('server listening on 3000...');

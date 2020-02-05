@@ -83,7 +83,10 @@ var cardHTML = `<div class="card mt-3" style="height:20%" onclick="cardClicked(t
 </div>
 </div>`;
 
-var profileHTML = `<div class='container' style='position: relative'>
+var profileHTML = "<iframe src='/profile' class='h-100'></iframe>";
+
+
+/*`<div class='container' style='position: relative'>
 <div class='container' style="">
 <label for='uploadpic'>
 	<img class="rounded-circle" style="height:200px; width:200px" alt="100x100" id="profilepic" src="./img/unknown_person.png" data-holder-rendered="true">
@@ -92,7 +95,11 @@ var profileHTML = `<div class='container' style='position: relative'>
 </div>
 <p class='h5' id="username"></p>
 <div id="itineraries"></div>
-</div>`;
+</div>`;*/
+
+
+
+
 
 //////////////// DAVIDE - locate control ////////////
 
