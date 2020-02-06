@@ -294,7 +294,7 @@ passport.use(new CookieStrategy({cookieName: authCookie},
 			console.log(user);
 			console.log(err);
       if (err) { return done(err); }
-      if (!user) { return done(null, false); }
+      if (!user) { return done(null, "nouser"); }
       return done(null, user);
     });
   }
@@ -428,8 +428,18 @@ app.get('/logout',
 
 app.get('/auth/google/callback',
   passport.authenticate('google', {failureRedirect:"/login"}), function(req, res){
-		res.cookie(authCookie, req.user.token, {maxAge: 1000*60*60*24*14});
-		return res.redirect('/');
+		var token;
+		MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err, db) {
+			if (err) throw err;
+			var dbo = db.db("sitedb");
+			dbo.collection("userInfo").find({"_id": ObjectId(req.user._id)}, {fields:{token: 1}}).toArray(function (err, result) {
+				if (err)
+					throw(err)
+				token=result[0].token;
+				res.cookie(authCookie, token, {maxAge: 1000*60*60*24*14, path:'/'});
+				return res.redirect('/');
+			});
+		})
 	});
 
 app.get('/passwordrecover', function(req, res){
@@ -540,24 +550,15 @@ app.post('/setnewpassword', function(req, res){
 });
 });
 
-app.get('/profile',
-  require('connect-ensure-login').ensureLoggedIn(),
-  function(req, res){
-    res.render('profile', { user: req.user });
-  });
-
-//////////////////////////////
-
-
-
 //
-app.get('/', function(req,res){
-	passport.authenticate("cookie", { session: false }, function(err, user, info){
-		res.render('index', {user: req.user});
+app.get('/',
+  passport.authenticate("cookie", { session: false }),
+	 function(req, res, next){
+		if (req.user==="nouser" || req.user===undefined || req.user==null)
+			res.render('index', {user: undefined});
+		else
+			res.render('index', {user: req.user});
 	});
-	res.render('index', {user: req.user});
-		// res.sendFile(path.join(__dirname, './public/main', 'index.html'));
-});
 
 app.get('/search', function (req, res){
 	MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err, db) {
@@ -706,6 +707,12 @@ app.get('/about', function (req, res){
 		});
 	});
 });
+
+app.get("/teripendi",
+  passport.authenticate("cookie", { session: false }),
+  function(req, res) {
+    res.json(req.user);
+  });
 
 /*db.collection.find().sort({age:-1}).limit(1) // for MAX
 db.collection.find().sort({age:+1}).limit(1) // for MIN*/

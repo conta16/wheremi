@@ -53,6 +53,10 @@ input.header{
   display: none;
 }
 
+.nopermit{
+  display:none;
+}
+
 
 /*@media screen and (max-width: 2000px) {
   #map-wrapper {
