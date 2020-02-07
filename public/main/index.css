@@ -126,3 +126,75 @@ input.header{
   height: 40px;
   width: 40px;
 }
+
+
+/* Profile sidebar */
+.profile-sidebar {
+  padding: 20px 0 10px 0;
+  background: #fff;
+}
+
+.profile-userpic img {
+  float: none;
+  width: 50%;
+  height: 50%;
+}
+
+.profile-usertitle {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.profile-usertitle-name {
+  color: #5a7391;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+
+.profile-usertitle-job {
+  color: #5b9bd1;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.profile-usermenu {
+  margin-top: 1%;
+  margin-left: 1%;
+}
+
+
+/* Profile Content */
+.profile-content {
+  padding: 20px;
+  background: #fff;
+  min-height: 460px;
+}
+    .card-container{
+        height: 200px;
+        overflow: scroll;
+    }
+    .image-cropper {
+    width: 150px;
+    height: 150px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 auto;
+    }
+    .profile-pic {
+    height: 100%;
+    width: auto;
+    display: inline;
+    }
+    .bio-span{
+      display: block;
+      width: 100%;
+      text-align: center;
+    }
+    .centering{
+      width: 100%;
+      text-align: center;
+    }
