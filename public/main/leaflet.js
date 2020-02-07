@@ -20,6 +20,9 @@ map.on('drag', function() {
 	map.panInsideBounds(bound, { animate: false });
 });
 
+L.control.scale({position: 'bottomright'}).addTo(map);
+
+
 Paul=new Artyom();
 
 Paul.initialize({
@@ -155,8 +158,8 @@ L.control.zoom({
 
 L.control.custom({
 	position: 'topleft',
-	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/nav.svg" width="26px" height="26px"></img></a>',
-	classes : 'leaflet-control leaflet-bar',
+  content : '<div class="big-control"><a class="leaflet-bar-part leaflet-bar-part-single lowalpha round" width="30px" style="line-height: 40px; height: 40px; width: 40px" height="30px"><img src="./img/nav.svg" width="40px" height="40px"></img></a></div>',
+	classes : 'leaflet-control leaflet-bar round',
 	events : {
 		click : function(e){
 			nav=new polloNavigator(navigatorControl.onpoint, navigatorControl.onend, navigatorControl.wondering);
@@ -167,8 +170,8 @@ L.control.custom({
 
 var create = L.control.custom({
 	position: 'topleft',
-	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/travel.png" width="26px" height="26px"></img></a>',
-	classes : 'leaflet-control leaflet-bar',
+	content : '<div class="big-control"><a class="leaflet-bar-part leaflet-bar-part-single lowalpha round" width="30px" style="line-height: 40px height: 40px; width: 40px" height="30px"><img src="./img/travel.png" width="40px" height="40px"></img></a></div>',
+	classes : 'leaflet-control leaflet-bar round',
 	events : {
 		click : function(e){
 			createMode();
@@ -179,8 +182,8 @@ var create = L.control.custom({
 
 var upload = L.control.custom({
 	position: 'topleft',
-	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/upload.png" width="26px" height="26px"></img></a>',
-	classes : 'leaflet-control leaflet-bar',
+	content : '<div class="big-control"><a class="leaflet-bar-part leaflet-bar-part-single lowalpha round" width="30px" style="line-height: 40px height: 40px; width: 40px" height="30px"><img src="./img/upload.png" width="40px" height="40px"></img></a></div>',
+	classes : 'leaflet-control leaflet-bar round',
 	events : {
 		click : function(e){
 			ldItinerary();
@@ -190,8 +193,8 @@ var upload = L.control.custom({
 
 var removeButton = 	L.control.custom({
 	position: 'topleft',
-	content : '<a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 26px" height="30px"><img src="./img/load_point.svg" width="26px" height="26px"></img></a>',
-	classes : 'leaflet-control leaflet-bar',
+	content : '<div class="big-control"><a class="leaflet-bar-part leaflet-bar-part-single lowalpha round" width="30px" style="line-height: 40px height: 40px; width: 40px" height="30px"><img src="./img/load_point.svg" width="40px" height="40px"></img></a></div>',
+	classes : 'leaflet-control leaflet-bar round',
 	events : {
 		click : function(e){
 			itinerary.removePoint();
@@ -413,7 +416,7 @@ var index1;
   	}
   	$('#title').val(waypoints[index].title);
 	$('#description').val(waypoints[index].description);
-	$('.nopermit').html("<p class='h2'>"+waypoints[index].title+"</p><p class='h6'>"+waypoints[index].description+"</p>");  
+	$('.nopermit').html("<p class='h2'>"+waypoints[index].title+"</p><p class='h6'>"+waypoints[index].description+"</p>");
   	$('#title').on('input', function(){
 	  waypoints[index].title = $('#title').val();
  	});
