@@ -36,7 +36,7 @@ class PointOfInterest{
                 parentThis.points = data.points;
                 while (parentThis.markers.length > 0) parentThis.removePointsMarker(0);
                 while (parentThis.itineraryStartMarkers.length > 0) parentThis.removeItineraryMarker(0);
-                for (var i in parentThis.itineraryStartPoints) {
+                if (!this.currentItinerary.getMode())for (var i in parentThis.itineraryStartPoints) {
                     parentThis.setItineraryMarker(parentThis.itineraryStartPoints[i].inputWaypoints[0].latLng);
                     parentThis.itineraryStartPoints[i].inputWaypoints[0].write_permit = false;
                 }
@@ -231,7 +231,9 @@ class PointOfInterest{
                 icon: icon
             },
             {
-                draggable: false
+                iconAnchor: [24, 24],
+
+                draggable: false,
             }
         );
         /*this.wikipediaMarkers[len].bindPopup(this.wikipediaPoints[len].title.toString());
@@ -241,7 +243,7 @@ class PointOfInterest{
         this.wikipediaMarkers[len].on('mouseout', () => {
             parentThis.wikipediaMarkers[len].closePopup();
         });*/
-        this.wikipediaMarkers[len].on('click', () => {
+        this.wikipediaMarkers[len].on('click', (e) => {
             $("#inspect").html("<div class='container'><h2>"+parentThis.wikipediaPoints[len].title.toString()+"</h2><p>"+parentThis.wikipediaPoints[len].extract.toString()+"</p></div>");
             $("a[href='#feed']").removeClass("active");
             $("a[href='#profile']").removeClass("active");

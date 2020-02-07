@@ -793,7 +793,6 @@ app.post('/', function (req, response){
 		var promise = new Promise(async function(resolve, reject) {
 			for (var i in waypoints){
 				if (!waypoints[i]._id){
-          console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"); console.log(i);
 					var boh = new Promise(function (resolve, reject) {
 						dbo.collection("pointOfInterest").insertOne(waypoints[i], (err,res) => {
 							if (err) throw err;

@@ -65,11 +65,26 @@ class Itinerary {
                 title: "",
                 description: "",
                 write_permit: true
-            }
+            };
             else {
+                //if (!point.extract) obj = point;
+                console.log(point);console.log("pppppppppppppppppppppppppp");
+                if (point.extract){
+                    point.description = point.extract;
+                    point.options = {
+                        "allowUTurn" : false
+                    };
+                    point._initHooksCalled = true;
+                    point.files = [];
+                    point.img = [];
+                    point.write_permit = false;
+                    delete point.ns;
+                    delete point.pageid;
+                    delete point.extract;
+                }
                 obj = point;
             }
-            if (i==0 && point) {obj._id = point._id;
+            if (i==0 && point && point.id) {obj._id = point._id;
             console.log(obj._id); console.log(point._id);}
             this.waypoints.push(Object.assign({}, obj));
         }
