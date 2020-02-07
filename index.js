@@ -10,7 +10,7 @@ var StrategyGoogle = require('passport-google-oauth20').Strategy;
 var fs = require('fs');
 const sgMail = require('@sendgrid/mail');
 var cookieparser = require ('cookie-parser');
-var CookieStrategy = require('passport-cookie');
+var CookieStrategy = require('./src/passport-cookie');
 var authCookie = "wH3r3M1k33p1nGMyK00k135";
 
 sgMail.setApiKey("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")
@@ -294,7 +294,7 @@ passport.use(new CookieStrategy({cookieName: authCookie},
 			console.log(user);
 			console.log(err);
       if (err) { return done(err); }
-      if (!user) { return done(null, "nouser"); }
+      if (!user) { return done(null, true); }
       return done(null, user);
     });
   }
@@ -347,8 +347,17 @@ app.post('/login', function (req, res, next){
         if (loginErr) {
           return next(loginErr);
         }
-				res.cookie(authCookie, user.token, {maxAge: 1000*60*60*24*14});
-        return res.redirect('/');
+				MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err, db) {
+					if (err) throw err;
+					var dbo = db.db("sitedb");
+					dbo.collection("userInfo").find({"_id": ObjectId(req.user._id)}, {fields:{token: 1}}).toArray(function (err, result) {
+						if (err)
+							throw(err)
+						token=result[0].token;
+						res.cookie(authCookie, token, {maxAge: 1000*60*60*24*14, path:'/'});
+						return res.redirect('/');
+					});
+				});
       });
     })(req, res, next);
 });
@@ -554,7 +563,8 @@ app.post('/setnewpassword', function(req, res){
 app.get('/',
   passport.authenticate("cookie", { session: false }),
 	 function(req, res, next){
-		if (req.user==="nouser" || req.user===undefined || req.user==null)
+		 console.log("req.user", req.user)
+		if (req.user===true || req.user===undefined || req.user==null)
 			res.render('index', {user: undefined});
 		else
 			res.render('index', {user: req.user});
@@ -707,12 +717,6 @@ app.get('/about', function (req, res){
 		});
 	});
 });
-
-app.get("/teripendi",
-  passport.authenticate("cookie", { session: false }),
-  function(req, res) {
-    res.json(req.user);
-  });
 
 /*db.collection.find().sort({age:-1}).limit(1) // for MAX
 db.collection.find().sort({age:+1}).limit(1) // for MIN*/
@@ -879,12 +883,13 @@ function removeFields(obj, fields){
 }
 
 function loggedin(req){
-	return !(!req.isAuthenticated || !req.isAuthenticated())
+	return !(!req.isAuthenticated || !req.isAuthenticated()|| req.user===true)
 }
 
 app.get('/user',
+	passport.authenticate("cookie", { session: false }),
 	function(req, res){
-		if (!(!req.isAuthenticated || !req.isAuthenticated())){
+		if (!(!req.isAuthenticated || !req.isAuthenticated() || req.user===true)){
 			var a=removeFields(req.user._doc, ["password", "salt", "token"])
 			return res.send(a);
 		}
@@ -911,7 +916,7 @@ app.get('/users', function(req, res){
 		});
 	}
 	else
-		return res.send ("{}");
+		return res.send ({});
 });
 
 /// Redirect all to home except post
@@ -939,14 +944,6 @@ app.use('/upload', function(req, res, next){
             return '/uploads'
         }
     })(req, res, next);
-});
-
-app.get('/profile', function(req,res){
-  if (loggedin(req)){
-    return res.render("profile", req.user);
-  }else{
-    return res.render("profile", null);
-  }
 });
 
 app.listen(3000,'0.0.0.0', function(){

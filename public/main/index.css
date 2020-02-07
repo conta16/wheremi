@@ -113,3 +113,16 @@ input.header{
     display: inline;
   }
 }
+
+.lowalpha{
+  background-color: rgba(255,255,255, 0.5) !important;
+}
+
+.round{
+    border-radius: 50% !important;
+}
+
+.big-control{
+  height: 40px;
+  width: 40px;
+}
