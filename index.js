@@ -347,8 +347,17 @@ app.post('/login', function (req, res, next){
         if (loginErr) {
           return next(loginErr);
         }
-				res.cookie(authCookie, user.token, {maxAge: 1000*60*60*24*14});
-        return res.redirect('/');
+				MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err, db) {
+					if (err) throw err;
+					var dbo = db.db("sitedb");
+					dbo.collection("userInfo").find({"_id": ObjectId(req.user._id)}, {fields:{token: 1}}).toArray(function (err, result) {
+						if (err)
+							throw(err)
+						token=result[0].token;
+						res.cookie(authCookie, token, {maxAge: 1000*60*60*24*14, path:'/'});
+						return res.redirect('/');
+					});
+				});
       });
     })(req, res, next);
 });
@@ -875,13 +884,13 @@ function removeFields(obj, fields){
 }
 
 function loggedin(req){
-	return !(!req.isAuthenticated || !req.isAuthenticated())
+	return !(!req.isAuthenticated || !req.isAuthenticated()|| req.user===true)
 }
 
 app.get('/user',
 	passport.authenticate("cookie", { session: false }),
 	function(req, res){
-		if (!(!req.isAuthenticated || !req.isAuthenticated())){
+		if (!(!req.isAuthenticated || !req.isAuthenticated() || req.user===true)){
 			var a=removeFields(req.user._doc, ["password", "salt", "token"])
 			return res.send(a);
 		}
@@ -908,7 +917,7 @@ app.get('/users', function(req, res){
 		});
 	}
 	else
-		return res.send ("{}");
+		return res.send ({});
 });
 
 /// Redirect all to home except post
