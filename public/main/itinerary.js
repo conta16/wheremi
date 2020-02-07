@@ -69,7 +69,8 @@ class Itinerary {
             else {
                 obj = point;
             }
-            if (i==0 && point) obj._id = point._id;
+            if (i==0 && point) {obj._id = point._id;
+            console.log(obj._id); console.log(point._id);}
             this.waypoints.push(Object.assign({}, obj));
         }
         this.showOnMap();

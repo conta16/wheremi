@@ -59,7 +59,7 @@ var itineraryHTML = `<div id="carouselExampleIndicators" class="carousel slide m
 					<span class="btn btn-primary fileinput-button">
 						<i class="fa fa-plus"></i>
 						<span>Add files...</span>
-						<input id="f" type="file" accept="image/*" multiple/>
+						<input id="f" type="file" accept="image/*" multiple ></input>
 					</span>
 			  </div>
 	  </div>
@@ -283,7 +283,8 @@ function checkLoggedIn() {
       url: "/user",
       method: "GET",
       success: function(data){
-        if (data!={}){
+        if (!$.isEmptyObject(data)){
+			console.log(data);
           var event =new CustomEvent('userLogged', {detail: {account:data}});
           document.dispatchEvent(event);
         }
@@ -407,7 +408,7 @@ var index1;
 	$("#profile").removeClass("active show");
 	$("#inspect").addClass("active show");
 	if (!write_permit) {$('.p').css('display','none'); $(".fileinput-button").css("display", "none"); $(".nopermit").css("display", "inline");}
-	else {$('.p').css('display','inline'); $(".fileinput-button").css("display", "inline"); $(".nopermit").css("display", "none");}
+	else {$('.p').css('display','inline'); $(".fileinput-button").css("display", "relative"); $(".nopermit").css("display", "none");}
   	var slideItem;
   	for (var i in waypoints[index].img){
 	  if (i==0) slideItem = "<div class='carousel-item active'><img class='d-inline-block w-100' style='height:300px;' src='"+waypoints[index].img[0]+"' alt=''></div>";
