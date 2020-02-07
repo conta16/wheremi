@@ -554,7 +554,8 @@ app.post('/setnewpassword', function(req, res){
 app.get('/',
   passport.authenticate("cookie", { session: false }),
 	 function(req, res, next){
-		if (req.user==="nouser" || req.user===undefined || req.user==null)
+		 console.log("req.user", req.user)
+		if (req.user===true || req.user===undefined || req.user==null)
 			res.render('index', {user: undefined});
 		else
 			res.render('index', {user: req.user});
@@ -878,6 +879,7 @@ function loggedin(req){
 }
 
 app.get('/user',
+	passport.authenticate("cookie", { session: false }),
 	function(req, res){
 		if (!(!req.isAuthenticated || !req.isAuthenticated())){
 			var a=removeFields(req.user._doc, ["password", "salt", "token"])
