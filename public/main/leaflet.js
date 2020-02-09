@@ -302,8 +302,10 @@ var use={};
 document.addEventListener('userLogged', function(e){
   //console.log(localStorage.getItem("account"));
   world.setAccount(e.detail.account);
+  console.log(e.detail.account);
   create.addTo(map);
   upload.addTo(map);
+  world.getUser().getItineraries();
   console.log(e);
   use=Object.assign({}, e.detail.account);
   $('img#profilepic').attr('src', e.detail.account.profilepic);
@@ -464,7 +466,7 @@ var index1;
   function loadMenu(waypoints, index, write_permit = true, nextnprevious = false){
 	$('#inspect').html(itineraryHTML);
 	$("a[href='#feed']").removeClass("active");
-	$("a[href='profile']").removeClass("active");
+	$("a[href='#profile']").removeClass("active");
 	$("a[href='#inspect']").addClass("active");
 	$("#feed").removeClass("active show");
 	$("#profile").removeClass("active show");

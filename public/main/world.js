@@ -14,6 +14,10 @@ class World {
         return this.user.getAccount();
     }
 
+    getUser(){
+        return this.user;
+    }
+
     getItinerary(){
         return this.itinerary;
     }
