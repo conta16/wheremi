@@ -828,6 +828,34 @@ app.post('/', function (req, response){
 	});
 });
 
+app.post('/sendcomment', function(req, res){
+  var id = JSON.parse(req.body.id);
+  var comment = JSON.parse(req.body.comment);
+  var account = JSON.parse(req.body.account);
+  console.log("in sendcomment");
+  MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err,db){
+    if (err) throw err;
+    var dbo = db.db("sitedb");
+    dbo.collection("pointOfInterest").updateOne({
+      "_id": ObjectId(id)
+    },{
+      $push: {
+        comments: {
+          text: comment,
+          madeBy: {
+            id: account._id,
+            name: account.username
+          },
+
+        }
+      }
+    }, function(err, res){
+      if (err) throw err;
+      db.close();
+    });
+  });
+});
+
 app.post("/postAdded", function(req,res){
 	var obj = JSON.parse(req.body.point);
 	MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err,db){

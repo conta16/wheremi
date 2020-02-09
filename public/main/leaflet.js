@@ -69,16 +69,78 @@ var itineraryHTML = `<div id="carouselExampleIndicators" class="carousel slide m
 
 <div class="form-group p">
   <label for="title">Title:</label>
-  <textarea class="form-control" id="title"></textarea>
+  <textarea class="form-control d" id="title"></textarea>
 </div>
 
 <div class="form-group p">
   <label for="description">Description:</label>
-  <textarea class="form-control" id="description" rows="3"></textarea>
+  <textarea class="form-control d" id="description" rows="3"></textarea>
 </div>
 </form>
 
 <div class="nopermit"></div>
+
+<div class="category align-items-center" style="margin-bottom: 50px">
+
+<div class="col-auto my-1">
+  <p>Purpose:</p>
+  <label class="mr-sm-2 sr-only" for="purp"></label>
+  <select class="custom-select mr-sm-2" id="purp">
+	<option selected>What</option>
+	<option value="1">How</option>
+	<option value="2">Why</option>
+  </select>
+</div>
+	<div class="form-group">
+    	<label for="lang">Language</label>
+    	<textarea class="form-control d" id="lang" rows="1"></textarea>
+	</div>
+	<div class="col-auto my-1">
+	<p>Content:</p>
+	<label class="mr-sm-2 sr-only" for="cont"></label>
+	<select class="custom-select mr-sm-2" id="cont">
+	  <option selected>Nature</option>
+	  <option value="1">Historical place</option>
+	  <option value="2">Square</option>
+	</select>
+  </div>
+  <div class="col-auto my-1">
+  <p>Audience:</p>
+  <label class="mr-sm-2 sr-only" for="aud"></label>
+  <select class="custom-select mr-sm-2" id="aud">
+	<option selected>Professional traveler</option>
+	<option value="1">Occasional turist</option>
+	<option value="2">Hiker</option>
+  </select>
+</div>
+<div class="col-auto my-1">
+  <p>Detail level:</p>
+  <label class="mr-sm-2 sr-only" for="det"></label>
+  <select class="custom-select mr-sm-2" id="det">
+	<option selected>High</option>
+	<option value="1">Medium</option>
+	<option value="2">Low</option>
+  </select>
+</div>
+<div class="comment">
+	<div class="form-group">
+		<label for="com">Leave a comment</div>
+		<textarea class="form-control" id="com" rows="1"></textarea>
+		<button type="button" class="btn btn-primary" id="send_comment" disabled>Send comment</button>
+	</div>
+</div>
+<div class="comment-section">
+	<p>Comments:</p>
+	<div id="comment-list">
+
+	</div>
+</div>
+</div>
+
+<div class="footer" style="margin-left:-50%;">
+	<button type="button" class="btn btn-primary" id="left">Previous</button>
+	<button type="button" class="btn btn-primary" id="right">Next</button>
+</div>
 `;
 
 var cardHTML = `<div class="card mt-3" style="height:20%" onclick="cardClicked(this)" data-key="">
@@ -399,7 +461,7 @@ function eventFire(el, etype){
 var waypoints1;
 var index1;
 
-  function loadMenu(waypoints, index, write_permit = true){
+  function loadMenu(waypoints, index, write_permit = true, nextnprevious = false){
 	$('#inspect').html(itineraryHTML);
 	$("a[href='#feed']").removeClass("active");
 	$("a[href='profile']").removeClass("active");
@@ -407,23 +469,101 @@ var index1;
 	$("#feed").removeClass("active show");
 	$("#profile").removeClass("active show");
 	$("#inspect").addClass("active show");
-	if (!write_permit) {$('.p').css('display','none'); $(".fileinput-button").css("display", "none"); $(".nopermit").css("display", "inline");}
-	else {$('.p').css('display','inline'); $(".fileinput-button").css("display", "relative"); $(".nopermit").css("display", "none");}
+	if (!write_permit) {
+		$('.p').css('display','none');
+		$(".fileinput-button").css("display", "none"); 
+		$(".nopermit").css("display", "inline");
+		$(".d").prop("disabled", true);
+		$(".custom-select").prop('disabled', true);
+		if (!$.isEmptyObject(world.getAccount())){
+			$(".comment").css("display", "inline");
+			$("#send_comment").prop("disabled", false);
+		}
+		else{
+			$(".comment").css("display", "none");
+			$("#send_comment").prop("disabled", true);
+		}
+	}
+	else {
+		$('.p').css('display','inline');
+		$(".fileinput-button").css("display", "relative");
+		$(".nopermit").css("display", "none");
+		$(".d").prop("disabled", false);
+		$(".custom-select").prop('disabled', false);
+		$(".comment").css("display", "none");
+		$(".comment").css("display", "none");
+		$("#send_comment").prop("disabled", true);
+		
+	}
+	if (nextnprevious) $('.footer').css('display', 'inline');
+	else $('.footer').css('display', 'none');
   	var slideItem;
   	for (var i in waypoints[index].img){
 	  if (i==0) slideItem = "<div class='carousel-item active'><img class='d-inline-block w-100' style='height:300px;' src='"+waypoints[index].img[0]+"' alt=''></div>";
 	  else slideItem = "<div class='carousel-item'><img class='d-inline-block w-100' style='height:300px;' src='"+waypoints[index].img[i]+"' alt=''></div>";
 	  $('.carousel-inner').append(slideItem);
-  	}
+	}
+	var e;
   	$('#title').val(waypoints[index].title);
 	$('#description').val(waypoints[index].description);
+
+	$("select#purp option").filter(function() {
+		return $(this).text() == waypoints[index].purpose;
+	}).prop('selected', true);
+
+	$('#lang').val(waypoints[index].lang);
+
+	$("select#cont option").filter(function() {
+		return $(this).text() == waypoints[index].content;
+	}).prop('selected', true);
+
+	$("select#aud option").filter(function() {
+		return $(this).text() == waypoints[index].audience;
+	}).prop('selected', true);
+
+	$("select#det option").filter(function() {
+		return $(this).text() == waypoints[index].detail;
+	}).prop('selected', true);
+
 	$('.nopermit').html("<p class='h2'>"+waypoints[index].title+"</p><p class='h6'>"+waypoints[index].description+"</p>");
+	$('#left').on('click',() => {
+		if (index > 0) loadMenu(waypoints, index-1, write_permit, nextnprevious);
+	});
+	$('#right').on('click',() => {
+		if (index < waypoints.length-1) loadMenu(waypoints, index+1, write_permit, nextnprevious);
+	});
+	$('#send_comment').on('click',() => {
+		world.sendComment(waypoints[index]._id, $('#com').val(), world.getAccount());
+	});
   	$('#title').on('input', function(){
 	  waypoints[index].title = $('#title').val();
  	});
   	$('#description').on('input', function(){
 	  waypoints[index].description = $('#description').val();
 	});
+	$('#purp').on('change', () => {
+		e = document.getElementById("purp");
+		waypoints[index].purpose = e.options[e.selectedIndex].text;
+	});
+	$('#lang').on('input', () => {
+		waypoints[index].lang = $('#lang').val();
+	});
+	$('#cont').on('input', () => {
+		e = document.getElementById("cont");
+		waypoints[index].content = e.options[e.selectedIndex].text;
+		console.log(waypoints[index].content);
+	});
+	$('#aud').on('input', () => {
+		e = document.getElementById("aud");
+		waypoints[index].audience = e.options[e.selectedIndex].text;
+	});
+	$('#det').on('input', () => {
+		e = document.getElementById("det");
+		waypoints[index].detail = e.options[e.selectedIndex].text;
+	});
+	for (var i in waypoints[index].comments){
+		$('#comment-list').append("<p>"+waypoints[index].comments[i].madeBy.name+": "+waypoints[index].comments[i].text+"</p><br>");
+	}
 	document.removeEventListener('loadimg', eventListener);
 	document.addEventListener('loadimg', eventListener);
 	index1 = index;

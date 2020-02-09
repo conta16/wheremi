@@ -264,10 +264,16 @@ class Itinerary {
             });
             parentThis.markers[index].on('click', (e) => {
                 var waypoints = parentThis.waypoints;
-                if (parentThis.mode && waypoints[index].write_permit == true){
-                    loadMenu(waypoints, index);
-                }
-                else loadMenu(waypoints, index, false);
+                if (index > 0)
+                    if (parentThis.mode && waypoints[index].write_permit == true){
+                        loadMenu(waypoints, index, true, true);
+                    }
+                    else loadMenu(waypoints, index, false, true);
+                else
+                    if (parentThis.mode && waypoints[index].write_permit == true){ //se si vuole mettere comportamento diverso per primo punto itinerario
+                        loadMenu(waypoints, index, true, true);
+                    }
+                    else loadMenu(waypoints, index, false, true);
             });
         });
     }
