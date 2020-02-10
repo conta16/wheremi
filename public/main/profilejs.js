@@ -9,7 +9,7 @@ function aggiornaBio(){
   }
   var htmlPerLaBioNuova = `<input type="text" name="newBio" placeholder="Inserisci la tua nuova bio!" class="bio-container" id="bioAggiornata" style ="height: 35px;">
               <span class="input-group-btn" style="border-radius: 4px;"><button class="btn btn-primary" type="button" onclick="aggiornaBioPresente()" style="line-height: 21px;">Salva</button></span>`
-  var htmlPerLaBioVecchia = `<span class = "bio-span" id="spanbio"><%= user.bio %><img src ="../img/editbio.png" onclick="cambiaLayoutBio('nuova')" height="20px"></span>`            
+  var htmlPerLaBioVecchia = `<span class = "bio-span" id="spanbio"><div id = "spazioperlabio" style ="display: inline-block;"></div><img src ="../img/editbio.png" onclick="cambiaLayoutBio('nuova')" height="20px"></span>`            
   
   function cambiaLayoutBio(mode){
     if (mode === 'nuova'){
@@ -22,5 +22,7 @@ function aggiornaBio(){
   }
   function aggiornaBioPresente(){
     aggiornaBio();
+    var x = $('#bioAggiornata');
     cambiaLayoutBio('vecchia');
+    $("#spazioperlabio").html(x.val());
   }

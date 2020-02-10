@@ -645,12 +645,16 @@ app.get('/getUsername', function(req, res){
       }
     }).toArray(function(err, result){
       if (err) throw err;
-      //console.log("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"); console.log(result);
       res.send(result);
       //db.close();
     });
   });
 });
+
+app.get("/img/favicon.ico",function(req,res){
+  res.sendFile("./public/img/favicon.ico");
+});
+
 
 app.get('/about', function (req, res){
 	var obj = {};
@@ -746,7 +750,6 @@ app.post('/changeprofilepic', function(req, res){
 
 app.get('/route', function(req, res){
   var tmp = ObjectId(req.query.id);
-  console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");console.log(tmp);
 	MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err, db) {
 		if (err) throw err;
                 var dbo = db.db("sitedb");
@@ -868,13 +871,6 @@ app.post("/postAdded", function(req,res){
 	});
 });
 
-app.get("/check",function(req,res){
-  if (req.user){
-    var r = new Buffer('1');
-    console.log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
-    res.send(new Buffer('1'));
-  }
-});
 
 upload.configure({
         uploadDir: __dirname + '/public/uploads',
