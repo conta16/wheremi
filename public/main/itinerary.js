@@ -18,7 +18,8 @@ class Itinerary {
         var parentThis = this;
         this.control = L.Routing.control({
           waypoints: parentThis.waypoints,
-          routeWhileDragging: true
+          routeWhileDragging: true,
+          router: L.Routing.mapbox('sk.eyJ1Ijoid2hlcmVtaSIsImEiOiJjazZna2ZvYXEyY3VxM2twa296ejRkMXV1In0.AwVdQemoA7pL8VAJEKVojA'),
         }).on('routesfound', function(e) {
             var f= new Event ("route-available");
             document.dispatchEvent(f);

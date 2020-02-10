@@ -542,13 +542,14 @@ app.post('/newbio', function(req,res){
 });
 
 app.post('/setnewpassword', function(req, res){
-	console.log(req.body);
-	PasswordsBeingUpdated.deleteOne({userid: req.body.userid, passwordToken: req.body.passwordToken}, function(err, data){
+  console.log(req.body);
+  console.log(req.query);
+	PasswordsBeingUpdated.deleteOne({userid: ObjectId(req.query.userid), passwordToken: req.query.passwordToken}, function(err, data){
 		if (err)
-			return "Sorry, we are in trouble with our database";
+			console.log(err);
 		else {
 			var salt=genRandomString(32);
-			UserDetails.findOneAndUpdate({_id: req.body.userid}, {password: sha512(req.body.password, salt).passwordHash, salt: salt}, function(err, data){
+			UserDetails.findOneAndUpdate({_id: req.query.user}, {password: sha512(req.body.password, salt).passwordHash, salt: salt}, function(err, data){
 				if (err){
 					console.log("Sorry, we are in trouble with our database");
 				}
