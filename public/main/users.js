@@ -34,17 +34,24 @@ class Users{
     }
 
     getItineraries(){
+        var parentThis = this;
         for (var i in this.account.itinerary_id){
             this.itinerary.getRouteFromDB(this.account.itinerary_id[i])
             .then((data) => {
-                if (!data.inputWaypoints[0].img[0]) $(".profile-usermenu").append(
-                    "<img src='./img/unknown_person.png' class='img-thumbnail' style='width:33%; display: inline' alt=''>"
+                
+                if (!data.inputWaypoints[0].img[0]) $(".profile-usermenu").prepend(
+                    "<img src='./img/unknown_person.png' class='img-thumbnail' style='height:30%;width:33%; display: inline' alt=''>"
                 );
-                else $(".profile-usermenu").append(
-                    "<img src='"+data.inputWaypoints[0].img[0]+"' class='img-thumbnail' style='width:33%; display: inline' alt=''>"
+                else $(".profile-usermenu").prepend(
+                    "<img src='"+data.inputWaypoints[0].img[0]+"' class='img-thumbnail' style='height:30%;width:33%; display: inline' alt=''>"
                 );
-                var w = $(".img-thumbnail:nth-of-type(1)").width();
-                $('.img-thumbnail').css({'height':w+'px'});
+                parentThis.itineraries.unshift(data);
+                var index = 1;
+                console.log($(".img-thumbnail:nth-of-type("+index+")"));
+                $(".img-thumbnail:nth-of-type("+index+")").on("click", () => {
+                    parentThis.itinerary.setRoute(data);
+                    loadMenu(parentThis.itineraries[index-1].inputWaypoints, 0, true, true);
+                })
             }).catch(() => {});
         }
     }

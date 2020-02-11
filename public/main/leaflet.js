@@ -493,7 +493,6 @@ var index1;
 		$(".d").prop("disabled", false);
 		$(".custom-select").prop('disabled', false);
 		$(".comment").css("display", "none");
-		$(".comment").css("display", "none");
 		$("#send_comment").prop("disabled", true);
 		
 	}
