@@ -542,13 +542,14 @@ app.post('/newbio', function(req,res){
 });
 
 app.post('/setnewpassword', function(req, res){
-	console.log(req.body);
-	PasswordsBeingUpdated.deleteOne({userid: req.body.userid, passwordToken: req.body.passwordToken}, function(err, data){
+  console.log(req.body);
+  console.log(req.query);
+	PasswordsBeingUpdated.deleteOne({userid: ObjectId(req.query.userid), passwordToken: req.query.passwordToken}, function(err, data){
 		if (err)
-			return "Sorry, we are in trouble with our database";
+			console.log(err);
 		else {
 			var salt=genRandomString(32);
-			UserDetails.findOneAndUpdate({_id: req.body.userid}, {password: sha512(req.body.password, salt).passwordHash, salt: salt}, function(err, data){
+			UserDetails.findOneAndUpdate({_id: req.query.user}, {password: sha512(req.body.password, salt).passwordHash, salt: salt}, function(err, data){
 				if (err){
 					console.log("Sorry, we are in trouble with our database");
 				}
@@ -645,12 +646,16 @@ app.get('/getUsername', function(req, res){
       }
     }).toArray(function(err, result){
       if (err) throw err;
-      //console.log("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"); console.log(result);
       res.send(result);
       //db.close();
     });
   });
 });
+
+app.get("/img/favicon.ico",function(req,res){
+  res.sendFile("./public/img/favicon.ico");
+});
+
 
 app.get('/about', function (req, res){
 	var obj = {};
@@ -746,7 +751,6 @@ app.post('/changeprofilepic', function(req, res){
 
 app.get('/route', function(req, res){
   var tmp = ObjectId(req.query.id);
-  console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");console.log(tmp);
 	MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err, db) {
 		if (err) throw err;
                 var dbo = db.db("sitedb");
@@ -868,13 +872,6 @@ app.post("/postAdded", function(req,res){
 	});
 });
 
-app.get("/check",function(req,res){
-  if (req.user){
-    var r = new Buffer('1');
-    console.log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
-    res.send(new Buffer('1'));
-  }
-});
 
 upload.configure({
         uploadDir: __dirname + '/public/uploads',

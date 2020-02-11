@@ -9,9 +9,10 @@ var map = L.map('map', {
 	minZoom: 3
 });
 
-var WorldStreetMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-	attribution: 'Tiles &copy; Esri &mdash; Source: Esri',
-	noWrap: true
+var WorldStreetMap = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}/?access_token={accessToken}', {
+	attribution: 'Frank',
+	noWrap: true,
+	accessToken: 'pk.eyJ1Ijoid2hlcmVtaSIsImEiOiJjazZnajdnbmQwN29yM2xwODI5YnF2OWZtIn0.6Fr9OvAyxwthnY-ciTwJVg'
 }).addTo(map);
 
 var bound = L.latLngBounds([[-90,-180], [90, 180]]);
