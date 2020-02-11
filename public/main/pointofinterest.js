@@ -200,10 +200,11 @@ class PointOfInterest{
         if(!do_nothing) this.itineraryStartMarkers[len].addTo(map);
     }
 
-    onclick_card(datakey){
-
+    onclick_card(datakey, datatype){
         var parentThis = this;
-        $("#inspect").text(this.itineraryStartPoints[datakey].label);
+        if(datatype == 0) {
+            console.log("aaaaaaaaaaaaaaaaaaccc");
+        //$("#inspect").text(this.itineraryStartPoints[datakey].label);
         $("a[href='#feed']").removeClass("active");
         $("a[href='profile']").removeClass("active");
         $("a[href='#inspect']").addClass("active");
@@ -217,6 +218,17 @@ class PointOfInterest{
                 loadMenu(data.inputWaypoints, data.inputWaypoints.length-1, false);
             })
             .catch(() => {});
+        }
+        else{
+            $("a[href='#feed']").removeClass("active");
+            $("a[href='profile']").removeClass("active");
+            $("a[href='#inspect']").addClass("active");
+            $("#feed").removeClass("active show");
+            $("#profile").removeClass("active show");
+            $("#inspect").addClass("active show");
+            this.removeSearchMarker();
+            loadMenu(this.points, datakey, false);
+        }
     }
 
     setWikipediaMarker(latLng){

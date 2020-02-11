@@ -144,7 +144,7 @@ var itineraryHTML = `<div id="carouselExampleIndicators" class="carousel slide m
 </div>
 `;
 
-var cardHTML = `<div class="card mt-3" style="height:20%" onclick="cardClicked(this)" data-key="">
+var cardHTML = `<div class="card mt-3" style="height:20%" onclick="cardClicked(this)" data-key="" data-type="">
 <div class="card-horizontal">
   <img class="card-img w-50" style="height: 200px" src="" alt="Card image cap">
   <div class="card-body overflow-auto" style="text-align: left">
@@ -412,7 +412,9 @@ function createMode(){
 }
 function ldItinerary(){
 	$('#inspect').html("");
-	if (itinerary.getWaypoints().length > 1) itinerary.postItineraryToDB("prova1");
+	var str = itinerary.waypoints[0].title;
+	if (!str || str.length == 0) alert("You have to insert a name to the itinerary");
+	else if (itinerary.getWaypoints().length > 1 ) itinerary.postItineraryToDB();
 	else itinerary.postPoint();
 	itinerary.setWaypoints([]);
 }
@@ -465,6 +467,7 @@ var waypoints1;
 var index1;
 
   function loadMenu(waypoints, index, write_permit = true, nextnprevious = false){
+	if (itinerary.user_id == world.getAccount()._id) write_permit = true;
 	$('#inspect').html(itineraryHTML);
 	$("a[href='#feed']").removeClass("active");
 	$("a[href='#profile']").removeClass("active");
@@ -592,11 +595,12 @@ function eventListener(event){ //mmm function inside function
   }
 
   function loadCard(waypoints, index){
-
+	console.log("wi"); console.log(waypoints); console.log(index);
 	if (!waypoints[index].inputWaypoints){
 		$('#feed').html($('#feed').html()+cardHTML);
 		num_cards++;
-		$('div.card:nth-child('+num_cards+') img').attr('data-key', index);
+		$('div.card:nth-child('+num_cards+')').attr('data-key', index);
+		$('div.card:nth-child('+num_cards+')').attr('data-type', 1);
 		if (waypoints[index].img[0]) $('div.card:nth-child('+num_cards+') img').attr('src', waypoints[index].img[0]);
 		else $('div.card:nth-child('+num_cards+') img').attr('src', "./img/Question_Mark.svg");
 		$('div.card:nth-child('+num_cards+') .card-body').html("<div class='container'><h5 class='card-title'>"+waypoints[index].title+"</h5><h6 class='card-subtitle text-muted'><small> Point by "+waypoints[index].username+"</small></h6></div>");
@@ -606,6 +610,7 @@ function eventListener(event){ //mmm function inside function
 		$('#feed').html($('#feed').html()+cardHTML);
 		num_cards++;
 		$('div.card:nth-child('+num_cards+')').attr('data-key', index);
+		$('div.card:nth-child('+num_cards+')').attr('data-type', 0);
 		//if (type) $('div.card:nth-child('+num_cards+')').css("background-color", "#ffe6cc");
 		if (waypoints[index].inputWaypoints[0].img[0]) $('div.card:nth-child('+num_cards+') img').attr('src', waypoints[index].inputWaypoints[0].img[0]);
 		else $('div.card:nth-child('+num_cards+') img').attr('src', "./img/Question_Mark.svg");
@@ -619,7 +624,10 @@ function eventListener(event){ //mmm function inside function
 
   function cardClicked(item){
 	var datakey = $(item).attr("data-key");
-	if (datakey) pointsOfInterest.onclick_card(datakey);
+	console.log("aaaddd");
+	console.log($(item));
+	var datatype = $(item).attr("data-type");
+	if (datakey) pointsOfInterest.onclick_card(datakey, datatype);
   }
 
   function change(){

@@ -85,8 +85,9 @@ class Itinerary {
                 }
                 obj = point;
             }
-            if (i==0 && point && point.id) {obj._id = point._id;
-            console.log(obj._id); console.log(point._id);}
+            if (i==0 && point && point.id) {
+                obj._id = point._id;
+            }
             this.waypoints.push(Object.assign({}, obj));
         }
         this.showOnMap();
@@ -201,10 +202,10 @@ class Itinerary {
         return this.id;
     }
 
-    postItineraryToDB(name){
+    postItineraryToDB(){
         var parentThis = this;
         var parentUrl = this.url;
-        this.label = name;
+        this.label = this.waypoints[0].title;
         this.route = L.routes;
         $.ajax({
             url: parentUrl,
