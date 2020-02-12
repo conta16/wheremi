@@ -35,7 +35,7 @@ class Itinerary {
                     var reader = new FileReader();
 
                     reader.onload = function (e) {
-                        var event = new CustomEvent('loadimg', { 'detail': {'files': files, 'src': e.target.result}});
+                        var event = new CustomEvent('loading', { 'detail': {'files': files, 'src': e.target.result}});
                         var slideItem;
                         if ($('.carousel-item')[0]) slideItem = "<div class='carousel-item'><img class='d-inline-block w-100' style='height:300px;' src='"+e.target.result+"' alt=''></div>";
                         else slideItem = "<div class='carousel-item active'><img class='d-inline-block w-100' style='height:300px;' src='"+e.target.result+"' alt=''></div>";
@@ -47,6 +47,20 @@ class Itinerary {
                 });
             }
         });
+    }
+    loadVideosYoutube(){
+        var fileTypes = ['mp4', 'avi', 'flv', 'mov', 'mpeg4', 'mpegps'];
+        var input = this.files;
+        for (i in input){
+            if (i) {
+                var extension = i.name.split('.').pop().toLowerCase(),  //file extension from input file
+                 isSuccess = fileTypes.indexOf(extension) > -1;  //is extension in acceptable types
+                if (isSuccess){
+                    
+                }
+            }
+            else console.log("errore nel caricare " + i.name);
+        }
     }
     setUserID(user){
         this.user_id = user;

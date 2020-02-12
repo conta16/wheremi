@@ -45,19 +45,6 @@ Paul.initialize({
 });
 
 
-/*`<div class='container' style='position: relative'>
-<div class='container' style="">
-<label for='uploadpic'>
-	<img class="rounded-circle" style="height:200px; width:200px" alt="100x100" id="profilepic" src="./img/unknown_person.png" data-holder-rendered="true">
-</label>
-<input id="uploadpic" type="file" style='display: none'/>
-</div>
-<p class='h5' id="username"></p>
-<div id="itineraries"></div>
-</div>`;*/
-
-
-
 
 
 //////////////// DAVIDE - locate control ////////////
@@ -162,14 +149,6 @@ var removeButton = 	L.control.custom({
 
 ////////////////////////////
 
-/*function loadPoints(){
-  last_event_ts= new Date()
-  setTimeout(function(){
-    //console.log(new Date()-last_event_ts)
-    if (new Date()-last_event_ts>=800)
-      pointsOfInterest.loadPoints();
-  },800);
-}*/
 
 var buttonMode = 0;
 var use={};
@@ -214,20 +193,6 @@ document.addEventListener('userLogged', function(e){
       });
 });
 
-/*function checkLoggedIn() {
-  var a=false
-    $.ajax({
-      url: "/user",
-      method: "GET",
-      success: function(data){
-        if (!$.isEmptyObject(data)){
-			console.log(data);
-          var event =new CustomEvent('userLogged', {detail: {account:data}});
-          document.dispatchEvent(event);
-        }
-      }
-    });
-}*/
 
 $(document).ready(function() {
 	facade = new Facade();
@@ -258,276 +223,21 @@ $(document).ready(function() {
 
 });
 
-/*function createMode(){
-	var mode = itinerary.getMode();
-	if (!mode){
-		itinerary.setMode(!mode);
-		map.off('zoomend', loadPoints);
-		map.off('drag', loadPoints);
-		pointsOfInterest.removeAllMarkers();
-		itinerary.setWaypoints([]);
-		removeButton.addTo(map);
-		map.on('click', (e) => {
-			if (itinerary.getMode() != 2){
-				pointsOfInterest.loadPoints();
-				map.on('zoomend', loadPoints);
-				map.on('drag', loadPoints);
-				if (itinerary.getBlock()) itinerary.setBlock(0);
-				else {
-					e.latLng = e.latlng;
-					var waypoints = itinerary.getWaypoints();
-				/*if ($('#title')[0]) {
-					waypoints[waypoints.length-1].title = $("#title").val();
-					waypoints[waypoints.length-1].description = $("#description").val();
-					for (var i in $('.carousel-item')){
-						if ($('.carousel-item img')[0]) waypoints[waypoints.length-1].img.push($('.carousel-item img').eq(i).attr("src"));
-					}
-				}*/
-				//$('#inspect').html(itineraryHTML);
-/*					itinerary.pushWaypoints([e.latLng]);
-					itinerary.c = true;
-				}
-			}
-		});
-	}
-	else{
-		$('#inspect').html("");
-		itinerary.setMode(!mode);
-		map.off('click');
-		itinerary.setWaypoints([]);
-		map.removeControl(removeButton);
-		pointsOfInterest.loadPoints();
-		map.on('zoomend', loadPoints);
-		map.on('drag', loadPoints);
-	}
-}*/
-/*function ldItinerary(){
-	$('#inspect').html("");
-	var str = itinerary.waypoints[0].title;
-	if (!str || str.length == 0) alert("You have to insert a name to the itinerary");
-	else if (itinerary.getWaypoints().length > 1 ) itinerary.postItineraryToDB();
-	else itinerary.postPoint();
-	itinerary.setWaypoints([]);
-}*/
-
-/*function createPoint(){
-	var mode = itinerary.getMode();
-	if (mode){
-		map.off('click');
-		itinerary.setWaypoints([]);
-		pointsOfInterest.removeAllMarkers();
-		itinerary.setMode(!mode);
-	}
-	map.on('click', (e) => {
-		pointsOfInterest.addPoint(e.latlng);
-	});
-}*/
 
 function apply(){
 	pointsOfInterest.addedPoint.description = $("#popupInput").val();
 	console.log($("#popupInput"));
 }
 
-/*function ldPoint(){
-	pointsOfInterest.postAddedPoint();
-}*/
-//var collapsibleElem = document.querySelector('.collapsible');
-//var collapsibleInstance = M.Collapsible.init(collapsibleElem, options);
-
-////////////////////////////
-/*
-$.ajax({
-	url: 'http://localhost:3000/auth/facebook',
-	method: 'GET',
-	success: function(){
-		console.log("facebook yes");
-	}
-});*/
-
-/*function eventFire(el, etype){
-	if (el.fireEvent) {
-	  el.fireEvent('on' + etype);
-	} else {
-	  var evObj = document.createEvent('Events');
-	  evObj.initEvent(etype, true, false);
-	  el.dispatchEvent(evObj);
-	}
-  }*/
 
 var waypoints1;
 var index1;
 
-  /*function loadMenu(waypoints, index, write_permit = true, nextnprevious = false){
-
-	if (itinerary.user_id == facade.getAccount()._id && itinerary.getMode() == 0) write_permit = true;
-	$('#inspect').html(itineraryHTML);
-	gotoTab(INSPECT_TAB);
-	if (!write_permit) {
-		$('.p').css('display','none');
-		$(".fileinput-button").css("display", "none");
-		$(".nopermit").css("display", "inline");
-		$(".d").prop("disabled", true);
-		$(".custom-select").prop('disabled', true);
-		if (!$.isEmptyObject(facade.getAccount())){
-			$(".comment").css("display", "inline");
-			$("#send_comment").prop("disabled", false);
-		}
-		else{
-			$(".comment").css("display", "none");
-			$("#send_comment").prop("disabled", true);
-		}
-	}
-	else {
-		$('.p').css('display','inline');
-		$(".fileinput-button").css("display", "relative");
-		$(".nopermit").css("display", "none");
-		$(".d").prop("disabled", false);
-		$(".custom-select").prop('disabled', false);
-		$(".comment").css("display", "none");
-		$("#send_comment").prop("disabled", true);
-	}
-	if (nextnprevious) $('.footer').css('display', 'inline');
-	else $('.footer').css('display', 'none');
-  	var slideItem;
-  	for (var i in waypoints[index].img){
-	  if (i==0) slideItem = "<div class='carousel-item active'><img class='d-inline-block w-100' style='height:300px;' src='"+waypoints[index].img[0]+"' alt=''></div>";
-	  else slideItem = "<div class='carousel-item'><img class='d-inline-block w-100' style='height:300px;' src='"+waypoints[index].img[i]+"' alt=''></div>";
-	  $('.carousel-inner').append(slideItem);
-	}
-	var e;
-  	$('#title').val(waypoints[index].title);
-	$('#description').val(waypoints[index].description);
-
-	$("select#purp option").filter(function() {
-		return $(this).text() == waypoints[index].purpose;
-	}).prop('selected', true);
-
-	$('#lang').val(waypoints[index].lang);
-
-	$("select#cont option").filter(function() {
-		return $(this).text() == waypoints[index].content;
-	}).prop('selected', true);
-
-	$("select#aud option").filter(function() {
-		return $(this).text() == waypoints[index].audience;
-	}).prop('selected', true);
-
-	$("select#det option").filter(function() {
-		return $(this).text() == waypoints[index].detail;
-	}).prop('selected', true);
-
-	$('.nopermit').html("<p class='h2'>"+waypoints[index].title+"</p><p class='h6'>"+waypoints[index].description+"</p>");
-	$('#left').on('click',() => {
-		if (index > 0) loadMenu(waypoints, index-1, write_permit, nextnprevious);
-	});
-	$('#right').on('click',() => {
-		if (index < waypoints.length-1) loadMenu(waypoints, index+1, write_permit, nextnprevious);
-	});
-	$('#send_comment').on('click',() => {
-		facade.sendComment(waypoints[index]._id, $('#com').val(), facade.getAccount());
-	});
-  	$('#title').on('input', function(){
-	  waypoints[index].title = $('#title').val();
- 	});
-  	$('#description').on('input', function(){
-	  waypoints[index].description = $('#description').val();
-	});
-	$('#purp').on('change', () => {
-		e = document.getElementById("purp");
-		waypoints[index].purpose = e.options[e.selectedIndex].text;
-	});
-	$('#lang').on('input', () => {
-		waypoints[index].lang = $('#lang').val();
-	});
-	$('#cont').on('input', () => {
-		e = document.getElementById("cont");
-		waypoints[index].content = e.options[e.selectedIndex].text;
-		console.log(waypoints[index].content);
-	});
-	$('#aud').on('input', () => {
-		e = document.getElementById("aud");
-		waypoints[index].audience = e.options[e.selectedIndex].text;
-	});
-	$('#det').on('input', () => {
-		e = document.getElementById("det");
-		waypoints[index].detail = e.options[e.selectedIndex].text;
-	});
-	for (var i in waypoints[index].comments){
-		$('#comment-list').append("<p>"+waypoints[index].comments[i].madeBy.name+": "+waypoints[index].comments[i].text+"</p><br>");
-	}
-	document.removeEventListener('loadimg', eventListener);
-	document.addEventListener('loadimg', eventListener);
-	index1 = index;
-	waypoints1 = waypoints;
-}*/
-
-
-
-/*function eventListener(event){ //mmm function inside function
-	var fd = new FormData();
-	console.log("event");
-	console.log(event);
-	console.log(fd);
-	fd.append('file', event.detail.files[0]);
-	waypoints1[index1].img.push(event.detail.src);
-	waypoints1[index1].files.push(event.detail.files);
-  }*/
 
   var num_cards = 0;
 
-/*  function clearCards(){
-	  $('#feed').html("");
-	  num_cards = 0;
-  }*/
-
- /* function loadCard(waypoints, index){
-	console.log("wi"); console.log(waypoints); console.log(index);
-	if (!waypoints[index].inputWaypoints){
-		$('#feed').html($('#feed').html()+cardHTML);
-		num_cards++;
-		$('div.card:nth-child('+num_cards+')').attr('data-key', index);
-		$('div.card:nth-child('+num_cards+')').attr('data-type', 1);
-		if (waypoints[index].img[0]) $('div.card:nth-child('+num_cards+') img').attr('src', waypoints[index].img[0]);
-		else $('div.card:nth-child('+num_cards+') img').attr('src', "./img/Question_Mark.svg");
-		$('div.card:nth-child('+num_cards+') .card-body').html("<div class='container'><h5 class='card-title'>"+waypoints[index].title+"</h5><h6 class='card-subtitle text-muted'><small> Point by "+waypoints[index].username+"</small></h6></div>");
-		//$('div.card:nth-child('+num_cards+')').click();
-	}
-	else{
-		$('#feed').html($('#feed').html()+cardHTML);
-		num_cards++;
-		$('div.card:nth-child('+num_cards+')').attr('data-key', index);
-		$('div.card:nth-child('+num_cards+')').attr('data-type', 0);
-		//if (type) $('div.card:nth-child('+num_cards+')').css("background-color", "#ffe6cc");
-		if (waypoints[index].inputWaypoints[0].img[0]) $('div.card:nth-child('+num_cards+') img').attr('src', waypoints[index].inputWaypoints[0].img[0]);
-		else $('div.card:nth-child('+num_cards+') img').attr('src', "./img/Question_Mark.svg");
-		$('div.card:nth-child('+num_cards+') .card-body').html("<div class='container'><h5 class='card-title'>"+waypoints[index].inputWaypoints[0].title+"</h5><h6 class='card-subtitle text-muted'><small>Itinerary by "+waypoints[index].username+"</small></h6></div>");
-		/*console.log($('div.card:nth-child('+num_cards+') > div > img'));
-		$('div.card:nth-child('+num_cards+') > div > img').click(function(e){
-			console.log("this"); console.log(this);
-		});*/
-//	}
-//  }
-
-/*  function cardClicked(item){
-	var datakey = $(item).attr("data-key");
-	var datatype = $(item).attr("data-type");
-	if (datakey) pointsOfInterest.onclick_card(datakey, datatype);
-  }
-
-  function change(){
-	if (!screen){
-		$('body').addClass("mp");
-		$('body').removeClass("me");
-		screen = 1;
-	}
-	else{
-		$('body').addClass("me");
-		$('body').removeClass("mp");
-		screen = 0;
-	}
-  }*/
   var itineraryHTML = `<div id="carouselExampleIndicators" class="carousel slide mb-1 mt-1" data-ride="carousel">
-  <div class="carousel-inner w-100" style="height: 300px !important"></div>
+  <div class="carousel-inner w-100" style=""></div>
   <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
 	<span class="carousel-control-prev-icon" aria-hidden="true"></span>
 	<span class="sr-only">Previous</span>
@@ -546,11 +256,14 @@ var index1;
 				<div class="fileupload-buttonbar">
 					  <span class="btn btn-primary fileinput-button">
 						  <i class="fa fa-plus"></i>
-						  <span>Add files...</span>
-						  <input id="f" type="file" accept="image/*" multiple ></input>
+						  <span>Add file...</span>
+						  <input id="f" type="file" accept="image/*, video/*" multiple ></input>
 					  </span>
 				</div>
 		</div>
+	</div>
+	<div class ="upload-button centering">
+		<button class ="btn btn-primary fileinput-button" onclick ="loadVideosYoutube()"> Carica Video</button>
 	</div>
   
   </div>
