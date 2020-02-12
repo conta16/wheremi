@@ -68,7 +68,6 @@ class Itinerary {
 
     pushWaypoints(waypoints, point){
         var obj;
-        console.log(point);
         for (var i in waypoints){
             if (!point) obj = {
                 options : {

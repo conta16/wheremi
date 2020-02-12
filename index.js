@@ -696,7 +696,7 @@ app.get('/about', function (req, res){
 
 
 		]).limit(parseInt(req.query.maxpoints)).toArray(function(err,result){
-			if (err) throw err;
+			//if (err) throw err;
 			for (var index in result)
 				for (var i in result[index].waypoints){
 					for (var j=i; j<result[index].waypoints.length; j++){

@@ -23,16 +23,18 @@ class PointOfInterest{
         return this.currentItinerary;
     }
 
-    loadPoints(){
+    loadPoints(parentThis){
+        //'use strict';
         var bound = map.getBounds();
-        var parentThis = this;
+        console.log(bound);
         //this.removeAllMarkers();
         $.ajax({
-            url: parentThis.url+"/about?swlat="+bound._southWest.lat+"&swlng="+bound._southWest.lng+"&nelat="+bound._northEast.lat+"&nelng="+bound._northEast.lng+"&maxpoints="+parentThis.maxPoints,
+            url: url+"/about?swlat="+bound._southWest.lat+"&swlng="+bound._southWest.lng+"&nelat="+bound._northEast.lat+"&nelng="+bound._northEast.lng+"&maxpoints="+parentThis.maxPoints,
             method: "GET",
             dataType: "json",
             async: true,
             success: (data) => {
+                console.log(parentThis);
                 parentThis.graphics.clearCards();
                 parentThis.itineraryStartPoints = data.itineraryStartPoints;
                 parentThis.points = data.points;
@@ -132,6 +134,7 @@ class PointOfInterest{
             },
             error: (data) => {
                 console.log("getting points failed");
+                console.log(data);
             }
         });
 }

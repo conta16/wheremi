@@ -1,14 +1,78 @@
 class Graphics{
     constructor(facade){
         this.facade = facade;
+        this.zoom = {};
+        this.create = {};
+        this.upload = {};
+        this.removeButton = {};
+        this.num_cards = 0;
+        this.tmp_index = 0;
+        this.tmp_waypoint = {};
+        this.screen = 1;
+        //this.loadControllers();
+    }
+
+    loadControllers(){
+        this.zoom = L.control.zoom({
+            position:'bottomleft'
+        }).addTo(map);
+        
+        this.nav_controller = L.control.custom({
+            position: 'topleft',
+          content : '<div class="big-control"><a class="leaflet-bar-part leaflet-bar-part-single lowalpha round" width="30px" style="line-height: 40px; height: 40px; width: 40px" height="30px"><img src="./img/nav.svg" width="40px" height="40px"></img></a></div>',
+            classes : 'leaflet-control leaflet-bar round',
+            events : {
+                click : function(e){
+                    nav=new polloNavigator(navigatorControl.onpoint, navigatorControl.onend, navigatorControl.wondering);
+                    nav.navigate();
+                },
+            }
+        }).addTo(map);
+        
+        this.create = L.control.custom({
+            position: 'topleft',
+            content : '<div class="big-control"><a class="leaflet-bar-part leaflet-bar-part-single lowalpha round" width="30px" style="line-height: 40px height: 40px; width: 40px" height="30px"><img src="./img/travel.png" width="40px" height="40px"></img></a></div>',
+            classes : 'leaflet-control leaflet-bar round',
+            events : {
+                click : function(e){
+                    facade.createMode();
+                },
+            }
+        }); //visible when user logged in
+        
+        
+        this.upload = L.control.custom({
+            position: 'topleft',
+            content : '<div class="big-control"><a class="leaflet-bar-part leaflet-bar-part-single lowalpha round" width="30px" style="line-height: 40px height: 40px; width: 40px" height="30px"><img src="./img/upload.png" width="40px" height="40px"></img></a></div>',
+            classes : 'leaflet-control leaflet-bar round',
+            events : {
+                click : function(e){
+                    facade.ldItinerary();
+                },
+            }
+        }); //visible when user logged in
+        
+        this.removeButton = L.control.custom({
+            position: 'topleft',
+            content : '<div class="big-control"><a class="leaflet-bar-part leaflet-bar-part-single lowalpha round" width="30px" style="line-height: 40px height: 40px; width: 40px" height="30px"><img src="./img/load_point.svg" width="40px" height="40px"></img></a></div>',
+            classes : 'leaflet-control leaflet-bar round',
+            events : {
+                click : function(e){
+                    facade.getItinerary().removePoint();
+        
+                },
+            }
+        });
     }
 
     loadPoints(){
+        var parentThis = this;
+        console.log(parentThis);
         var last_event_ts= new Date()
         setTimeout(function(){
           //console.log(new Date()-last_event_ts)
           if (new Date()-last_event_ts>=100)
-            pointsOfInterest.loadPoints();
+            parentThis.facade.getPointsOfInterest().loadPoints();
         },100); //cambio 800 in 100
     }
 
@@ -116,40 +180,41 @@ class Graphics{
         }
         document.removeEventListener('loadimg', parentThis.eventListener);
         document.addEventListener('loadimg', parentThis.eventListener);
-        index1 = index;
-        waypoints1 = waypoints;
+        tmp_index = index;
+        tmp_waypoint = waypoints;
     }
 
     eventListener(event){ //mmm function inside function
         var fd = new FormData();
         fd.append('file', event.detail.files[0]);
-        waypoints1[index1].img.push(event.detail.src);
-        waypoints1[index1].files.push(event.detail.files);
+        console.log(this);
+        tmp_waypoint[tmp_index].img.push(event.detail.src);
+        tmp_waypoint[tmp_index].files.push(event.detail.files);
       }
 
       clearCards(){
         $('#feed').html("");
-        num_cards = 0;
+        this.num_cards = 0;
     }
 
     loadCard(waypoints, index){
         if (!waypoints[index].inputWaypoints){
             $('#feed').html($('#feed').html()+cardHTML);
-            num_cards++;
-            $('div.card:nth-child('+num_cards+')').attr('data-key', index);
-            $('div.card:nth-child('+num_cards+')').attr('data-type', 1);
-            if (waypoints[index].img[0]) $('div.card:nth-child('+num_cards+') img').attr('src', waypoints[index].img[0]);
-            else $('div.card:nth-child('+num_cards+') img').attr('src', "./img/Question_Mark.svg");
-            $('div.card:nth-child('+num_cards+') .card-body').html("<div class='container'><h5 class='card-title'>"+waypoints[index].title+"</h5><h6 class='card-subtitle text-muted'><small> Point by "+waypoints[index].username+"</small></h6></div>");
+            this.num_cards++;
+            $('div.card:nth-child('+this.num_cards+')').attr('data-key', index);
+            $('div.card:nth-child('+this.num_cards+')').attr('data-type', 1);
+            if (waypoints[index].img[0]) $('div.card:nth-child('+this.num_cards+') img').attr('src', waypoints[index].img[0]);
+            else $('div.card:nth-child('+this.num_cards+') img').attr('src', "./img/Question_Mark.svg");
+            $('div.card:nth-child('+this.num_cards+') .card-body').html("<div class='container'><h5 class='card-title'>"+waypoints[index].title+"</h5><h6 class='card-subtitle text-muted'><small> Point by "+waypoints[index].username+"</small></h6></div>");
         }
         else{
             $('#feed').html($('#feed').html()+cardHTML);
-            num_cards++;
-            $('div.card:nth-child('+num_cards+')').attr('data-key', index);
-            $('div.card:nth-child('+num_cards+')').attr('data-type', 0);
-            if (waypoints[index].inputWaypoints[0].img[0]) $('div.card:nth-child('+num_cards+') img').attr('src', waypoints[index].inputWaypoints[0].img[0]);
-            else $('div.card:nth-child('+num_cards+') img').attr('src', "./img/Question_Mark.svg");
-            $('div.card:nth-child('+num_cards+') .card-body').html("<div class='container'><h5 class='card-title'>"+waypoints[index].inputWaypoints[0].title+"</h5><h6 class='card-subtitle text-muted'><small>Itinerary by "+waypoints[index].username+"</small></h6></div>");
+            this.num_cards++;
+            $('div.card:nth-child('+this.num_cards+')').attr('data-key', index);
+            $('div.card:nth-child('+this.num_cards+')').attr('data-type', 0);
+            if (waypoints[index].inputWaypoints[0].img[0]) $('div.card:nth-child('+this.num_cards+') img').attr('src', waypoints[index].inputWaypoints[0].img[0]);
+            else $('div.card:nth-child('+this.num_cards+') img').attr('src', "./img/Question_Mark.svg");
+            $('div.card:nth-child('+this.num_cards+') .card-body').html("<div class='container'><h5 class='card-title'>"+waypoints[index].inputWaypoints[0].title+"</h5><h6 class='card-subtitle text-muted'><small>Itinerary by "+waypoints[index].username+"</small></h6></div>");
         }
       }
 
@@ -160,15 +225,15 @@ class Graphics{
       }
     
       change(){
-        if (!screen){
+        if (!this.screen){
             $('body').addClass("mp");
             $('body').removeClass("me");
-            screen = 1;
+            this.screen = 1;
         }
         else{
             $('body').addClass("me");
             $('body').removeClass("mp");
-            screen = 0;
+            this.screen = 0;
         }
       }
 }

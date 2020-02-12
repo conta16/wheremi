@@ -1,4 +1,7 @@
-var screen = 1; //whether map or menu is shown in small devices
+var map;
+var url = "http://localhost:3000";
+var tmp_index;
+var tmp_waypoint;
 
 var map = L.map('map', {
     // Set latitude and longitude of the map center (required)
@@ -91,7 +94,6 @@ var searchControl;
     provider: provider,
 });*/
 
-//map.addControl(searchControl);
 //map.addControl(choiceControl);
 
 var zoom = L.control.zoom({
@@ -197,29 +199,22 @@ document.addEventListener('userLogged', function(e){
 $(document).ready(function() {
 	facade = new Facade();
 
-	pointsOfInterest = facade.getPointsOfInterest();
+	var navigatorControl = new navigatorController(facade.getItinerary());
 
-	itinerary = facade.getItinerary();
+	var provider = new OpenStreetMapProvider(facade.getItinerary(), facade.getPointsOfInterest());
 
-	navigatorControl = new navigatorController(itinerary);
-
-	provider = new OpenStreetMapProvider(itinerary, pointsOfInterest);
-
-	searchControl = new GeoSearchControl({
+	var searchControl = new GeoSearchControl({
     	provider: provider,
 	});
 
-	map.addControl(searchControl);
+  map.addControl(searchControl);
+  facade.getGraphics().loadControllers();
 
-	zoom.addTo(map);
-	nav_controller.addTo(map);
+	loadPoints();
 
-	facade.getGraphics().loadPoints();
-
-	//$('#fileupload').fileupload({ dataType: 'json' });
 	facade.checkLoggedIn();
-	map.on('zoomend', facade.getGraphics().loadPoints);
-	map.on('drag', facade.getGraphics().loadPoints);
+	map.on('zoomend', loadPoints);
+	map.on('drag', loadPoints);
 
 });
 
