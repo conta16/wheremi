@@ -658,13 +658,7 @@ var index1;
 
   function loadMenu(waypoints, index, write_permit = true, nextnprevious = false){
 	if (itinerary.user_id == world.getAccount()._id) write_permit = true;
-	$('#inspect').html(itineraryHTML);
-	$("a[href='#feed']").removeClass("active");
-	$("a[href='#profile']").removeClass("active");
-	$("a[href='#inspect']").addClass("active");
-	$("#feed").removeClass("active show");
-	$("#profile").removeClass("active show");
-	$("#inspect").addClass("active show");
+	gotoTab(INSPECT_TAB);
 	if (!write_permit) {
 		$('.p').css('display','none');
 		$(".fileinput-button").css("display", "none");

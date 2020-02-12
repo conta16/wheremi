@@ -118,7 +118,7 @@ class PointOfInterest{
                 }};
                 var yt = new YTSearcher(yt_options);
                 yt.videoOnMap(map, 10);
-                
+
                 var toremove=[];
                 for (var i in parentThis.yt_markers)
                 {
@@ -201,12 +201,7 @@ class PointOfInterest{
             var do_nothing;
             do_nothing = parentThis.check_in_waypoints(len,1);
             $("#inspect").text(parentThis.itineraryStartPoints[len].label);
-            $("a[href='#feed']").removeClass("active");
-            $("a[href='profile']").removeClass("active");
-            $("a[href='#inspect']").addClass("active");
-            $("#feed").removeClass("active show");
-            $("#profile").removeClass("active show");
-            $("#inspect").addClass("active show");
+            gotoTab(INSPECT_TAB);
             if (!do_nothing && parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.itineraryStartPoints[len].inputWaypoints[0]);
             }
@@ -220,12 +215,7 @@ class PointOfInterest{
         if(datatype == 0) {
             console.log("aaaaaaaaaaaaaaaaaaccc");
         //$("#inspect").text(this.itineraryStartPoints[datakey].label);
-        $("a[href='#feed']").removeClass("active");
-        $("a[href='profile']").removeClass("active");
-        $("a[href='#inspect']").addClass("active");
-        $("#feed").removeClass("active show");
-        $("#profile").removeClass("active show");
-        $("#inspect").addClass("active show");
+        gotoTab(INSPECT_TAB);
         this.removeSearchMarker();
         this.currentItinerary.getRouteFromDB(this.itineraryStartPoints[datakey]._id)
             .then((data) => {
@@ -235,12 +225,7 @@ class PointOfInterest{
             .catch(() => {});
         }
         else{
-            $("a[href='#feed']").removeClass("active");
-            $("a[href='profile']").removeClass("active");
-            $("a[href='#inspect']").addClass("active");
-            $("#feed").removeClass("active show");
-            $("#profile").removeClass("active show");
-            $("#inspect").addClass("active show");
+            gotoTab(INSPECT_TAB);
             this.removeSearchMarker();
             loadMenu(this.points, datakey, false);
         }
@@ -270,14 +255,13 @@ class PointOfInterest{
         this.wikipediaMarkers[len].on('mouseout', () => {
             parentThis.wikipediaMarkers[len].closePopup();
         });*/
+
+        var point_copy=Object.assign({}, parentThis.wikipediaPoints[len]);
+        var title=parentThis.wikipediaPoints[len].title.toString();
+        var extract=parentThis.wikipediaPoints[len].extract.toString();
         this.wikipediaMarkers[len].on('click', (e) => {
-            $("#inspect").html("<div class='container'><h2>"+parentThis.wikipediaPoints[len].title.toString()+"</h2><p>"+parentThis.wikipediaPoints[len].extract.toString()+"</p></div>");
-            $("a[href='#feed']").removeClass("active");
-            $("a[href='#profile']").removeClass("active");
-            $("a[href='#inspect']").addClass("active");
-            $("#feed").removeClass("active show");
-            $("#profile").removeClass("active show");
-            $("#inspect").addClass("active show");
+            $("#inspect").html("<div class='container'><h2>"+title+"</h2><p>"+extract+"</p></div>");
+            gotoTab(INSPECT_TAB);
             if (parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.wikipediaPoints[len]);
             }
@@ -320,15 +304,10 @@ class PointOfInterest{
                 draggable: false
             }
         );
-
+        var title=this.yt_points[len].snippet.title.toString();
         this.yt_markers[len].on('click', () => {
-            $("#inspect").text(parentThis.yt_points[len].snippet.title.toString());
-            $("a[href='#feed']").removeClass("active");
-            $("a[href='profile']").removeClass("active");
-            $("a[href='#inspect']").addClass("active");
-            $("#feed").removeClass("active show");
-            $("#profile").removeClass("active show");
-            $("#inspect").addClass("active show");
+            $("#inspect").text(title);
+            gotoTab(INSPECT_TAB);
             if (parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.wikipediaPoints[len]);
             }
@@ -351,6 +330,8 @@ class PointOfInterest{
         for (var position in this.wikipediaMarkers)
           if (this.wikipediaMarkers[position]===marker)
             this.wikipediaMarkers.splice(position,1);
+          this.wikipediaPoints.splice(position,1);
+
     }
 
     removeSearchMarker(){
