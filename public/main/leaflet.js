@@ -1,52 +1,14 @@
-var map;
 var url = "http://localhost:3000";
 var tmp_index;
 var tmp_waypoint;
 
-var map = L.map('map', {
-    // Set latitude and longitude of the map center (required)
-    center: [44.7,10.633333],
-    // Set the initial zoom level, values 0-18, where 0 is most zoomed-out (required)
-    zoomControl: false,
-    zoom: 3,
-	minZoom: 3
-});
+
 
 /*var WorldStreetMap = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}/?access_token={accessToken}', {
 	attribution: 'Frank',
 	noWrap: true,
 	accessToken: 'pk.eyJ1Ijoid2hlcmVtaSIsImEiOiJjazZnajdnbmQwN29yM2xwODI5YnF2OWZtIn0.6Fr9OvAyxwthnY-ciTwJVg'
 }).addTo(map);*/
-
-var WorldStreetMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-	attribution: 'Tiles &copy; Esri &mdash; Source: Esri',
-	noWrap: true
-}).addTo(map);
-
-var bound = L.latLngBounds([[-90,-180], [90, 180]]);
-map.setMaxBounds(bound);
-map.on('drag', function() {
-	map.panInsideBounds(bound, { animate: false });
-});
-
-L.control.scale({position: 'bottomright'}).addTo(map);
-
-
-Paul=new Artyom();
-
-Paul.initialize({
-	lang: 'en', //todo: change language based on location or user preferences
-	continuous: true, // Listen forever
-	soundex: true,// Use the soundex algorithm to increase accuracy
-	debug: true, // Show messages in the console
-	executionKeyword: "",//Esegui dopo questa spressione
-	listen: false, // Start to listen commands !
-
-	// If providen, you can only trigger a command if you say its name
-	// e.g to trigger Good Morning, you need to say "Jarvis Good Morning"
-	name: "Paul"
-});
-
 
 
 
@@ -95,58 +57,6 @@ var searchControl;
 });*/
 
 //map.addControl(choiceControl);
-
-var zoom = L.control.zoom({
-	position:'bottomleft'
-});
-
-var nav_controller = L.control.custom({
-	position: 'topleft',
-  content : '<div class="big-control"><a class="leaflet-bar-part leaflet-bar-part-single lowalpha round" width="30px" style="line-height: 40px; height: 40px; width: 40px" height="30px"><img src="./img/nav.svg" width="40px" height="40px"></img></a></div>',
-	classes : 'leaflet-control leaflet-bar round',
-	events : {
-		click : function(e){
-			nav=new polloNavigator(navigatorControl.onpoint, navigatorControl.onend, navigatorControl.wondering);
-      if (nav.navigate)
-			   nav.navigate();
-		},
-	}
-});
-
-var create = L.control.custom({
-	position: 'topleft',
-	content : '<div class="big-control"><a class="leaflet-bar-part leaflet-bar-part-single lowalpha round" width="30px" style="line-height: 40px height: 40px; width: 40px" height="30px"><img src="./img/travel.png" width="40px" height="40px"></img></a></div>',
-	classes : 'leaflet-control leaflet-bar round',
-	events : {
-		click : function(e){
-			facade.createMode();
-		},
-	}
-}); //visible when user logged in
-
-
-var upload = L.control.custom({
-	position: 'topleft',
-	content : '<div class="big-control"><a class="leaflet-bar-part leaflet-bar-part-single lowalpha round" width="30px" style="line-height: 40px height: 40px; width: 40px" height="30px"><img src="./img/upload.png" width="40px" height="40px"></img></a></div>',
-	classes : 'leaflet-control leaflet-bar round',
-	events : {
-		click : function(e){
-			facade.ldItinerary();
-		},
-	}
-}); //visible when user logged in
-
-var removeButton = 	L.control.custom({
-	position: 'topleft',
-	content : '<div class="big-control"><a class="leaflet-bar-part leaflet-bar-part-single lowalpha round" width="30px" style="line-height: 40px height: 40px; width: 40px" height="30px"><img src="./img/load_point.svg" width="40px" height="40px"></img></a></div>',
-	classes : 'leaflet-control leaflet-bar round',
-	events : {
-		click : function(e){
-			facade.getItinerary().removePoint();
-
-		},
-	}
-});
 
 
 ////////////////////////////
@@ -210,7 +120,7 @@ $(document).ready(function() {
   map.addControl(searchControl);
   facade.getGraphics().loadControllers();
 
-	loadPoints();
+	facade.graphics.loadPoints();
 
 	facade.checkLoggedIn();
 	map.on('zoomend', loadPoints);
