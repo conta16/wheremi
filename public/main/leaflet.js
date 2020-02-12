@@ -374,7 +374,7 @@ $.ajax({
 		console.log(a,b,c)
 	}
 }).always(function() {
-	var options= {setView:'always', sharePosition: true, showCompass: true, markerStyle:{radius: mobile? 18: 9}, compassStyle:{radius: mobile? 18: 9}, flyTo:true,locateOptions:{watch:true, enableHighAccuracy:true}};
+	var options= {setView:false, sharePosition: true, showCompass: true, markerStyle:{radius: mobile? 18: 9}, compassStyle:{radius: mobile? 18: 9}, flyTo:false,locateOptions:{watch:true, enableHighAccuracy:true}};
 	options.defaultLatLng=Object.assign({}, defaultLatLng);
 	L.control.locate(options).addTo(map);
 })
@@ -411,7 +411,8 @@ L.control.custom({
 	events : {
 		click : function(e){
 			nav=new polloNavigator(navigatorControl.onpoint, navigatorControl.onend, navigatorControl.wondering);
-			nav.navigate();
+      if (nav.navigate)
+			   nav.navigate();
 		},
 	}
 }).addTo(map);
