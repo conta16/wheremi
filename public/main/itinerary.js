@@ -1,5 +1,5 @@
 class Itinerary {
-    constructor(){
+    constructor(graphics){
         this.user_id = {};
         this.label = "";
         this.waypoints = [];
@@ -8,6 +8,7 @@ class Itinerary {
         this.childrenId = [];
         this.markers = [];
         this.url = "http://localhost:3000";
+        this.graphics = graphics;
         this.control = undefined;
         this.mode = 0; //0 when in visit mode, 1 when in create itinerary mode, 2 when in delete mode
         this.block = 0; //to prevent click event after drag event
@@ -29,10 +30,10 @@ class Itinerary {
         $(document).on('change','#f', function () {
             var files = this.files;
             if (this.files.length > 0) {
-    
+
                 $.each(this.files, function (index, value) {
                     var reader = new FileReader();
-    
+
                     reader.onload = function (e) {
                         var event = new CustomEvent('loadimg', { 'detail': {'files': files, 'src': e.target.result}});
                         var slideItem;
@@ -55,7 +56,7 @@ class Itinerary {
         var obj;
         console.log(point);
         for (var i in waypoints){
-            if (!point) obj = {                
+            if (!point) obj = {
                 options : {
                     "allowUTurn" : false
                 },
@@ -135,8 +136,17 @@ class Itinerary {
         this.route = data.route;
         this.waypoints = data.inputWaypoints;
         this.label = data.label;
+
         this.id = data._id;
+
         this.childrenId = data.waypoints;
+        console.log(this.childrenId);
+        console.log(this.route);
+        console.log(this.waypoints);
+        console.log(this.label);
+        console.log(this.id);
+
+
         this.showRoute();
     }
 
@@ -266,16 +276,16 @@ class Itinerary {
             });
             parentThis.markers[index].on('click', (e) => {
                 var waypoints = parentThis.waypoints;
-                if (index > 0)
+                //if (index > 0)
                     if (parentThis.mode && waypoints[index].write_permit == true){
-                        loadMenu(waypoints, index, true, true);
+                        parentThis.graphics.loadMenu(waypoints, index, true, true);
                     }
-                    else loadMenu(waypoints, index, false, true);
-                else
+                    else parentThis.graphics.loadMenu(waypoints, index, false, true);
+                /*else
                     if (parentThis.mode && waypoints[index].write_permit == true){ //se si vuole mettere comportamento diverso per primo punto itinerario
                         loadMenu(waypoints, index, true, true);
                     }
-                    else loadMenu(waypoints, index, false, true);
+                    else loadMenu(waypoints, index, false, true);*/
             });
         });
     }
@@ -315,6 +325,7 @@ class Itinerary {
     removePoint(){
         var parentThis = this;
         var parse = []; //when a marker is deleted, it messes up the events. this fixes it
+        $('#inspect').html(itineraryHTML);
         if (this.mode == 1)
         {
             this.setMode(2);
@@ -337,8 +348,8 @@ class Itinerary {
                 parentThis.markers[index].off('click');
                 parentThis.markers[index].on('click', (e) => {
                     var waypoints = parentThis.waypoints;
-                    if (parentThis.mode) loadMenu(waypoints, index);
-                    else loadMenu(waypoints, index, false);
+                    if (parentThis.mode) parentThis.graphics.loadMenu(waypoints, index);
+                    else parentThis.graphics.loadMenu(waypoints, index, false);
                 });
             });
         }

@@ -1,5 +1,5 @@
 class PointOfInterest{
-    constructor(itinerary, maxPoints){
+    constructor(itinerary, maxPoints, graphics){
         this.itineraryStartPoints = [];
         this.points = [];
         this.wikipediaPoints = [];
@@ -14,7 +14,9 @@ class PointOfInterest{
         this.searchPoint = {};
         this.searchPointMarker = {};
         this.maxPoints = maxPoints;
+        this.graphics = graphics;
         this.url = "http://localhost:3000";
+        this.wiki= undefined;
     }
 
     getItinerary(){
@@ -31,7 +33,7 @@ class PointOfInterest{
             dataType: "json",
             async: true,
             success: (data) => {
-                clearCards();
+                parentThis.graphics.clearCards();
                 parentThis.itineraryStartPoints = data.itineraryStartPoints;
                 parentThis.points = data.points;
                 while (parentThis.markers.length > 0) parentThis.removePointsMarker(0);
@@ -50,7 +52,7 @@ class PointOfInterest{
                         parentThis.currentItinerary.getRouteFromDB(parentThis.itineraryStartPoints[index]._id)
                             .then((data) => {
                                 parentThis.currentItinerary.setRoute(data);
-                                loadMenu(data.inputWaypoints, data.inputWaypoints.length-1, false);
+                                parentThis.graphics.loadMenu(data.inputWaypoints, data.inputWaypoints.length-1, false);
                             })
                             .catch(() => {});
                     });
@@ -60,17 +62,17 @@ class PointOfInterest{
                         dataType: "json",
                         success: (data) => {
                             parentThis.itineraryStartPoints[index].username = data[0].username;
-                            loadCard(parentThis.itineraryStartPoints, index);
+                            parentThis.graphics.loadCard(parentThis.itineraryStartPoints, index);
                         },
                         error: () => {
                             console.log("error in getting username");
-                        } 
+                        }
                     });
-                        
+
                 });
                 parentThis.points.forEach((obj,index) => {
                     if (parentThis.markers[index]) parentThis.markers[index].on('click', () => {
-                        loadMenu(parentThis.points, index, false);
+                        parentThis.graphics.loadMenu(parentThis.points, index, false);
                     });
                     $.ajax({
                         url: parentThis.url+"/getUsername?id="+parentThis.points[index].user_id.toString(),
@@ -78,26 +80,32 @@ class PointOfInterest{
                         dataType: "json",
                         success: (data) => {
                             parentThis.points[index].username = data[0].username;
-                            loadCard(parentThis.points, index, 0);
+                            parentThis.graphics.loadCard(parentThis.points, index, 0);
                         },
                         error: () => {
                             console.log("error in getting username");
-                        } 
+                        }
                     });
                 });
 
                 this.wikipediaPoints = []; //with wikipedia stuff here, wikipedia links are loaded only if database responds successfully. Maybe it can be changed
-                var options = {wiki_search_url: "https://en.wikipedia.org/w/api.php", introCallback: function(a){
+                var options = {wiki_search_url: "https://"+"en"+".wikipedia.org/w/api.php", introCallback: function(a){
                     if (a){
                         for (var i in a.query.pages)
                             parentThis.wikipediaPoints.push(a.query.pages[i]);
                         for (var i in a.query.pages)
                             parentThis.setWikipediaMarker(a.query.pages[i].latLng);
                 }}};
-                var wiki = new wikiSearcher(options);
-                wiki.searchOnMap(map,10);
-                while(parentThis.wikipediaMarkers.length > 0) parentThis.removeWikipediaMarker(0);
+                parentThis.wiki = new wikiSearcher(options);
+                parentThis.wiki.searchOnMap(map,10);
+                var toremove=[];
+                for (var i in parentThis.wikipediaMarkers)
+                {
+                  if (!map.getBounds().contains(parentThis.wikipediaMarkers[i].getLatLng()))
+                    toremove.push(parentThis.wikipediaMarkers[i]);
+                  }
 
+                toremove.map(function(item){parentThis.removeWikipediaMarker(item)})
                 //
                 this.yt_points = [];
                 var yt_options = {googlekey: "AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0",yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){
@@ -112,7 +120,15 @@ class PointOfInterest{
                 }};
                 var yt = new YTSearcher(yt_options);
                 yt.videoOnMap(map, 10);
-                while(parentThis.yt_markers.length > 0) parentThis.removeYtMarker(0);    
+
+                var toremove=[];
+                for (var i in parentThis.yt_markers)
+                {
+                  if (!map.getBounds().contains(parentThis.yt_markers[i].getLatLng()))
+                    toremove.push(parentThis.yt_markers[i]);
+                  }
+
+                toremove.map(function(item){parentThis.removeWikipediaMarker(item)})
 
             },
             error: (data) => {
@@ -186,13 +202,8 @@ class PointOfInterest{
         this.itineraryStartMarkers[len].on('click', (e) => {
             var do_nothing;
             do_nothing = parentThis.check_in_waypoints(len,1);
-            //$("#inspect").text(parentThis.itineraryStartPoints[len].label);
-            $("a[href='#feed']").removeClass("active");
-            $("a[href='profile']").removeClass("active");
-            $("a[href='#inspect']").addClass("active");
-            $("#feed").removeClass("active show");
-            $("#profile").removeClass("active show");
-            $("#inspect").addClass("active show");
+            $("#inspect").text(parentThis.itineraryStartPoints[len].label);
+            gotoTab(INSPECT_TAB);
             if (!do_nothing && parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.itineraryStartPoints[len].inputWaypoints[0]);
             }
@@ -205,29 +216,20 @@ class PointOfInterest{
     onclick_card(datakey, datatype){
         var parentThis = this;
         if(datatype == 0) {
-        $("a[href='#feed']").removeClass("active");
-        $("a[href='profile']").removeClass("active");
-        $("a[href='#inspect']").addClass("active");
-        $("#feed").removeClass("active show");
-        $("#profile").removeClass("active show");
-        $("#inspect").addClass("active show");
-        this.removeSearchMarker();
-        this.currentItinerary.getRouteFromDB(this.itineraryStartPoints[datakey]._id)
-            .then((data) => {
-                parentThis.currentItinerary.setRoute(data);
-                loadMenu(data.inputWaypoints, 0, false);
-            })
-            .catch(() => {});
+            gotoTab(INSPECT_TAB);
+            this.removeSearchMarker();
+            this.currentItinerary.getRouteFromDB(this.itineraryStartPoints[datakey]._id)
+                .then((data) => {
+                    console.log(data);
+                    parentThis.currentItinerary.setRoute(data);
+                    parentThis.graphics.loadMenu(data.inputWaypoints, 0, false);
+                })
+                .catch(() => {});
         }
         else{
-            $("a[href='#feed']").removeClass("active");
-            $("a[href='profile']").removeClass("active");
-            $("a[href='#inspect']").addClass("active");
-            $("#feed").removeClass("active show");
-            $("#profile").removeClass("active show");
-            $("#inspect").addClass("active show");
+            gotoTab(INSPECT_TAB);
             this.removeSearchMarker();
-            loadMenu(this.points, datakey, false);
+            parentThis.graphics.loadMenu(this.points, datakey, false);
         }
     }
 
@@ -255,14 +257,13 @@ class PointOfInterest{
         this.wikipediaMarkers[len].on('mouseout', () => {
             parentThis.wikipediaMarkers[len].closePopup();
         });*/
+
+        var point_copy=Object.assign({}, parentThis.wikipediaPoints[len]);
+        var title=parentThis.wikipediaPoints[len].title.toString();
+        var extract=parentThis.wikipediaPoints[len].extract.toString();
         this.wikipediaMarkers[len].on('click', (e) => {
-            $("#inspect").html("<div class='container'><h2>"+parentThis.wikipediaPoints[len].title.toString()+"</h2><p>"+parentThis.wikipediaPoints[len].extract.toString()+"</p></div>");
-            $("a[href='#feed']").removeClass("active");
-            $("a[href='#profile']").removeClass("active");
-            $("a[href='#inspect']").addClass("active");
-            $("#feed").removeClass("active show");
-            $("#profile").removeClass("active show");
-            $("#inspect").addClass("active show");
+            $("#inspect").html("<div class='container'><h2>"+title+"</h2><p>"+extract+"</p></div>");
+            gotoTab(INSPECT_TAB);
             if (parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.wikipediaPoints[len]);
             }
@@ -305,19 +306,13 @@ class PointOfInterest{
                 draggable: false
             }
         );
-
+        var title=this.yt_points[len].snippet.title.toString();
         this.yt_markers[len].on('click', () => {
-            $("#inspect").text(parentThis.yt_points[len].snippet.title.toString());
-            $("a[href='#feed']").removeClass("active");
-            $("a[href='profile']").removeClass("active");
-            $("a[href='#inspect']").addClass("active");
-            $("#feed").removeClass("active show");
-            $("#profile").removeClass("active show");
-            $("#inspect").addClass("active show");
-            onYoutubeIframeAPIReady('M7lc1UVf-VE');
-            /*if (parentThis.currentItinerary.getMode()){
+            $("#inspect").text(title);
+            gotoTab(INSPECT_TAB);
+            if (parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.wikipediaPoints[len]);
-            }*/
+            }
         });
         this.yt_markers[len].addTo(map);
     }
@@ -332,9 +327,13 @@ class PointOfInterest{
         this.itineraryStartMarkers.splice(position,1);
     }
 
-    removeWikipediaMarker(position){
-        map.removeLayer(this.wikipediaMarkers[position]);
-        this.wikipediaMarkers.splice(position,1);
+    removeWikipediaMarker(marker){
+        map.removeLayer(marker);
+        for (var position in this.wikipediaMarkers)
+          if (this.wikipediaMarkers[position]===marker)
+            this.wikipediaMarkers.splice(position,1);
+          this.wikipediaPoints.splice(position,1);
+
     }
 
     removeSearchMarker(){
@@ -345,9 +344,11 @@ class PointOfInterest{
         map.removeLayer(this.addedPointMarker);
     }
 
-    removeYtMarker(position){
-        map.removeLayer(this.yt_markers[position]);
-        this.yt_markers.splice(position,1);
+    removeYtMarker(marker){
+        map.removeLayer(marker);
+        for (var position in this.yt_markers)
+          if (this.yt_markers[position]===marker)
+            this.yt_markers.splice(position,1);
     }
 
     removeAllMarkers(){
