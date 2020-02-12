@@ -79,7 +79,7 @@ class Users{
         for (var i in this.account.itinerary_id){
             this.itinerary.getRouteFromDB(this.account.itinerary_id[i])
             .then((data) => {
-                
+
                 if (!data.inputWaypoints[0].img[0]) $(".profile-usermenu").prepend(
                     "<img src='./img/unknown_person.png' class='img-thumbnail' style='height:30%;width:33%; display: inline' alt=''>"
                 );
@@ -87,6 +87,7 @@ class Users{
                     "<img src='"+data.inputWaypoints[0].img[0]+"' class='img-thumbnail' style='height:30%;width:33%; display: inline' alt=''>"
                 );
                 parentThis.itineraries.unshift(data);
+                L.routes=Object.assign({}, data);
                 var index = 1;
                 $(".img-thumbnail:nth-of-type("+index+")").on("click", () => {
                     console.log($(".img-thumbnail:nth-of-type("+index+")"));

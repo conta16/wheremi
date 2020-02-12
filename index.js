@@ -80,7 +80,8 @@ var userModel ={
       email: String,
       salt: String,
       token: String,
-      bio: String
+      bio: String,
+      googleAuth: Boolean
     };
 var passwordBeingUpdatedModel={
   userid: String,
@@ -201,7 +202,8 @@ passport.use(new GoogleStrategy({
           'email': profile.emails[0].value,
           'salt': "",
           'bio': "",
-					'token': genRandomString(64)
+          'token': genRandomString(64),
+          'googleAuth': true
         }, function(err, user) {
           if(err) {
             return done(err);
@@ -265,7 +267,7 @@ passport.use(new RegisterStrategy({
             'email': req.body.email,
             'salt':salt.salt,
             'bio':'',
-            'verificationKey': vk
+            'verificationKey': vk,
           }, function(err, user) {
             if(err) {
               return done(err);
@@ -412,7 +414,8 @@ app.get('/logout',
                     email: data.email,
                     salt: data.salt,
                     token: "",
-                    bio: ""
+                    bio: "",
+                    googleAuth: false
                   }, function (err, data){
               if (err){
                 console.log(err);

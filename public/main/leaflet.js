@@ -3,6 +3,7 @@ var url = "http://localhost:3000";
 var tmp_index;
 var tmp_waypoint;
 
+
 /*const choiceControl = new ChoiceControl({
     provider: provider,
 });*/
