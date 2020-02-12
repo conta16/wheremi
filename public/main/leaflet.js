@@ -1,109 +1,13 @@
+var map;
 var url = "http://localhost:3000";
 var tmp_index;
 var tmp_waypoint;
-
-
-
-/*var WorldStreetMap = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}/?access_token={accessToken}', {
-	attribution: 'Frank',
-	noWrap: true,
-	accessToken: 'pk.eyJ1Ijoid2hlcmVtaSIsImEiOiJjazZnajdnbmQwN29yM2xwODI5YnF2OWZtIn0.6Fr9OvAyxwthnY-ciTwJVg'
-}).addTo(map);*/
-
-
-
-//////////////// DAVIDE - locate control ////////////
-
-var mobile=window.matchMedia("(min-device-width : 320px)").matches;
-mobile=mobile && window.matchMedia("(max-device-width : 480px)").matches;
-mobile=mobile && window.matchMedia("only screen").matches;
-var positionInfo;
-var defaultLatLng={}
-
-$.ajax({
-	method: 'GET',
-	url: 'http://ip-api.com/json',
-	"content-type": 'json',
-	success: function(data){
-    positionInfo=data;
-		defaultLatLng.lat=data.lat;
-		defaultLatLng.lng=data.lon;
-	},
-	error: function(a,b,c){
-		console.log(a,b,c)
-	}
-}).always(function() {
-	var options= {setView:false, sharePosition: true, showCompass: true, markerStyle:{radius: mobile? 18: 9}, compassStyle:{radius: mobile? 18: 9}, flyTo:false,locateOptions:{watch:true, enableHighAccuracy:true}};
-	options.defaultLatLng=Object.assign({}, defaultLatLng);
-	L.control.locate(options).addTo(map);
-})
-
-/*----------------------------------------------------------------------------------*/
-
-var facade;
-
-var pointsOfInterest;
-
-var itinerary;
-
-var navigatorControl;
-
-var provider;
-
-var searchControl;
 
 /*const choiceControl = new ChoiceControl({
     provider: provider,
 });*/
 
 //map.addControl(choiceControl);
-
-
-////////////////////////////
-
-
-var buttonMode = 0;
-var use={};
-
-document.addEventListener('userLogged', function(e){
-  //console.log(localStorage.getItem("account"));
-  facade.setAccount(e.detail.account);
-  create.addTo(map);
-  upload.addTo(map);
-  facade.getUser().getItineraries();
-  use=Object.assign({}, e.detail.account);
-  $('img#profilepic').attr('src', e.detail.account.profilepic);
-
-
-  $(document).on('change','#uploadpic', function () {
-    var file = this.files;
-    console.log("akkkkkkkkkkkkksssssss");
-          if (this.files.length == 1) {
-              //$.each(this.files, function (index, value) {
-                  var reader = new FileReader();
-                  reader.onload = function (e) {
-                    $('img#profilepic').attr('src', e.target.result);
-                      $.ajax({
-            url: '/changeprofilepic',
-            method: 'POST',
-            dataType: 'json',
-            data: {
-              pic: JSON.stringify(e.target.result),
-              id: JSON.stringify(use._id)
-            },
-            success: () => {
-              console.log("pic changed");
-            },
-            error: () => {
-              console.log("error in changing pic");
-            }
-          });
-                  };
-                  reader.readAsDataURL(file[0]);
-              //});
-          }
-      });
-});
 
 
 $(document).ready(function() {
@@ -120,29 +24,27 @@ $(document).ready(function() {
   map.addControl(searchControl);
   facade.getGraphics().loadControllers();
 
-	facade.graphics.loadPoints();
+	loadPoints();
 
 	facade.checkLoggedIn();
 	map.on('zoomend', loadPoints);
 	map.on('drag', loadPoints);
 
 });
-
-
+/*
 function apply(){
 	pointsOfInterest.addedPoint.description = $("#popupInput").val();
 	console.log($("#popupInput"));
+}*/
+
+function loadPoints(){
+  var point = facade.getPointsOfInterest();
+  point.loadPoints(point);
 }
 
 
-var waypoints1;
-var index1;
-
-
-  var num_cards = 0;
-
   var itineraryHTML = `<div id="carouselExampleIndicators" class="carousel slide mb-1 mt-1" data-ride="carousel">
-  <div class="carousel-inner w-100" style=""></div>
+  <div class="carousel-inner w-100" style="height: 300px !important"></div>
   <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
 	<span class="carousel-control-prev-icon" aria-hidden="true"></span>
 	<span class="sr-only">Previous</span>
@@ -161,14 +63,11 @@ var index1;
 				<div class="fileupload-buttonbar">
 					  <span class="btn btn-primary fileinput-button">
 						  <i class="fa fa-plus"></i>
-						  <span>Add file...</span>
-						  <input id="f" type="file" accept="image/*, video/*" multiple ></input>
+						  <span>Add files...</span>
+						  <input id="f" type="file" accept="image/*" multiple ></input>
 					  </span>
 				</div>
 		</div>
-	</div>
-	<div class ="upload-button centering">
-		<button class ="btn btn-primary fileinput-button" onclick ="loadVideosYoutube()"> Carica Video</button>
 	</div>
   
   </div>
