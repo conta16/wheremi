@@ -15,6 +15,7 @@ class PointOfInterest{
         this.searchPointMarker = {};
         this.maxPoints = maxPoints;
         this.url = "http://localhost:3000";
+        this.wiki= undefined;
     }
 
     getItinerary(){
@@ -64,9 +65,9 @@ class PointOfInterest{
                         },
                         error: () => {
                             console.log("error in getting username");
-                        } 
+                        }
                     });
-                        
+
                 });
                 parentThis.points.forEach((obj,index) => {
                     if (parentThis.markers[index]) parentThis.markers[index].on('click', () => {
@@ -82,22 +83,28 @@ class PointOfInterest{
                         },
                         error: () => {
                             console.log("error in getting username");
-                        } 
+                        }
                     });
                 });
 
                 this.wikipediaPoints = []; //with wikipedia stuff here, wikipedia links are loaded only if database responds successfully. Maybe it can be changed
-                var options = {wiki_search_url: "https://en.wikipedia.org/w/api.php", introCallback: function(a){
+                var options = {wiki_search_url: "https://"+"en"+".wikipedia.org/w/api.php", introCallback: function(a){
                     if (a){
                         for (var i in a.query.pages)
                             parentThis.wikipediaPoints.push(a.query.pages[i]);
                         for (var i in a.query.pages)
                             parentThis.setWikipediaMarker(a.query.pages[i].latLng);
                 }}};
-                var wiki = new wikiSearcher(options);
-                wiki.searchOnMap(map,10);
-                while(parentThis.wikipediaMarkers.length > 0) parentThis.removeWikipediaMarker(0);
+                parentThis.wiki = new wikiSearcher(options);
+                parentThis.wiki.searchOnMap(map,10);
+                var toremove=[];
+                for (var i in parentThis.wikipediaMarkers)
+                {
+                  if (!map.getBounds().contains(parentThis.wikipediaMarkers[i].getLatLng()))
+                    toremove.push(parentThis.wikipediaMarkers[i]);
+                  }
 
+                toremove.map(function(item){parentThis.removeWikipediaMarker(item)})
                 //
                 this.yt_points = [];
                 var yt_options = {googlekey: "AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0",yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){
@@ -111,7 +118,15 @@ class PointOfInterest{
                 }};
                 var yt = new YTSearcher(yt_options);
                 yt.videoOnMap(map, 10);
-                while(parentThis.yt_markers.length > 0) parentThis.removeYtMarker(0);       
+                
+                var toremove=[];
+                for (var i in parentThis.yt_markers)
+                {
+                  if (!map.getBounds().contains(parentThis.yt_markers[i].getLatLng()))
+                    toremove.push(parentThis.yt_markers[i]);
+                  }
+
+                toremove.map(function(item){parentThis.removeWikipediaMarker(item)})
 
             },
             error: (data) => {
@@ -331,9 +346,11 @@ class PointOfInterest{
         this.itineraryStartMarkers.splice(position,1);
     }
 
-    removeWikipediaMarker(position){
-        map.removeLayer(this.wikipediaMarkers[position]);
-        this.wikipediaMarkers.splice(position,1);
+    removeWikipediaMarker(marker){
+        map.removeLayer(marker);
+        for (var position in this.wikipediaMarkers)
+          if (this.wikipediaMarkers[position]===marker)
+            this.wikipediaMarkers.splice(position,1);
     }
 
     removeSearchMarker(){
@@ -344,9 +361,11 @@ class PointOfInterest{
         map.removeLayer(this.addedPointMarker);
     }
 
-    removeYtMarker(position){
-        map.removeLayer(this.yt_markers[position]);
-        this.yt_markers.splice(position,1);
+    removeYtMarker(marker){
+        map.removeLayer(marker);
+        for (var position in this.yt_markers)
+          if (this.yt_markers[position]===marker)
+            this.yt_markers.splice(position,1);
     }
 
     removeAllMarkers(){

@@ -29,10 +29,10 @@ class Itinerary {
         $(document).on('change','#f', function () {
             var files = this.files;
             if (this.files.length > 0) {
-    
+
                 $.each(this.files, function (index, value) {
                     var reader = new FileReader();
-    
+
                     reader.onload = function (e) {
                         var event = new CustomEvent('loadimg', { 'detail': {'files': files, 'src': e.target.result}});
                         var slideItem;
@@ -55,7 +55,7 @@ class Itinerary {
         var obj;
         console.log(point);
         for (var i in waypoints){
-            if (!point) obj = {                
+            if (!point) obj = {
                 options : {
                     "allowUTurn" : false
                 },
@@ -315,6 +315,7 @@ class Itinerary {
     removePoint(){
         var parentThis = this;
         var parse = []; //when a marker is deleted, it messes up the events. this fixes it
+        $('#inspect').html(itineraryHTML);
         if (this.mode == 1)
         {
             this.setMode(2);
