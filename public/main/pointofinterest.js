@@ -1,5 +1,5 @@
 class PointOfInterest{
-    constructor(itinerary, maxPoints){
+    constructor(itinerary, maxPoints, graphics){
         this.itineraryStartPoints = [];
         this.points = [];
         this.wikipediaPoints = [];
@@ -14,6 +14,7 @@ class PointOfInterest{
         this.searchPoint = {};
         this.searchPointMarker = {};
         this.maxPoints = maxPoints;
+        this.graphics = graphics;
         this.url = "http://localhost:3000";
         this.wiki= undefined;
     }
@@ -32,7 +33,7 @@ class PointOfInterest{
             dataType: "json",
             async: true,
             success: (data) => {
-                clearCards();
+                parentThis.graphics.clearCards();
                 parentThis.itineraryStartPoints = data.itineraryStartPoints;
                 parentThis.points = data.points;
                 while (parentThis.markers.length > 0) parentThis.removePointsMarker(0);
@@ -51,7 +52,7 @@ class PointOfInterest{
                         parentThis.currentItinerary.getRouteFromDB(parentThis.itineraryStartPoints[index]._id)
                             .then((data) => {
                                 parentThis.currentItinerary.setRoute(data);
-                                loadMenu(data.inputWaypoints, data.inputWaypoints.length-1, false);
+                                parentThis.graphics.loadMenu(data.inputWaypoints, data.inputWaypoints.length-1, false);
                             })
                             .catch(() => {});
                     });
@@ -61,7 +62,7 @@ class PointOfInterest{
                         dataType: "json",
                         success: (data) => {
                             parentThis.itineraryStartPoints[index].username = data[0].username;
-                            loadCard(parentThis.itineraryStartPoints, index);
+                            parentThis.graphics.loadCard(parentThis.itineraryStartPoints, index);
                         },
                         error: () => {
                             console.log("error in getting username");
@@ -71,7 +72,7 @@ class PointOfInterest{
                 });
                 parentThis.points.forEach((obj,index) => {
                     if (parentThis.markers[index]) parentThis.markers[index].on('click', () => {
-                        loadMenu(parentThis.points, index, false);
+                        parentThis.graphics.loadMenu(parentThis.points, index, false);
                     });
                     $.ajax({
                         url: parentThis.url+"/getUsername?id="+parentThis.points[index].user_id.toString(),
@@ -79,7 +80,7 @@ class PointOfInterest{
                         dataType: "json",
                         success: (data) => {
                             parentThis.points[index].username = data[0].username;
-                            loadCard(parentThis.points, index, 0);
+                            parentThis.graphics.loadCard(parentThis.points, index, 0);
                         },
                         error: () => {
                             console.log("error in getting username");
@@ -111,6 +112,7 @@ class PointOfInterest{
                         for (var i in res.items){
                             res.items[i].recordingDetails.location.lat = res.items[i].recordingDetails.location.latitude;
                             res.items[i].recordingDetails.location.lng = res.items[i].recordingDetails.location.longitude;
+                            console.log(res.items[i]);
                             parentThis.setYoutubeMarker(res.items[i].recordingDetails.location);
                             parentThis.yt_points.push(res.items[i]); // discarding etag, kind and pageInfo properties
                         }
@@ -204,6 +206,7 @@ class PointOfInterest{
             if (!do_nothing && parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.itineraryStartPoints[len].inputWaypoints[0]);
             }
+            //loadMenu(parentThis.itineraryStartPoints[len].inputWaypoints, 0, false);
         });
         var do_nothing = this.check_in_waypoints(len,1);
         if(!do_nothing) this.itineraryStartMarkers[len].addTo(map);
@@ -212,21 +215,20 @@ class PointOfInterest{
     onclick_card(datakey, datatype){
         var parentThis = this;
         if(datatype == 0) {
-            console.log("aaaaaaaaaaaaaaaaaaccc");
-        //$("#inspect").text(this.itineraryStartPoints[datakey].label);
-        gotoTab(INSPECT_TAB);
-        this.removeSearchMarker();
-        this.currentItinerary.getRouteFromDB(this.itineraryStartPoints[datakey]._id)
-            .then((data) => {
-                parentThis.currentItinerary.setRoute(data);
-                loadMenu(data.inputWaypoints, data.inputWaypoints.length-1, false);
-            })
-            .catch(() => {});
+            gotoTab(INSPECT_TAB);
+            this.removeSearchMarker();
+            this.currentItinerary.getRouteFromDB(this.itineraryStartPoints[datakey]._id)
+                .then((data) => {
+                    console.log(data);
+                    parentThis.currentItinerary.setRoute(data);
+                    parentThis.graphics.loadMenu(data.inputWaypoints, 0, false);
+                })
+                .catch(() => {});
         }
         else{
             gotoTab(INSPECT_TAB);
             this.removeSearchMarker();
-            loadMenu(this.points, datakey, false);
+            parentThis.graphics.loadMenu(this.points, datakey, false);
         }
     }
 

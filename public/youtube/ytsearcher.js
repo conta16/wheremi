@@ -87,6 +87,25 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
     return url;
   }
 
+  function onYouTubeIframeAPIReady(id) {
+    $('#inspect').html(itineraryHTML);
+    var player = new YT.Player('player', {
+      height: '360',
+      width: '640',
+      videoId: id, //'M7lc1UVf-VE',
+      events: {
+        'onReady': onPlayerReady
+        //'onStateChange': onPlayerStateChange
+      }
+    });
+  }
+
+  function onPlayerReady(event) {
+    event.target.playVideo();
+  }
+
+
+
   this.videoOnMap = function(map, params){
     radius=L.getRadius(map);
     center=map.getCenter();
