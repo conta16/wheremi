@@ -1,13 +1,54 @@
 class Users{
-    constructor(itinerary){
+    constructor(itinerary, facade){
+        this.facade = facade;
         this.itinerary = itinerary;
         this.account = {};
         this.itineraries = [];
         this.pointsOfInterest = [];
         this.logged = false;
-        document.addEventListener("it_added", () => {
+        this.afterLogin();
+    }
 
-        });
+    afterLogin(){
+        var parentThis = this;
+        document.addEventListener('userLogged', function(e){
+            parentThis.setAccount(e.detail.account);
+            parentThis.facade.getGraphics().create.addTo(map);
+            parentThis.facade.getGraphics().upload.addTo(map);
+            parentThis.getItineraries();
+            var use=Object.assign({}, e.detail.account);
+            $('img#profilepic').attr('src', e.detail.account.profilepic);
+          
+          
+            $(document).on('change','#uploadpic', function () {
+              var file = this.files;
+              console.log("akkkkkkkkkkkkksssssss");
+                    if (this.files.length == 1) {
+                        //$.each(this.files, function (index, value) {
+                            var reader = new FileReader();
+                            reader.onload = function (e) {
+                              $('img#profilepic').attr('src', e.target.result);
+                                $.ajax({
+                      url: '/changeprofilepic',
+                      method: 'POST',
+                      dataType: 'json',
+                      data: {
+                        pic: JSON.stringify(e.target.result),
+                        id: JSON.stringify(use._id)
+                      },
+                      success: () => {
+                        console.log("pic changed");
+                      },
+                      error: () => {
+                        console.log("error in changing pic");
+                      }
+                    });
+                            };
+                            reader.readAsDataURL(file[0]);
+                        //});
+                    }
+                });
+          });
     }
 
     getLogged(){
