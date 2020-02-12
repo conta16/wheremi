@@ -9,10 +9,15 @@ var map = L.map('map', {
 	minZoom: 3
 });
 
-var WorldStreetMap = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}/?access_token={accessToken}', {
+/*var WorldStreetMap = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}/?access_token={accessToken}', {
 	attribution: 'Frank',
 	noWrap: true,
 	accessToken: 'pk.eyJ1Ijoid2hlcmVtaSIsImEiOiJjazZnajdnbmQwN29yM2xwODI5YnF2OWZtIn0.6Fr9OvAyxwthnY-ciTwJVg'
+}).addTo(map);*/
+
+var WorldStreetMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri',
+	noWrap: true
 }).addTo(map);
 
 var bound = L.latLngBounds([[-90,-180], [90, 180]]);
@@ -136,6 +141,7 @@ var itineraryHTML = `<div id="carouselExampleIndicators" class="carousel slide m
 
 	</div>
 </div>
+<div id="player"></div>
 </div>
 
 <div class="footer" style="margin-left:-50%;">
@@ -144,10 +150,10 @@ var itineraryHTML = `<div id="carouselExampleIndicators" class="carousel slide m
 </div>
 `;
 
-var cardHTML = `<div class="card mt-3" style="height:20%" onclick="cardClicked(this)" data-key="" data-type="">
+var cardHTML = `<div class="card mt-3" style="height:20%; overflow: hidden" onclick="cardClicked(this)" data-key="" data-type="">
 <div class="card-horizontal">
-  <img class="card-img w-50" style="height: 200px" src="" alt="Card image cap">
-  <div class="card-body overflow-auto" style="text-align: left">
+  <img class="card-img w-50" style="height: 200px;" src="" alt="Card image cap">
+  <div class="card-body" style="text-align: left; overflow: hidden">
   </div>
 </div>
 </div>`;
@@ -467,7 +473,7 @@ var waypoints1;
 var index1;
 
   function loadMenu(waypoints, index, write_permit = true, nextnprevious = false){
-	if (itinerary.user_id == world.getAccount()._id) write_permit = true;
+	if (itinerary.user_id == world.getAccount()._id && itinerary.getMode() == 0) write_permit = true;
 	$('#inspect').html(itineraryHTML);
 	$("a[href='#feed']").removeClass("active");
 	$("a[href='#profile']").removeClass("active");
@@ -496,8 +502,8 @@ var index1;
 		$(".nopermit").css("display", "none");
 		$(".d").prop("disabled", false);
 		$(".custom-select").prop('disabled', false);
-		$(".comment").css("display", "none");
-		$("#send_comment").prop("disabled", true);
+		$(".comment").css("display", "inline"); //none
+		$("#send_comment").prop("disabled", false); //true
 		
 	}
 	if (nextnprevious) $('.footer').css('display', 'inline');
@@ -624,8 +630,6 @@ function eventListener(event){ //mmm function inside function
 
   function cardClicked(item){
 	var datakey = $(item).attr("data-key");
-	console.log("aaaddd");
-	console.log($(item));
 	var datatype = $(item).attr("data-type");
 	if (datakey) pointsOfInterest.onclick_card(datakey, datatype);
   }

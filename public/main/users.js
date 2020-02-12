@@ -47,10 +47,10 @@ class Users{
                 );
                 parentThis.itineraries.unshift(data);
                 var index = 1;
-                console.log($(".img-thumbnail:nth-of-type("+index+")"));
                 $(".img-thumbnail:nth-of-type("+index+")").on("click", () => {
+                    console.log($(".img-thumbnail:nth-of-type("+index+")"));
                     parentThis.itinerary.setRoute(data);
-                    loadMenu(parentThis.itineraries[index-1].inputWaypoints, 0, true, true);
+                    loadMenu(data.inputWaypoints, 0, true, true);
                 })
             }).catch(() => {});
         }

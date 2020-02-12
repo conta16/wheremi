@@ -105,13 +105,14 @@ class PointOfInterest{
                         for (var i in res.items){
                             res.items[i].recordingDetails.location.lat = res.items[i].recordingDetails.location.latitude;
                             res.items[i].recordingDetails.location.lng = res.items[i].recordingDetails.location.longitude;
+                            console.log(res.items[i]);
                             parentThis.setYoutubeMarker(res.items[i].recordingDetails.location);
                             parentThis.yt_points.push(res.items[i]); // discarding etag, kind and pageInfo properties
                         }
                 }};
                 var yt = new YTSearcher(yt_options);
                 yt.videoOnMap(map, 10);
-                while(parentThis.yt_markers.length > 0) parentThis.removeYtMarker(0);       
+                while(parentThis.yt_markers.length > 0) parentThis.removeYtMarker(0);    
 
             },
             error: (data) => {
@@ -185,7 +186,7 @@ class PointOfInterest{
         this.itineraryStartMarkers[len].on('click', (e) => {
             var do_nothing;
             do_nothing = parentThis.check_in_waypoints(len,1);
-            $("#inspect").text(parentThis.itineraryStartPoints[len].label);
+            //$("#inspect").text(parentThis.itineraryStartPoints[len].label);
             $("a[href='#feed']").removeClass("active");
             $("a[href='profile']").removeClass("active");
             $("a[href='#inspect']").addClass("active");
@@ -195,6 +196,7 @@ class PointOfInterest{
             if (!do_nothing && parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.itineraryStartPoints[len].inputWaypoints[0]);
             }
+            //loadMenu(parentThis.itineraryStartPoints[len].inputWaypoints, 0, false);
         });
         var do_nothing = this.check_in_waypoints(len,1);
         if(!do_nothing) this.itineraryStartMarkers[len].addTo(map);
@@ -203,8 +205,6 @@ class PointOfInterest{
     onclick_card(datakey, datatype){
         var parentThis = this;
         if(datatype == 0) {
-            console.log("aaaaaaaaaaaaaaaaaaccc");
-        //$("#inspect").text(this.itineraryStartPoints[datakey].label);
         $("a[href='#feed']").removeClass("active");
         $("a[href='profile']").removeClass("active");
         $("a[href='#inspect']").addClass("active");
@@ -215,7 +215,7 @@ class PointOfInterest{
         this.currentItinerary.getRouteFromDB(this.itineraryStartPoints[datakey]._id)
             .then((data) => {
                 parentThis.currentItinerary.setRoute(data);
-                loadMenu(data.inputWaypoints, data.inputWaypoints.length-1, false);
+                loadMenu(data.inputWaypoints, 0, false);
             })
             .catch(() => {});
         }
@@ -314,9 +314,10 @@ class PointOfInterest{
             $("#feed").removeClass("active show");
             $("#profile").removeClass("active show");
             $("#inspect").addClass("active show");
-            if (parentThis.currentItinerary.getMode()){
+            onYoutubeIframeAPIReady('M7lc1UVf-VE');
+            /*if (parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.wikipediaPoints[len]);
-            }
+            }*/
         });
         this.yt_markers[len].addTo(map);
     }
