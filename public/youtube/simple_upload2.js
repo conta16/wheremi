@@ -55,30 +55,7 @@ var UploadVideo = function() {
 };
 
 function generateDescription(){
-  var descrizione;
-  var lat = myPositionMarker.getLatLng().lat;
-  var lng = myPositionMarker.getLatLng().lng;
-
-  var olc = OpenLocationCode.encode(lat, lng);
-  var olc1 = olc.substring(0, 6) + "00" + "+";  //BBBB0000 4 zeri+
-  var olc2 = olc.substring(0, 9) ;    //BBBBFF00 2 zeri+
-  var dati = $(".y-inputLocation").serializeArray();
-  var lang = $(".y-formLanguage").val();
-  var category = $('.y-formCategory').val();
-  var descrizioneluogo = $('.y-descrizioneLuogo').val();
-
-  descrizione = olc1 + "-" + olc2 + "-" + olc + ":" + dati[1].value + ":" + lang;
-
-  if(category != null){
-    descrizione += ":" + category;
-  }
-
-  if(dati[1].name === "Why"){
-    descrizione += ":"+ $('.y-valoreDettaglio').val();
-  }
-  if(descrizioneluogo != null){
-    descrizione += "#"+ descrizioneluogo;
-  }
+  //TODO: generare la descrizione
   return descrizione;
 }
 
