@@ -90,7 +90,7 @@ class PointOfInterest{
                     });
                 });
 
-                this.wikipediaPoints = []; //with wikipedia stuff here, wikipedia links are loaded only if database responds successfully. Maybe it can be changed
+                //this.wikipediaPoints = []; //with wikipedia stuff here, wikipedia links are loaded only if database responds successfully. Maybe it can be changed
                 var options = {wiki_search_url: "https://"+"en"+".wikipedia.org/w/api.php", introCallback: function(a){
                     if (a){
                         for (var i in a.query.pages)
@@ -352,6 +352,8 @@ class PointOfInterest{
         for (var position in this.yt_markers)
           if (this.yt_markers[position]===marker)
             this.yt_markers.splice(position,1);
+        this.yt_points.splice(position,1);
+
     }
 
     removeAllMarkers(){
