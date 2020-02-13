@@ -80,7 +80,8 @@ var userModel ={
       email: String,
       salt: String,
       token: String,
-      bio: String
+      bio: String,
+			googleuser: Boolean
     };
 var passwordBeingUpdatedModel={
   userid: String,
@@ -201,7 +202,8 @@ passport.use(new GoogleStrategy({
           'email': profile.emails[0].value,
           'salt': "",
           'bio': "",
-					'token': genRandomString(64)
+					'token': genRandomString(64),
+					'googleuser': true
         }, function(err, user) {
           if(err) {
             return done(err);
@@ -265,6 +267,7 @@ passport.use(new RegisterStrategy({
             'email': req.body.email,
             'salt':salt.salt,
             'bio':'',
+						'googleuser': false,
             'verificationKey': vk
           }, function(err, user) {
             if(err) {
@@ -413,6 +416,7 @@ app.get('/logout',
                     email: data.email,
                     salt: data.salt,
                     token: "",
+										googleuser: data.googleuser,
                     bio: ""
                   }, function (err, data){
               if (err){
@@ -960,13 +964,27 @@ app.get('/user',
 	passport.authenticate("cookie", { session: false }),
 	function(req, res){
 		if (!(!req.isAuthenticated || !req.isAuthenticated() || req.user===true)){
-			var a=removeFields(req.user._doc, ["password", "salt", "token"])
-			return res.send(a);
+			var a=removeFields(req.user._doc, ["password", "salt", "token"]);
+			if (a.googleuser){
+				MongoClient.connect(urldb, function(err, db) {
+					if (err) throw err;
+					var dbo = db.db("sitedb");
+					var query = {email: a.email};
+					dbo.collection("GoogleTokens").find(query).toArray(function(err, result) {
+						if (err) throw err;
+						a.accessToken=result[0].accessToken;
+						return res.send(a);
+					});
+			});
 		}
+		else {
+			res.send(a);
+		}
+	}
 		else {
 			return res.send ({});
 		}
-})
+});
 
 app.get('/users', function(req, res){
 	if (loggedin(req)){

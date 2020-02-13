@@ -2,6 +2,7 @@ var map;
 var url = "http://localhost:3000";
 var tmp_index;
 var tmp_waypoint;
+var YTUploader;
 
 /*const choiceControl = new ChoiceControl({
     provider: provider,
@@ -23,7 +24,19 @@ $(document).ready(function() {
 
   map.addControl(searchControl);
   facade.getGraphics().loadControllers();
-
+	gapi.load('client:youtube', {
+		callback: function(){
+		YTUploader = new UploadVideo();
+			$.ajax({
+			url:'/user',
+			method:'GET',
+			success:function(err, data){
+				if (data.accessToken)
+					YTUploader.ready(data.accessToken);
+			}
+		});
+}
+});
 	loadPoints();
 
 	facade.checkLoggedIn();
@@ -47,18 +60,15 @@ function loadPoints(){
 
 	}, 800)
 }
+
 function youtubeUpload(){
-  client_init();
-  var uploader = new UploadVideo();
-  var token = getAccess_Token();
-  uploader.ready(token);
-  var file = $('.me')[0].files[0];
+  var file = $('#me')[0].files[0];
 	var fileReader = new FileReader();
 	fileReader.onloadend = function (e) {
 		array=new Uint8Array(e.target.result);
 		let blob = new Blob([array], {type: file.type });
     console.log(blob);
-    fileReader.uploadBlob(blob);
+    YTUploader.uploadBlob(blob);
 	};
 	fileReader.readAsArrayBuffer(file);
 }

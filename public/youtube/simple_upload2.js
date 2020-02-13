@@ -55,80 +55,47 @@ var UploadVideo = function() {
 };
 
 function generateDescription(){
-  var descrizione;
-  var lat = myPositionMarker.getLatLng().lat;
-  var lng = myPositionMarker.getLatLng().lng;
-
-  var olc = OpenLocationCode.encode(lat, lng);
-  var olc1 = olc.substring(0, 6) + "00" + "+";  //BBBB0000 4 zeri+
-  var olc2 = olc.substring(0, 9) ;    //BBBBFF00 2 zeri+
-  var dati = $(".y-inputLocation").serializeArray();
-  var lang = $(".y-formLanguage").val();
-  var category = $('.y-formCategory').val();
-  var descrizioneluogo = $('.y-descrizioneLuogo').val();
-
-  descrizione = olc1 + "-" + olc2 + "-" + olc + ":" + dati[1].value + ":" + lang;
-
-  if(category != null){
-    descrizione += ":" + category;
-  }
-
-  if(dati[1].name === "Why"){
-    descrizione += ":"+ $('.y-valoreDettaglio').val();
-  }
-  if(descrizioneluogo != null){
-    descrizione += "#"+ descrizioneluogo;
-  }
+  //TODO: generare la descrizione
   return descrizione;
 }
 
-function getAccess_Token(){
-  var json
-  $.ajax({
-    url: '/user',
-    method: 'GET',
-    dataType: 'json',
-    success: (data) => {
-        json = data;
-    },
-    error: () => {
-        console.log("error in getting route by id");
-        reject();
-    }
-  });
-  if(json.googleAuth){
-    return json.token;
-  }
-  else{
-    console.log('non loggato con google')
-    return '';
-  }
-}
-
 client_init = function(){
-  this.gapi.load('client:youtube');
+  gapi.load('client:youtube');
 }
 
 UploadVideo.prototype.ready = function(accessToken) {
   this.accessToken = accessToken;
   this.gapi = gapi;
   this.authenticated = true;
-  this.gapi.client.init({
-          apiKey: "AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0",
-          clientId: "1082311706769-imjjc300bk99fval3kanm2u86ioaagud.apps.googleusercontent.com",
-          discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest"],
-          scope: ["https://www.googleapis.com/auth/youtube"]
-  })
-  this.gapi.client.request({
-    path: '/youtube/v3/channels',
-    params: {
-      part: 'snippet',
-      mine: true
-    },
-    callback: function(response) {
-      if (response.error) {
-        console.log(response.error.message);
-      }
+  $.ajax({
+    url: "https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest",
+    method: "GET",
+    success: function (data){
+      console.log(data);
+      this.gapi.client.init({
+              apiKey: "AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0",
+              clientId: "1082311706769-imjjc300bk99fval3kanm2u86ioaagud.apps.googleusercontent.com",
+              discoveryDocs: [data],
+              scope: "https://www.googleapis.com/auth/youtube"
+      }).catch(error =>{
+        console.log(error)
+      });
+      this.gapi.client.request({
+        path: '/youtube/v3/channels',
+        params: {
+          part: 'snippet',
+          mine: true
+        },
+        callback: function(response) {
+          if (response.error) {
+            console.log(response.error.message);
+          }
+        }.bind(this),
+        onerror: function(response){
+
+        }
+      });
+
     }.bind(this)
   });
 };
