@@ -393,7 +393,7 @@ class Itinerary {
             }
     }
 
-    distance(lat1,lon1,lat2,lon2,unit){
+  /*  distance(lat1,lon1,lat2,lon2,unit){
         if (lat2==undefined)
             return Infinity;
         if ((lat1 == lat2) && (lon1 == lon2)) {
@@ -415,5 +415,6 @@ class Itinerary {
             if (unit=="N") { dist = dist * 0.8684 }
             return dist;
     }
-}
+}*/
+
 }

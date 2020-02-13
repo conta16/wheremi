@@ -73,6 +73,10 @@ function youtubeUpload(){
 	fileReader.readAsArrayBuffer(file);
 }
 
+function checkDistance(){
+  facade.checkDistance();
+}
+
 
   var itineraryHTML = `<div id="carouselExampleIndicators" class="carousel slide mb-1 mt-1" data-ride="carousel">
   <div class="carousel-inner w-100" style="height: 300px !important"></div>
