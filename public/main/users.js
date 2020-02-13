@@ -91,7 +91,7 @@ class Users{
                 $(".img-thumbnail:nth-of-type("+index+")").on("click", () => {
                     console.log($(".img-thumbnail:nth-of-type("+index+")"));
                     parentThis.itinerary.setRoute(data);
-                    loadMenu(data.inputWaypoints, 0, true, true);
+                    parentThis.facade.getGraphics().loadMenu(data.inputWaypoints, 0, true, true);
                 })
             }).catch(() => {});
         }

@@ -1,5 +1,5 @@
 class Itinerary {
-    constructor(graphics){
+    constructor(graphics, facade){
         this.user_id = {};
         this.label = "";
         this.waypoints = [];
@@ -9,6 +9,7 @@ class Itinerary {
         this.markers = [];
         this.url = "http://localhost:3000";
         this.graphics = graphics;
+        this.facade = facade;
         this.control = undefined;
         this.mode = 0; //0 when in visit mode, 1 when in create itinerary mode, 2 when in delete mode
         this.block = 0; //to prevent click event after drag event
@@ -65,11 +66,15 @@ class Itinerary {
                 img: [],
                 title: "",
                 description: "",
+                purpose: {},
+                lang: {},
+                content: {},
+                audience: {},
+                detail: {},
                 write_permit: true
             };
             else {
                 //if (!point.extract) obj = point;
-                console.log(point);console.log("pppppppppppppppppppppppppp");
                 if (point.extract){
                     point.description = point.extract;
                     point.options = {
@@ -224,7 +229,7 @@ class Itinerary {
                 label: JSON.stringify(parentThis.label),
                 waypoints: JSON.stringify(parentThis.waypoints),
                 route: JSON.stringify(parentThis.route),
-                user_id: JSON.stringify(parentThis.user_id)
+                user_id: JSON.stringify(parentThis.facade.getAccount()._id)
             },
             async: true,
             success: function(data){
@@ -292,6 +297,7 @@ class Itinerary {
     postPoint(){
         var parentThis = this;
         this.waypoints[0].startItinerary = false;
+        this.waypoints[0].user_id = parentThis.facade.getAccount()._id;
         $.ajax({
             url: parentThis.url+"/postAdded",
             method: "POST",

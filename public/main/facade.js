@@ -2,7 +2,7 @@ class Facade{
     constructor(){
         this.inizialize_leaf();
         this.graphics = new Graphics(this);
-        this.itinerary = new Itinerary(this.graphics);
+        this.itinerary = new Itinerary(this.graphics, this);
         this.pointsOfInterest = new PointOfInterest(this.itinerary, 5, this.graphics);
         this.user = new Users(this.itinerary, this);
         this.url = "http://localhost:3000";
@@ -195,4 +195,28 @@ class Facade{
           el.dispatchEvent(evObj);
         }
       }
+
+    saveChanges(waypoint){
+        $.ajax({
+            url: url+"/savechanges",
+            method: "POST",
+            dataType: "json",
+            data: {
+                id: JSON.stringify(waypoint._id),
+                title: JSON.stringify(waypoint.title),
+                description: JSON.stringify(waypoint.description),
+                purpose: JSON.stringify(waypoint.purpose),
+                language: JSON.stringify(waypoint.lang),
+                content: JSON.stringify(waypoint.content),
+                audience: JSON.stringify(waypoint.audience),
+                detail: JSON.stringify(waypoint.detail)
+            },
+            success: () => {
+                console.log("changes saved successfully");
+            },
+            error: () => {
+                console.log("changes saved unsuccessfully");
+            }
+        });
+    }
 }

@@ -310,6 +310,9 @@ function loadPoints(){
 	  <option value="2">Low</option>
 	</select>
   </div>
+  <div class="save">
+    <button type="button" class="btn btn-primary" id="saveChanges">Save changes</button> 
+  </div>
   <div class="comment">
 	  <div class="form-group">
 		  <label for="com">Leave a comment</div>

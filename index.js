@@ -749,6 +749,37 @@ app.post('/changeprofilepic', function(req, res){
   });
 });
 
+app.post('/savechanges', function(req, res){
+  var id = JSON.parse(req.body.id);
+  var title = JSON.parse(req.body.title);
+  var description = JSON.parse(req.body.description);
+  var purpose = JSON.parse(req.body.purpose);
+  var language = JSON.parse(req.body.language);
+  var content = JSON.parse(req.body.content);
+  var audience = JSON.parse(req.body.audience);
+  var detail = JSON.parse(req.body.detail);
+  MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("sitedb");
+    dbo.collection("pointOfInterest").update({
+      "_id": ObjectId(id)
+    },{
+      $set: {
+        "title": title,
+        "description": description,
+        "purpose": purpose,
+        "lang": language,
+        "content": content,
+        "audience": audience,
+        "detail": detail
+      }
+    }, function(err,res){
+      if (err) throw err;
+      db.close();
+    });
+  });
+});
+
 app.get('/route', function(req, res){
   var tmp = ObjectId(req.query.id);
 	MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err, db) {
@@ -800,6 +831,7 @@ app.post('/', function (req, response){
 		var dbo = db.db("sitedb");
 		var promise = new Promise(async function(resolve, reject) {
 			for (var i in waypoints){
+        if (!waypoints[i].user_id) waypoints[i].user_id = user_id;
 				if (!waypoints[i]._id){
 					var boh = new Promise(function (resolve, reject) {
 						dbo.collection("pointOfInterest").insertOne(waypoints[i], (err,res) => {
@@ -861,13 +893,22 @@ app.post('/sendcomment', function(req, res){
 });
 
 app.post("/postAdded", function(req,res){
-	var obj = JSON.parse(req.body.point);
+  var obj = JSON.parse(req.body.point);
 	MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err,db){
 		if (err) throw err;
 		var dbo = db.db("sitedb");
 		dbo.collection("pointOfInterest").insertOne(obj, (err,res) => {
-			if (err) throw err;
-			db.close();
+      if (err) throw err;
+      dbo.collection("userInfo").updateOne({
+        "_id": ObjectId(obj.user_id)
+      },{
+        $push: {
+          "points_id": res.insertedId
+        }
+      }, function(err, res){
+        if (err) throw err;
+        db.close();
+      });
 		});
 	});
 });

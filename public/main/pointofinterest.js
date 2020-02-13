@@ -109,7 +109,7 @@ class PointOfInterest{
 
                 toremove.map(function(item){parentThis.removeWikipediaMarker(item)})
                 //
-                this.yt_points = [];
+                /*this.yt_points = [];
                 var yt_options = {googlekey: "AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0",yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){
                     if (res)
                         for (var i in res.items){
@@ -130,7 +130,7 @@ class PointOfInterest{
                     toremove.push(parentThis.yt_markers[i]);
                   }
 
-                toremove.map(function(item){parentThis.removeWikipediaMarker(item)})
+                toremove.map(function(item){parentThis.removeWikipediaMarker(item)})*/
 
             },
             error: (data) => {

@@ -82,7 +82,9 @@ class Graphics{
 
     loadMenu(waypoints, index, write_permit = true, nextnprevious = false){
         var parentThis = this;
-        if (this.facade.getItinerary().user_id == this.facade.getAccount()._id && this.facade.getItinerary().getMode() == 0) write_permit = true;
+        if (this.facade.getItinerary().user_id == this.facade.getAccount()._id && this.facade.getItinerary().getMode() == 0){
+            write_permit = true;
+        }
         this.styleInspect(itineraryHTML);
         gotoTab(INSPECT_TAB);
         if (!write_permit) {
@@ -91,6 +93,7 @@ class Graphics{
             $(".nopermit").css("display", "inline");
             $(".d").prop("disabled", true);
             $(".custom-select").prop('disabled', true);
+            $("#saveChanges").css("display", "none");
             if (!$.isEmptyObject(this.facade.getAccount())){
                 $(".comment").css("display", "inline");
                 $("#send_comment").prop("disabled", false);
@@ -105,9 +108,15 @@ class Graphics{
             $(".fileinput-button").css("display", "relative");
             $(".nopermit").css("display", "none");
             $(".d").prop("disabled", false);
-            $(".custom-select").prop('disabled', false);
+            $(".custom-select").css('display', "inline");
             $(".comment").css("display", "none");
             $("#send_comment").prop("disabled", true);
+            if (this.facade.getItinerary().user_id == this.facade.getAccount()._id && this.facade.getItinerary().getMode() == 0){
+                $("#saveChanges").css("display", "inline");
+            }
+            else $("#saveChanges").css("display", "none");
+
+
         }
         if (nextnprevious) $('.footer').css('display', 'inline');
         else $('.footer').css('display', 'none');
@@ -125,7 +134,11 @@ class Graphics{
             return $(this).text() == waypoints[index].purpose;
         }).prop('selected', true);
     
-        $('#lang').val(waypoints[index].lang);
+        //$('#lang').val(waypoints[index].lang);
+
+        $('select#lang option').filter(function(){
+            return $(this).text() == waypoints[index].lang;
+        });
     
         $("select#cont option").filter(function() {
             return $(this).text() == waypoints[index].content;
@@ -160,7 +173,8 @@ class Graphics{
             waypoints[index].purpose = e.options[e.selectedIndex].text;
         });
         $('#lang').on('input', () => {
-            waypoints[index].lang = $('#lang').val();
+            e = document.getElementById("lang");
+            waypoints[index].lang = e.options[e.selectedIndex].text;
         });
         $('#cont').on('input', () => {
             e = document.getElementById("cont");
@@ -178,6 +192,10 @@ class Graphics{
         for (var i in waypoints[index].comments){
             $('#comment-list').append("<p>"+waypoints[index].comments[i].madeBy.name+": "+waypoints[index].comments[i].text+"</p><br>");
         }
+
+        $("#saveChanges").on("click", () => {
+            parentThis.facade.saveChanges(waypoints[index]);
+        });
         document.removeEventListener('loadimg', parentThis.eventListener);
         document.addEventListener('loadimg', parentThis.eventListener);
         tmp_index = index;
