@@ -19,24 +19,24 @@ class Facade{
         });
 
         map = this.map;
-        
+
         var WorldStreetMap = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}/?access_token={accessToken}', {
             attribution: 'Frank',
             noWrap: true,
             accessToken: 'pk.eyJ1Ijoid2hlcmVtaSIsImEiOiJjazZnajdnbmQwN29yM2xwODI5YnF2OWZtIn0.6Fr9OvAyxwthnY-ciTwJVg'
         }).addTo(map);
-        
+
         var bound = L.latLngBounds([[-90,-180], [90, 180]]);
         map.setMaxBounds(bound);
         map.on('drag', function() {
             map.panInsideBounds(bound, { animate: false });
         });
-        
+
         L.control.scale({position: 'bottomright'}).addTo(map);
-        
-        
+
+
         var Paul=new Artyom();
-        
+
         Paul.initialize({
             lang: 'en', //todo: change language based on location or user preferences
             continuous: true, // Listen forever
@@ -44,19 +44,19 @@ class Facade{
             debug: true, // Show messages in the console
             executionKeyword: "",//Esegui dopo questa spressione
             listen: false, // Start to listen commands !
-        
+
             // If providen, you can only trigger a command if you say its name
             // e.g to trigger Good Morning, you need to say "Jarvis Good Morning"
             name: "Paul"
         });
-        
-        
+
+
         var mobile=window.matchMedia("(min-device-width : 320px)").matches;
         mobile=mobile && window.matchMedia("(max-device-width : 480px)").matches;
         mobile=mobile && window.matchMedia("only screen").matches;
         var positionInfo;
         var defaultLatLng={}
-        
+
         $.ajax({
             method: 'GET',
             url: 'http://ip-api.com/json',
@@ -70,7 +70,7 @@ class Facade{
                 console.log(a,b,c)
             }
         }).always(function() {
-            var options= {setView:'always', sharePosition: true, showCompass: true, markerStyle:{radius: mobile? 18: 9}, compassStyle:{radius: mobile? 18: 9}, flyTo:true,locateOptions:{watch:true, enableHighAccuracy:true}};
+            var options= {setView:'once', sharePosition: true, showCompass: true, markerStyle:{radius: mobile? 18: 9}, compassStyle:{radius: mobile? 18: 9}, flyTo:false,locateOptions:{watch:false, enableHighAccuracy:true}};
             options.defaultLatLng=Object.assign({}, defaultLatLng);
             L.control.locate(options).addTo(map);
         });
