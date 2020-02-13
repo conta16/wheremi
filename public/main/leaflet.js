@@ -47,6 +47,17 @@ function loadPoints(){
 
 	}, 800)
 }
+function youtubeUpload(){
+  var file = $('#me')[0].files[0];
+	var fileReader = new FileReader();
+	fileReader.onloadend = function (e) {
+		array=new Uint8Array(e.target.result);
+		let blob = new Blob([array], {type: file.type });
+    console.log(blob);
+    fileReader.uploadBlob(blob);
+	};
+	fileReader.readAsArrayBuffer(file);
+}
 
 
   var itineraryHTML = `<div id="carouselExampleIndicators" class="carousel slide mb-1 mt-1" data-ride="carousel">
@@ -61,7 +72,7 @@ function loadPoints(){
   </a>
   </div>
 
-  <form action="//jquery-file-upload.appspot.com/" method="post" enctype="multipart/form-data" id="exportisexcel" class="form-horizontal">
+  <form enctype="multipart/form-data" id="exportisexcel" class="form-horizontal">
   <div class="form-group">
 
 	<div class="panel-body">
@@ -69,9 +80,9 @@ function loadPoints(){
 				<div class="fileupload-buttonbar">
 					  <span class="btn btn-primary fileinput-button">
 						  <i class="fa fa-plus"></i>
-						  <span>Add files...</span>
-						  <input id="f" type="file" accept="image/*" multiple ></input>
-					  </span>
+						  <span>Add video</span>
+						  <input id="f me" type="file" accept="video/*" ></input>
+            </span>
 				</div>
 		</div>
 	</div>
@@ -87,7 +98,6 @@ function loadPoints(){
 	<label for="description">Description:</label>
 	<textarea class="form-control d" id="description" rows="3"></textarea>
   </div>
-  </form>
 
   <div class="nopermit"></div>
 
@@ -316,9 +326,6 @@ function loadPoints(){
 	  <option value="2">Low</option>
 	</select>
   </div>
-  <div class="save">
-    <button type="button" class="btn btn-primary" id="saveChanges">Save changes</button> 
-  </div>
   <div class="comment">
 	  <div class="form-group">
 		  <label for="com">Leave a comment</div>
@@ -326,6 +333,8 @@ function loadPoints(){
 		  <button type="button" class="btn btn-primary" id="send_comment" disabled>Send comment</button>
 	  </div>
   </div>
+  <input type="submit" value="Submit" class="btn btn-primary">
+</form>
   <div class="comment-section">
 	  <p>Comments:</p>
 	  <div id="comment-list">
