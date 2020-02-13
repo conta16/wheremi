@@ -37,13 +37,15 @@ class Itinerary {
 
                     reader.onload = function (e) {
                         var event = new CustomEvent('loadimg', { 'detail': {'files': files, 'src': e.target.result}});
+                        console.log(e);
                         var slideItem;
-                        if ($('.carousel-item')[0]) slideItem = "<div class='carousel-item'><img class='d-inline-block w-100' style='height:300px;' src='"+e.target.result+"' alt=''></div>";
+                        var sstr = e.target.result.substring(0,14);
+                        if (sstr === "data:video/mp4" || sstr === "data:video/mp3") slideItem = '<div class="carousel-video-inner"> <video controls autoplay preload="metadata"><source src="'+e.target.result+'" type="video/mp4"/>Video not supported.</video></div>';
+                        else if ($('.carousel-item')[0]) slideItem = "<div class='carousel-item'><img class='d-inline-block w-100' style='height:300px;' src='"+e.target.result+"' alt=''></div>";
                         else slideItem = "<div class='carousel-item active'><img class='d-inline-block w-100' style='height:300px;' src='"+e.target.result+"' alt=''></div>";
                         $('.carousel-inner').append(slideItem);
                         document.dispatchEvent(event);
                     };
-                    console.log(this);
                     reader.readAsDataURL(this);
                 });
             }

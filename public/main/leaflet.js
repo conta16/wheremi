@@ -84,8 +84,8 @@ function youtubeUpload(){
 				<div class="fileupload-buttonbar">
 					  <span class="btn btn-primary fileinput-button">
 						  <i class="fa fa-plus"></i>
-						  <span>Add video</span>
-						  <input id="f" class="y-me y-inputLocation" type="file" accept="video/*" ></input>
+						  <span>Add video or image</span>
+						  <input id="f" class="y-me y-inputLocation" type="file" accept="video/*, image/*" ></input>
             </span>
 				</div>
 		</div>
@@ -337,7 +337,7 @@ function youtubeUpload(){
 		  <button type="button" class="btn btn-primary" id="send_comment" disabled>Send comment</button>
 	  </div>
   </div>
-  <input type="submit" value="Submit" class="btn btn-primary" onclick="youtubeUpload()">
+  <input id="saveChanges" type="submit" value="Submit" class="btn btn-primary" > <!--onclick="youtubeUpload()"-->
 </form>
   <div class="comment-section">
 	  <p>Comments:</p>

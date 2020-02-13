@@ -759,6 +759,7 @@ app.post('/savechanges', function(req, res){
   var content = JSON.parse(req.body.content);
   var audience = JSON.parse(req.body.audience);
   var detail = JSON.parse(req.body.detail);
+  var img = JSON.parse(req.body.img);
   MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err, db) {
     if (err) throw err;
     var dbo = db.db("sitedb");
@@ -772,7 +773,8 @@ app.post('/savechanges', function(req, res){
         "lang": language,
         "content": content,
         "audience": audience,
-        "detail": detail
+        "detail": detail,
+        "img": img
       }
     }, function(err,res){
       if (err) throw err;
@@ -853,6 +855,7 @@ app.post('/', function (req, response){
       dbo.collection("itineraries").insertOne(w, (err,res) => {
           if (err) throw err;
           dbo.collection("userInfo").update({
+            "_id": ObjectId(user_id)
           },
           {
             $push: {

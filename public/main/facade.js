@@ -209,7 +209,8 @@ class Facade{
                 language: JSON.stringify(waypoint.lang),
                 content: JSON.stringify(waypoint.content),
                 audience: JSON.stringify(waypoint.audience),
-                detail: JSON.stringify(waypoint.detail)
+                detail: JSON.stringify(waypoint.detail),
+                img: JSON.stringify(waypoint.img)
             },
             success: () => {
                 console.log("changes saved successfully");
