@@ -94,7 +94,7 @@ function youtubeUpload(){
 					  <span class="btn btn-primary fileinput-button">
 						  <i class="fa fa-plus"></i>
 						  <span>Add video</span>
-						  <input id="f me inputlocation" type="file" accept="video/*" ></input>
+						  <input id="f" class="y-me y-inputLocation" type="file" accept="video/*" ></input>
             </span>
 				</div>
 		</div>
@@ -109,7 +109,7 @@ function youtubeUpload(){
 
   <div class="form-group p">
 	<label for="description">Description:</label>
-	<textarea class="form-control d" id="description descrizioneLuogo" rows="3"></textarea>
+	<textarea class="form-control d y-descrizioneLuogo" id="description" rows="3"></textarea>
   </div>
 
   <div class="nopermit"></div>
@@ -127,7 +127,7 @@ function youtubeUpload(){
   </div>
 	  <div class="form-group">
 		  <label for="lang">Language</label>
-		  <select class="custom-select mr-sm-2" id="lang formLanguage" rows="1">
+		  <select class="custom-select mr-sm-2 y-formLanguage" id="lang" rows="1">
 		<option value="ab">Abkhaz</option>
   <option value="aa">Afar</option>
   <option value="af">Afrikaans</option>
@@ -315,7 +315,7 @@ function youtubeUpload(){
 	  <div class="col-auto my-1">
 	  <p>Content:</p>
 	  <label class="mr-sm-2 sr-only" for="cont"></label>
-	  <select class="custom-select mr-sm-2" id="cont formCategory">
+	  <select class="custom-select mr-sm-2 y-formCategory" id="cont">
 		<option selected>Nature</option>
 		<option value="1">Historical place</option>
 		<option value="2">Square</option>
@@ -323,7 +323,7 @@ function youtubeUpload(){
 	</div>
 	<div class="col-auto my-1">
 	<p>Audience:</p>
-	<label class="mr-sm-2 sr-only" for="aud"></label>
+	<label class="mr-sm-2 sr-only y-valoreDettaglio" for="aud"></label>
 	<select class="custom-select mr-sm-2" id="aud">
 	  <option selected>Professional traveler</option>
 	  <option value="1">Occasional turist</option>
