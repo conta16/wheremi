@@ -114,7 +114,7 @@ UploadVideo.prototype.ready = function(accessToken) {
   this.gapi = gapi;
   this.authenticated = true;
   this.gapi.client.init({
-          apiKey: "AIzaSyD3_AOgetAccess_Token()Cz72jah1UDnRW6Gga8n3T3TX9Rq0",
+          apiKey: "AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0",
           clientId: "1082311706769-imjjc300bk99fval3kanm2u86ioaagud.apps.googleusercontent.com",
           discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest"],
           scope: ["https://www.googleapis.com/auth/youtube"]
