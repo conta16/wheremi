@@ -333,7 +333,7 @@ function youtubeUpload(){
 		  <button type="button" class="btn btn-primary" id="send_comment" disabled>Send comment</button>
 	  </div>
   </div>
-  <input type="submit" value="Submit" class="btn btn-primary">
+  <input type="submit" value="Submit" class="btn btn-primary" onclick="youtubeUpload()">
 </form>
   <div class="comment-section">
 	  <p>Comments:</p>

@@ -335,11 +335,6 @@ app.get('/login',
     res.render('login');
   });
 
-app.post('/youtubeupload', function(req,res,next){
-  console.log('upload sul tubo');
-  console.log(req.body);
-})
-
 
 app.post('/login', function (req, res, next){
 	console.log("ccccccccccccccccccccccccccccccccccc");
