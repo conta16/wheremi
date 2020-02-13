@@ -90,7 +90,7 @@ class PointOfInterest{
                     });
                 });
 
-                this.wikipediaPoints = []; //with wikipedia stuff here, wikipedia links are loaded only if database responds successfully. Maybe it can be changed
+                //this.wikipediaPoints = []; //with wikipedia stuff here, wikipedia links are loaded only if database responds successfully. Maybe it can be changed
                 var options = {wiki_search_url: "https://"+"en"+".wikipedia.org/w/api.php", introCallback: function(a){
                     if (a){
                         for (var i in a.query.pages)
@@ -109,7 +109,7 @@ class PointOfInterest{
 
                 toremove.map(function(item){parentThis.removeWikipediaMarker(item)})
                 //
-                this.yt_points = [];
+                //this.yt_points = [];
                 var yt_options = {googlekey: "AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0",yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){
                     if (res)
                         for (var i in res.items){
@@ -130,7 +130,7 @@ class PointOfInterest{
                     toremove.push(parentThis.yt_markers[i]);
                   }
 
-                toremove.map(function(item){parentThis.removeWikipediaMarker(item)})
+                toremove.map(function(item){parentThis.removeYoutubeMarker(item)})
 
             },
             error: (data) => {
@@ -352,6 +352,8 @@ class PointOfInterest{
         for (var position in this.yt_markers)
           if (this.yt_markers[position]===marker)
             this.yt_markers.splice(position,1);
+        this.yt_points.splice(position,1);
+
     }
 
     removeAllMarkers(){

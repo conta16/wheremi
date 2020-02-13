@@ -38,8 +38,14 @@ function apply(){
 }*/
 
 function loadPoints(){
-  var point = facade.getPointsOfInterest();
-  point.loadPoints(point);
+	ts=new Date()
+	setTimeout(function(){
+		if (new Date()-ts<800)
+			return;
+		var point = facade.getPointsOfInterest();
+	  point.loadPoints(point);
+
+	}, 800)
 }
 
 
@@ -54,10 +60,10 @@ function loadPoints(){
 	  <span class="sr-only">Next</span>
   </a>
   </div>
-  
+
   <form action="//jquery-file-upload.appspot.com/" method="post" enctype="multipart/form-data" id="exportisexcel" class="form-horizontal">
   <div class="form-group">
-  
+
 	<div class="panel-body">
 		<div class="filesloader-wrap">
 				<div class="fileupload-buttonbar">
@@ -69,24 +75,24 @@ function loadPoints(){
 				</div>
 		</div>
 	</div>
-  
+
   </div>
-  
+
   <div class="form-group p">
 	<label for="title">Title:</label>
 	<textarea class="form-control d" id="title"></textarea>
   </div>
-  
+
   <div class="form-group p">
 	<label for="description">Description:</label>
 	<textarea class="form-control d" id="description" rows="3"></textarea>
   </div>
   </form>
-  
+
   <div class="nopermit"></div>
-  
+
   <div class="category align-items-center" style="margin-bottom: 50px">
-  
+
   <div class="col-auto my-1">
 	<p>Purpose:</p>
 	<label class="mr-sm-2 sr-only" for="purp"></label>
@@ -320,18 +326,18 @@ function loadPoints(){
   <div class="comment-section">
 	  <p>Comments:</p>
 	  <div id="comment-list">
-  
+
 	  </div>
   </div>
   <div id="player"></div>
   </div>
-  
+
   <div class="footer" style="margin-left:-50%;">
 	  <button type="button" class="btn btn-primary" id="left">Previous</button>
 	  <button type="button" class="btn btn-primary" id="right">Next</button>
   </div>
   `;
-  
+
   var cardHTML = `<div class="card mt-3" style="height:20%; overflow: hidden" onclick="facade.getGraphics().cardClicked(this)" data-key="" data-type="">
   <div class="card-horizontal">
 	<img class="card-img w-50" style="height: 200px;" src="" alt="Card image cap">
@@ -339,5 +345,5 @@ function loadPoints(){
 	</div>
   </div>
   </div>`;
-  
+
   var profileHTML = "<iframe src='/profile' class='h-100'></iframe>";
