@@ -31,7 +31,8 @@ $(document).ready(function() {
 			url:'/user',
 			method:'GET',
 			success:function(err, data){
-				YTUploader.ready(data.accessToken);
+				if (data.accessToken)
+					YTUploader.ready(data.accessToken);
 			}
 		});
 }

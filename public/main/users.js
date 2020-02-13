@@ -18,8 +18,17 @@ class Users{
             parentThis.getItineraries();
             var use=Object.assign({}, e.detail.account);
             $('img#profilepic').attr('src', e.detail.account.profilepic);
-          
-          
+
+            $.ajax({
+            url:'/user',
+            method:'GET',
+            success:function(err, data){
+              if (data.accessToken)
+                YTUploader.ready(data.accessToken);
+            }
+          });
+
+
             $(document).on('change','#uploadpic', function () {
               var file = this.files;
               console.log("akkkkkkkkkkkkksssssss");
@@ -79,7 +88,7 @@ class Users{
         for (var i in this.account.itinerary_id){
             this.itinerary.getRouteFromDB(this.account.itinerary_id[i])
             .then((data) => {
-                
+
                 if (!data.inputWaypoints[0].img[0]) $(".profile-usermenu").prepend(
                     "<img src='./img/unknown_person.png' class='img-thumbnail' style='height:30%;width:33%; display: inline' alt=''>"
                 );
