@@ -202,6 +202,8 @@ passport.use(new GoogleStrategy({
           'email': profile.emails[0].value,
           'salt': "",
           'bio': "",
+					'itinerary_id': [],
+					'points_id': [],
 					'token': genRandomString(64),
 					'googleuser': true
         }, function(err, user) {
@@ -416,6 +418,8 @@ app.get('/logout',
                     email: data.email,
                     salt: data.salt,
                     token: "",
+										itinerary_id: [],
+										points_id: [],
 										googleuser: data.googleuser,
                     bio: ""
                   }, function (err, data){
