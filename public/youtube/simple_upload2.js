@@ -62,10 +62,10 @@ function generateDescription(){
   var olc = OpenLocationCode.encode(lat, lng);
   var olc1 = olc.substring(0, 6) + "00" + "+";  //BBBB0000 4 zeri+
   var olc2 = olc.substring(0, 9) ;    //BBBBFF00 2 zeri+
-  var dati = $("#inputLocation").serializeArray();
-  var lang = $("#formLanguage").val();
-  var category = $('#formCategory').val();
-  var descrizioneluogo = $('#descrizioneLuogo').val();
+  var dati = $(".y-inputLocation").serializeArray();
+  var lang = $(".y-formLanguage").val();
+  var category = $('.y-formCategory').val();
+  var descrizioneluogo = $('.y-descrizioneLuogo').val();
 
   descrizione = olc1 + "-" + olc2 + "-" + olc + ":" + dati[1].value + ":" + lang;
 
@@ -74,7 +74,7 @@ function generateDescription(){
   }
 
   if(dati[1].name === "Why"){
-    descrizione += ":"+ $('#valoreDettaglio').val();
+    descrizione += ":"+ $('.y-valoreDettaglio').val();
   }
   if(descrizioneluogo != null){
     descrizione += "#"+ descrizioneluogo;
