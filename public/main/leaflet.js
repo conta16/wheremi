@@ -9,12 +9,12 @@ var YTUploader;
 });*/
 
 //map.addControl(choiceControl);
-
+var nav;
 
 $(document).ready(function() {
 	facade = new Facade();
 
-	var navigatorControl = new navigatorController(facade.getItinerary());
+	navigatorControl = new navigatorController(facade.getItinerary());
 
 	var provider = new OpenStreetMapProvider(facade.getItinerary(), facade.getPointsOfInterest());
 
@@ -371,7 +371,9 @@ function checkDistance(){
 
 	  </div>
   </div>
-  <div id="player"></div>
+  <div style="margin-bottom: 50px">
+    <button type="button" class="btn btn-primary" id="startItinerary" onclick="facade.startItinerary()">Start Itinerary</button>
+  </div>
   </div>
 
   <div class="footer" style="margin-left:-50%;">

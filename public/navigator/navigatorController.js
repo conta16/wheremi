@@ -7,15 +7,28 @@ class navigatorController{
         this.onend = this.onend.bind(this);
     }
 
-    reachItinerary(position, itinerary) {
+    reachItinerary(position, itin) {
         var control = this.itinerary.getControl();
         if (control)
           map.removeControl(control);
         //console.log([position], itinerary)
-        var tmp_itinerary={}
+        /*var tmp_itinerary={}
         tmp_itinerary.waypoints=Object.assign([], itinerary);
         tmp_itinerary.waypoints=([position].concat(tmp_itinerary.waypoints));
-        this.itinerary.setWaypoints(tmp_itinerary.waypoints);
+        tmp_itinerary.waypoints[0]=L.userPosition.latLng;
+        console.log(tmp_itinerary.waypoints);*/
+       // this.itinerary.setWaypoints([L.userPosition.latLng]);
+        var l = itin.length;
+        this.itinerary.setWaypoints();
+        console.log(this.itinerary.getWaypoints());
+        console.log(itin[0]);
+        this.itinerary.pushWaypoints([L.userPosition.latLng],undefined, false);
+
+        for (var i in itin){
+            console.log(i);
+            this.itinerary.pushWaypoints([{}],itin[i], false);
+        }
+
         this.itinerary.showOnMap();
     }
 
@@ -32,7 +45,8 @@ class navigatorController{
         nav.stop();
         var tmp_route=Object.assign([], L.routes[0].instructions)
         //tmp_route=tmp_route.map(coordsFromInstructin);
-        tmp_route=tmp_route.filter(preserve_waypoints).map(coordsFromInstructin);
+        tmp_route = Object.assign({},this.itinerary.getWaypoints());
+        //tmp_route=tmp_route.filter(preserve_waypoints).map(coordsFromInstructin);
         //console.log(tmp_route)
         L.routes[0]=undefined;
         this.reachItinerary(L.latLng(L.userPosition.lat, L.userPosition.lng), tmp_route/*.splice(nearest)*/)

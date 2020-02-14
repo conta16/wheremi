@@ -17,22 +17,23 @@ class Graphics{
             position:'bottomleft'
         }).addTo(map);
         
-        this.nav_controller = L.control.custom({
+        /*this.nav_controller = L.control.custom({
             position: 'topleft',
-          content : '<div class="big-control"><a class="leaflet-bar-part leaflet-bar-part-single lowalpha round" width="30px" style="line-height: 40px; height: 40px; width: 40px" height="30px"><img src="./img/nav.svg" width="40px" height="40px"></img></a></div>',
-            classes : 'leaflet-control leaflet-bar round',
+          content : '<div class=""><a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 30px; height: 30px; width: 30px" height="30px"><img src="./img/nav.svg" width="30px" height="30px"></img></a></div>',
+            classes : 'leaflet-control leaflet-bar',
             events : {
                 click : function(e){
                     nav=new polloNavigator(navigatorControl.onpoint, navigatorControl.onend, navigatorControl.wondering);
+                    console.log(nav);
                     nav.navigate();
                 },
             }
-        }).addTo(map);
+        }).addTo(map);*/
         
         this.create = L.control.custom({
             position: 'topleft',
-            content : '<div class="big-control"><a class="leaflet-bar-part leaflet-bar-part-single lowalpha round" width="30px" style="line-height: 40px height: 40px; width: 40px" height="30px"><img src="./img/travel.png" width="40px" height="40px"></img></a></div>',
-            classes : 'leaflet-control leaflet-bar round',
+            content : '<div class=""><a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 30px height: 30px; width: 30px" height="30px"><img src="./img/travel.png" width="30px" height="30px"></img></a></div>',
+            classes : 'leaflet-control leaflet-bar',
             events : {
                 click : function(e){
                     facade.createMode();
@@ -43,8 +44,8 @@ class Graphics{
         
         this.upload = L.control.custom({
             position: 'topleft',
-            content : '<div class="big-control"><a class="leaflet-bar-part leaflet-bar-part-single lowalpha round" width="30px" style="line-height: 40px height: 40px; width: 40px" height="30px"><img src="./img/upload.png" width="40px" height="40px"></img></a></div>',
-            classes : 'leaflet-control leaflet-bar round',
+            content : '<div class=""><a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 30px height: 30px; width: 30px" height="30px"><img src="./img/upload.png" width="30px" height="30px"></img></a></div>',
+            classes : 'leaflet-control leaflet-bar',
             events : {
                 click : function(e){
                     facade.ldItinerary();
@@ -54,7 +55,7 @@ class Graphics{
         
         this.removeButton = L.control.custom({
             position: 'topleft',
-            content : '<div class="big-control"><a class="leaflet-bar-part leaflet-bar-part-single lowalpha round" width="30px" style="line-height: 40px height: 40px; width: 40px" height="30px"><img src="./img/load_point.svg" width="40px" height="40px"></img></a></div>',
+            content : '<div class="big-control"><a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 40px height: 40px; width: 40px" height="30px"><img src="./img/load_point.svg" width="40px" height="40px"></img></a></div>',
             classes : 'leaflet-control leaflet-bar round',
             events : {
                 click : function(e){
@@ -196,6 +197,10 @@ class Graphics{
         $("#saveChanges").on("click", () => {
             parentThis.facade.saveChanges(waypoints[index]);
         });
+
+        if (waypoints[index].startItinerary && L.userPosition) $("#startItinerary").css("display", "inline");
+        else $("#startItinerary").css("display", "none");
+
         document.removeEventListener('loadimg', parentThis.eventListener);
         document.addEventListener('loadimg', parentThis.eventListener);
         tmp_index = index;
@@ -253,5 +258,9 @@ class Graphics{
             $('body').removeClass("mp");
             this.screen = 0;
         }
+      }
+
+      addStopButton(){
+          $('#inspect').append('<button type="button" class="btn btn-primary" id="stop" onclick="facade.Paul.shutUp()">Stop audio</button>');
       }
 }

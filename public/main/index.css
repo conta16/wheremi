@@ -188,6 +188,10 @@ input.header{
   margin-left: 1%;
 }
 
+#startItinerary{
+  display: none;
+}
+
 
 /* Profile Content */
 .profile-content {

@@ -31,7 +31,6 @@ class Users{
 
             $(document).on('change','#uploadpic', function () {
               var file = this.files;
-              console.log("akkkkkkkkkkkkksssssss");
                     if (this.files.length == 1) {
                         //$.each(this.files, function (index, value) {
                             var reader = new FileReader();

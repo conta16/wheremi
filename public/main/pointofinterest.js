@@ -102,7 +102,7 @@ class PointOfInterest{
                     });
                 });
 
-                //this.wikipediaPoints = []; //with wikipedia stuff here, wikipedia links are loaded only if database responds successfully. Maybe it can be changed
+                this.wikipediaPoints = []; //with wikipedia stuff here, wikipedia links are loaded only if database responds successfully. Maybe it can be changed
                 var options = {wiki_search_url: "https://"+"en"+".wikipedia.org/w/api.php", introCallback: function(a){
                     if (a){
                         for (var i in a.query.pages)
@@ -112,14 +112,16 @@ class PointOfInterest{
                 }}};
                 parentThis.wiki = new wikiSearcher(options);
                 parentThis.wiki.searchOnMap(map,10);
-                var toremove=[];
+                while(parentThis.wikipediaMarkers.length > 0) parentThis.removeWikipediaMarker(parentThis.wikipediaMarkers[0]);
+
+                /*var toremove=[];
                 for (var i in parentThis.wikipediaMarkers)
                 {
                   if (!map.getBounds().contains(parentThis.wikipediaMarkers[i].getLatLng()))
                     toremove.push(parentThis.wikipediaMarkers[i]);
                   }
 
-                toremove.map(function(item){parentThis.removeWikipediaMarker(item)})
+                toremove.map(function(item){parentThis.removeWikipediaMarker(item)})*/
                 //
                 /*this.yt_points = [];
                 var yt_options = {googlekey: "AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0",yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){
@@ -217,12 +219,12 @@ class PointOfInterest{
         this.itineraryStartMarkers[len].on('click', (e) => {
             var do_nothing;
             do_nothing = parentThis.check_in_waypoints(len,1);
-            $("#inspect").text(parentThis.itineraryStartPoints[len].label);
+            //$("#inspect").text(parentThis.itineraryStartPoints[0].label);
             gotoTab(INSPECT_TAB);
             if (!do_nothing && parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.itineraryStartPoints[len].inputWaypoints[0]);
             }
-            //loadMenu(parentThis.itineraryStartPoints[len].inputWaypoints, 0, false);
+            parentThis.graphics.loadMenu(parentThis.itineraryStartPoints[len].inputWaypoints, 0, false, true);
         });
         var do_nothing = this.check_in_waypoints(len,1);
         if(!do_nothing) this.itineraryStartMarkers[len].addTo(map);

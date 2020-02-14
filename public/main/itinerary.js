@@ -55,7 +55,7 @@ class Itinerary {
         this.user_id = user;
     }
 
-    pushWaypoints(waypoints, point){
+    pushWaypoints(waypoints, point, show = true){
         var obj;
         for (var i in waypoints){
             if (!point) obj = {
@@ -97,12 +97,13 @@ class Itinerary {
             }
             this.waypoints.push(Object.assign({}, obj));
         }
-        this.showOnMap();
+        console.log(this.waypoints);
+        if (show) this.showOnMap();
     }
 
     setWaypoints(waypoints){
         this.waypoints = [];
-        this.pushWaypoints(waypoints);
+        if (waypoints) this.pushWaypoints(waypoints);
     }
 
     getLatlngs(){
