@@ -118,7 +118,7 @@ UploadVideo.prototype.uploadFile = function(file) {
       categoryId: this.categoryId
     },
     status: {
-      privacyStatus: 'private'//va poi settato a public su richiesta
+      privacyStatus: 'unlisted'//va poi settato a public su richiesta
     }
   };
   if (!this.accessToken)
@@ -186,6 +186,8 @@ UploadVideo.prototype.pollForVideoStatus = function() {
         console.log(response.error.message);
         setTimeout(this.pollForVideoStatus.bind(this), STATUS_POLLING_INTERVAL_MILLIS);
       } else {
+        if (!response.items[0])
+          return;
         var uploadStatus = response.items[0].status.uploadStatus;
         switch (uploadStatus) {
           // This is a non-final status, so we need to poll again.

@@ -27,7 +27,13 @@ this.clickHandler=function() {
 
   this.textContent = 'Stop recording';
 
-  var mixedStream = new MediaStream([('getVideoTracks' in cStream) ? cStream.getVideoTracks()[0]: cStream, ('getAudioTracks' in aStream) ? aStream.getAudioTracks()[0]: aStream]);
+  var options = {
+    audioBitsPerSecond: 128000,
+    videoBitsPerSecond: 2500000,
+    mimeType: 'video/mp4'
+  }
+
+  var mixedStream = new MediaStream([('getVideoTracks' in cStream) ? cStream.getVideoTracks()[0]: cStream, ('getAudioTracks' in aStream) ? aStream.getAudioTracks()[0]: aStream], options);
   recorder = new MediaRecorder(mixedStream);
   console.log(recorder);
   recorder.start();
@@ -53,8 +59,8 @@ this.exportStream=function(e) {
   track.stop();
   });
   if (chunks.length) {
-    var blob = new Blob(chunks);
-    SimpleRecorder.videoBlob=new Blob(chunks);
+    var blob = new Blob(chunks, {type:"video/mp4"});
+    SimpleRecorder.videoBlob=new Blob(chunks, {type:"video/mp4"});
     var vidURL = URL.createObjectURL(blob);
     if ('srcObject'in video)
       video.srcObject=undefined;
