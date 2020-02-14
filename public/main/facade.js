@@ -5,6 +5,19 @@ class Facade{
         this.itinerary = new Itinerary(this.graphics, this);
         this.pointsOfInterest = new PointOfInterest(this.itinerary, 5, this.graphics);
         this.user = new Users(this.itinerary, this);
+        this.Paul = new Artyom();
+        this.Paul.initialize({
+            lang: 'en', //todo: change language based on location or user preferences
+            continuous: true, // Listen forever
+            soundex: true,// Use the soundex algorithm to increase accuracy
+            debug: true, // Show messages in the console
+            executionKeyword: "",//Esegui dopo questa spressione
+            listen: false, // Start to listen commands !
+
+            // If providen, you can only trigger a command if you say its name
+            // e.g to trigger Good Morning, you need to say "Jarvis Good Morning"
+            name: "Paul"
+        });
         this.url = "http://localhost:3000";
     }
 
@@ -35,9 +48,9 @@ class Facade{
         L.control.scale({position: 'bottomright'}).addTo(map);
 
 
-        var Paul=new Artyom();
+        /*this.Paul=new Artyom();
 
-        Paul.initialize({
+        this.Paul.initialize({
             lang: 'en', //todo: change language based on location or user preferences
             continuous: true, // Listen forever
             soundex: true,// Use the soundex algorithm to increase accuracy
@@ -48,7 +61,7 @@ class Facade{
             // If providen, you can only trigger a command if you say its name
             // e.g to trigger Good Morning, you need to say "Jarvis Good Morning"
             name: "Paul"
-        });
+        });*/
 
 
         var mobile=window.matchMedia("(min-device-width : 320px)").matches;
@@ -209,7 +222,8 @@ class Facade{
                 language: JSON.stringify(waypoint.lang),
                 content: JSON.stringify(waypoint.content),
                 audience: JSON.stringify(waypoint.audience),
-                detail: JSON.stringify(waypoint.detail)
+                detail: JSON.stringify(waypoint.detail),
+                img: JSON.stringify(waypoint.img)
             },
             success: () => {
                 console.log("changes saved successfully");
@@ -218,5 +232,61 @@ class Facade{
                 console.log("changes saved unsuccessfully");
             }
         });
+    }
+
+    distance(lat1,lon1,lat2,lon2){
+        var R = 6372797; // metres
+        var pi = Math.PI;
+
+        var φ1 = lat1*(pi/180);
+        var φ2 = lat2*(pi/180);
+        var Δφ = (lat2-lat1)*(pi/180);
+        var Δλ = (lon2-lon1)*(pi/180);
+
+
+        var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +  
+                Math.cos(φ1) * Math.cos(φ2) *
+                Math.sin(Δλ/2) * Math.sin(Δλ/2);
+
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+        var d = R * c;
+
+        return d;
+    }
+
+    checkDistance(){
+        var it_points = this.pointsOfInterest.getItineraryStartPoints();
+        var points = this.pointsOfInterest.getPoints();
+        var wiki_points = this.pointsOfInterest.getWikipediaPoints();
+
+        console.log(it_points); console.log(points); console.log(wiki_points);
+
+        for (var i in it_points){
+            var pos = it_points[i].inputWaypoints[0].latLng;
+            if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 50){
+                this.Paul.say(it_points[i].inputWaypoints[0].title);
+                this.Paul.say(it_points[i].inputWaypoints[0].description);
+                this.graphics.loadMenu(it_points[i].inputWaypoints,0,false,false);
+            }
+        }
+
+        for (var i in points){
+            var pos = points[i].latLng;
+            if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 50){
+                this.Paul.say(points[i].title);
+                this.Paul.say(points[i].description);
+                this.graphics.loadMenu(points,i,false,false);
+            }
+        }
+
+        for (var i in wiki_points){
+            var pos = wiki_points[i].latLng;
+            if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 50){
+                this.Paul.say(wiki_points[i].title);
+                this.Paul.say(wiki_points[i].extract);
+                $("#inspect").html("<div class='container'><h2>"+wiki_points[i].title+"</h2><p>"+wiki_points[i].extract+"</p></div>");
+            }
+        }
     }
 }

@@ -23,6 +23,18 @@ class PointOfInterest{
         return this.currentItinerary;
     }
 
+    getItineraryStartPoints(){
+        return this.itineraryStartPoints;
+    }
+
+    getPoints(){
+        return this.points;
+    }
+
+    getWikipediaPoints(){
+        return this.wikipediaPoints;
+    }
+
     loadPoints(parentThis){
         //'use strict';
         var bound = map.getBounds();
@@ -412,4 +424,5 @@ class PointOfInterest{
             }
         return false;
     }
+    
 }

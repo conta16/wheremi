@@ -74,6 +74,10 @@ function youtubeUpload(){
 	fileReader.readAsArrayBuffer(file);
 }
 
+function checkDistance(){
+  facade.checkDistance();
+}
+
 
   var itineraryHTML = `<div id="carouselExampleIndicators" class="carousel slide mb-1 mt-1" data-ride="carousel">
   <div class="carousel-inner w-100" style="height: 300px !important"></div>
@@ -359,7 +363,7 @@ function youtubeUpload(){
 		  <button type="button" class="btn btn-primary" id="send_comment" disabled>Send comment</button>
 	  </div>
   </div>
-  <input type="submit" value="Submit" class="btn btn-primary" onclick="youtubeUpload()">
+  <input id="saveChanges" type="submit" value="Submit" class="btn btn-primary" > <!--onclick="youtubeUpload()"-->
 </form>
   <div class="comment-section">
 	  <p>Comments:</p>
