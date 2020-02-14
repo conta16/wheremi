@@ -62,7 +62,7 @@ var RegisterStrategy = require('passport-local-register').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 const protocol="http://";
-const baseDomain="localhost:3000/";
+const baseDomain="84.216.227.225:3000/";
 const baseURL=protocol+baseDomain;
 
 
