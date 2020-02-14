@@ -56,6 +56,7 @@ var UploadVideo = function() {
 
 function generateDescription(){
   //TODO: generare la descrizione
+  descrizione="ciao";
   return descrizione;
 }
 
@@ -120,6 +121,8 @@ UploadVideo.prototype.uploadFile = function(file) {
       privacyStatus: 'private'//va poi settato a public su richiesta
     }
   };
+  if (!this.accessToken)
+    return;
   var uploader = new MediaUploader({
     baseUrl: 'https://www.googleapis.com/upload/youtube/v3/videos',
     file: file,

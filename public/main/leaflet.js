@@ -30,7 +30,8 @@ $(document).ready(function() {
 			$.ajax({
 			url:'/user',
 			method:'GET',
-			success:function(err, data){
+			success:function(data){
+				console.log("accessToken "+data.accessToken);
 				if (data.accessToken)
 					YTUploader.ready(data.accessToken);
 			}
@@ -89,14 +90,25 @@ function youtubeUpload(){
   <form enctype="multipart/form-data" id="exportisexcel" class="form-horizontal">
   <div class="form-group">
 
+	<div class="w-100">
+	<video id="monitor" width="100%" autoplay="autoplay"></video>
+  </div>
 	<div class="panel-body">
 		<div class="filesloader-wrap">
 				<div class="fileupload-buttonbar">
-					  <span class="btn btn-primary fileinput-button">
-						  <i class="fa fa-plus"></i>
-						  <span>Add video</span>
-						  <input id="f" class="y-me y-inputLocation" type="file" accept="video/*" ></input>
+					  <span class="btn btn-white fileinput-button">
+						  <span>Add image</span>
+						  <input id="f" class="y-me y-inputLocation" type="file" accept="image/*" ></input>
             </span>
+						<span class="btn btn-danger fileinput-button" id="recordVideo" onclick="SimpleRecorder.initVideoStream(this)">
+						  <span>Record video</span>
+            </span>
+						<span id="recordAudio" class="btn btn-secondary fileinput-button" onclick="SimpleRecorder.initAudioStream(this)">
+						  <span>Record audio</span>
+            </span>
+						<span id="recordAudio" class="btn btn-primary fileinput-button" onclick="YTUploader.uploadBlob(SimpleRecorder.videoBlob)">
+							Upload on Youtube
+						</span>
 				</div>
 		</div>
 	</div>
