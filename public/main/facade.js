@@ -1,7 +1,7 @@
 class Facade{
     constructor(){
         this.inizialize_leaf();
-        
+
         this.graphics = new Graphics(this);
         this.itinerary = new Itinerary(this.graphics, this);
         this.pointsOfInterest = new PointOfInterest(this.itinerary, 5, this.graphics);
@@ -245,7 +245,7 @@ class Facade{
         var Δλ = (lon2-lon1)*(pi/180);
 
 
-        var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +  
+        var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
                 Math.cos(φ1) * Math.cos(φ2) *
                 Math.sin(Δλ/2) * Math.sin(Δλ/2);
 

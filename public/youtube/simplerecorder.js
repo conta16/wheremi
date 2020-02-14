@@ -12,12 +12,30 @@ var cStream,
 var lorem="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque congue ante eu facilisis malesuada. Maecenas pharetra ante vitae suscipit mattis. Nulla at suscipit mauris, non fermentum neque. Aliquam ullamcorper ornare consectetur. Aenean feugiat enim quis dictum elementum. Sed pharetra cursus metus."
 
 this.initVideoStream=function(button){
+  if (video){
+    if ('srcObject' in video)
+      video.srcObject = undefined;
+    else
+      video.src = "";
+    video.srcObject=undefined;
+    video.autoplay=false;
+    video.controls=false;
+  }
   button.innerHTML="Click to start";
   $("#recordvideo").prop("disabled", true);
   this.initMediaStream({'audio': true, 'video': {facingMode:"user"}})
 }
 
 this.initAudioStream=function(button){
+  if (video){
+    if ('srcObject' in video)
+      video.srcObject = undefined;
+    else
+      video.src = "";
+    video.srcObject=undefined;
+    video.autoplay=false;
+    video.controls=false;
+  }
   button.innerHTML="Click to start";
   $("#recordAudio").prop("disabled", true);
   this.initMediaStream({'audio': true, 'video': false})
@@ -48,6 +66,7 @@ this.clickHandler=function() {
 };
 
 this.set_video_src=function(src){
+  video.autoplay=true;
   if ('srcObject' in video)
     video.srcObject = src;
   else
@@ -80,6 +99,18 @@ this.saveChunks=function(e) {
 this.stopRecording=function() {
 	this.disabled = true;
   video.controls=true;
+  recordAudio.onclick = function(){
+    chunks=[];
+    video.controls=false
+    SimpleRecorder.initAudioStream(recordAudio)
+  };
+  recordVideo.onclick = function(){
+    chunks=[];
+    video.controls=false
+    SimpleRecorder.initVideoStream(recordVideo)
+  };
+  recordAudio.innerHTML="Record audio";
+  recordVideo.innerHTML="Record video";
   recorder.stop();
 }
 
