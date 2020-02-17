@@ -8,7 +8,7 @@ class Facade{
         this.user = new Users(this.itinerary, this);
         this.Paul = new Artyom();
         this.Paul.initialize({
-            lang: 'en', //todo: change language based on location or user preferences
+            lang: this.initLanguagePaul(), //todo: change language based on location or user preferences
             continuous: false, // Listen forever
             soundex: true,// Use the soundex algorithm to increase accuracy
             debug: true, // Show messages in the console
@@ -19,7 +19,69 @@ class Facade{
             // e.g to trigger Good Morning, you need to say "Jarvis Good Morning"
             name: "Paul"
         });
+        this.initPaulCommands(Paul);
         this.url = "http://localhost:3000";
+    }
+
+    initLanguagePaul(){
+        var userLang = navigator.language || navigator.userLanguage;
+        return userLang;
+    }
+
+    initPaulCommands(Paul){
+        var myGroup = [
+            {//wheremi
+                description:"Where am I? L'utente chiede un video di spiegazione del post in cui è",
+                indexes:["Where am I", "Where", "paul where am i", "paul where"],
+                action: function(i){
+                    //riproduci un video per dire dove sei (WHERE)
+
+                }
+            },
+            {//more
+                description:"aumenta il livello di specificità ad ogni more. quando cambi posto ritorna all' inizio",
+                indexes:["more", "paul more"],
+                action: function(i){
+                    //riproduci un video per dire dettagli sul posto dove sei
+                }
+            },
+            {//next
+                description:"Vai al prossimo luogo",
+                indexes:["next", "paul next"],
+                action: function(i){
+                    // vai al prossimo punto nell' itinerario 
+                }
+            },
+            {//why
+                description:"spiega come mai questo posto è interessante",
+                indexes:["why", "paul why"],
+                action: function(i){
+                    //riproduci una clip WHY
+                }
+            },
+            {//stop
+                description:"Interrompi la riproduzione della clip corrente",
+                indexes:["stop", "paul stop"],
+                action: function(i){
+                    //stoppa la riproduzione del video corrente
+                }
+            },
+            {//continue
+                description:"continua la riproduzione della clip corrente",
+                indexes:["continue", "paul continue"],
+                action: function(i){
+                    //continua la riproduzione del video corrente
+                }
+            },
+            {//how
+                description:"indica come accedere e orari del punto corrente",
+                indexes:["how", "paul how"],
+                action: function(i){
+                    //riproduci info su come accedere al posto in questione
+                }
+            }
+        ];
+        Paul.addCommands(myGroup);
     }
 
     inizialize_leaf(){
@@ -47,23 +109,6 @@ class Facade{
         });
 
         L.control.scale({position: 'bottomright'}).addTo(map);
-
-
-        /*this.Paul=new Artyom();
-
-        this.Paul.initialize({
-            lang: 'en', //todo: change language based on location or user preferences
-            continuous: true, // Listen forever
-            soundex: true,// Use the soundex algorithm to increase accuracy
-            debug: true, // Show messages in the console
-            executionKeyword: "",//Esegui dopo questa spressione
-            listen: false, // Start to listen commands !
-
-            // If providen, you can only trigger a command if you say its name
-            // e.g to trigger Good Morning, you need to say "Jarvis Good Morning"
-            name: "Paul"
-        });*/
-
 
         var mobile=window.matchMedia("(min-device-width : 320px)").matches;
         mobile=mobile && window.matchMedia("(max-device-width : 480px)").matches;
