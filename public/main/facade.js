@@ -59,6 +59,16 @@ class Facade{
                      
                 }
             },
+            {//previous
+                description:"Vai al luogo precedente",
+                indexes:["previous", "paul previous"],
+                action: function(i){
+                    // vai al punto precedente nell' itinerario
+                    this.currentLvlSpec = 0;
+                    Paul.say("I'll guide you to your previous location");
+                     
+                }
+            },
             {//why
                 description:"spiega come mai questo posto è interessante",
                 indexes:["why", "paul why", "tell me why", "paul tell me why"],
