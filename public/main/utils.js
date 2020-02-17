@@ -24,3 +24,7 @@ function gotoTab(tab){
       break;
   }
 }
+
+function selectedWaypoint(){
+  return facade.itinerary.graphics.tmp_waypoint[facade.graphics.tmp_index];
+}

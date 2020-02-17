@@ -51,6 +51,41 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
     });
   }
 
+  this.wmivideo_search=function(_params){
+    var params={
+      part: "snippet",
+      q: facade.locationString(map.getCenter()),
+      key: parent._options.googlekey,
+      type: "video",
+      videoEmbeddable: true
+    }
+    // TODO: aggiungere topicId
+
+    if (_params.pageToken)
+      params["pageToken"]=_params.pageToken;
+
+    if (_params.topicId)
+        params["topicId"]=_params.topicId;
+    get_url=parse_params(parent._options.yt_url+"search", params);
+
+    $.ajax({
+      method: "GET",
+      url: get_url,
+      contentType: "application/json",
+      format: "json",
+      success: function(res){
+        parent.items=parent.items.concat(res.items);
+        if (res.nextPageToken && _params.results-res.items.length>0)
+          this.wmivideo_search(Object.assign(_params, {pageToken: res.nextPageToken, results:_params.results-res.items.length}))
+        else
+        parent.get_yt_videos(parent.items);
+      }.bind(this),
+      error: function(a,b,c){
+        console.log(a,b,c);
+      }
+    });
+  }
+
   this.get_yt_videos = function (search_resource_array){
     var list="";
     if (search_resource_array.length)
@@ -113,4 +148,3 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
   }
   init();
 }
-

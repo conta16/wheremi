@@ -203,8 +203,8 @@ class Graphics{
 
         document.removeEventListener('loadimg', parentThis.eventListener);
         document.addEventListener('loadimg', parentThis.eventListener);
-        tmp_index = index;
-        tmp_waypoint = waypoints;
+        this.tmp_index = index;
+        this.tmp_waypoint = Object.assign({},waypoints);
     }
 
     eventListener(event){ //mmm function inside function

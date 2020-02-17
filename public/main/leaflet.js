@@ -110,7 +110,7 @@ function checkDistance(){
 						<span id="recordAudio" class="btn btn-secondary fileinput-button" onclick="SimpleRecorder.initAudioStream(this)">
 						  <span>Record audio</span>
             </span>
-						<span id="uploadOnYT" class="btn btn-primary fileinput-button" onclick="YTUploader.uploadBlob(SimpleRecorder.videoBlob)">
+						<span id="uploadOnYT" class="btn btn-primary fileinput-button" onclick="facade.uploadVideo()">
 							Upload on Youtube
 						</span>
 				</div>

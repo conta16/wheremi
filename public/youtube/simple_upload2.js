@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+var BLOCK_YT=1
+
 var STATUS_POLLING_INTERVAL_MILLIS = 60 * 1000; // One minute.
 
 
@@ -30,7 +32,7 @@ var UploadVideo = function() {
    * @type Array.<string>
    * @default ['google-cors-upload']
    */
-  this.tags = ['wheremi', 'swag', 'mangiaml'];
+  this.tags = ['wheremi', 'clarissa'];
 
   /**
    * The numeric YouTube
@@ -54,11 +56,7 @@ var UploadVideo = function() {
   this.uploadStartTime = 0;
 };
 
-function generateDescription(){
-  //TODO: generare la descrizione
-  descrizione="ciao";
-  return descrizione;
-}
+parentThis=this;
 
 client_init = function(){
   gapi.load('client:youtube');
@@ -78,25 +76,26 @@ UploadVideo.prototype.ready = function(accessToken) {
               clientId: "1082311706769-imjjc300bk99fval3kanm2u86ioaagud.apps.googleusercontent.com",
               discoveryDocs: [data],
               scope: "https://www.googleapis.com/auth/youtube"
-      }).catch(error =>{
+      }).then(function(){
+        this.gapi.client.request({
+          path: '/youtube/v3/channels',
+          headers: {'Authorization': 'Bearer '+this.accessToken},
+          params: {
+            part: 'snippet',
+            mine: true
+          },
+          callback: function(response) {
+            if (response.error) {
+              console.log(response.error.message);
+            }
+          }.bind(this),
+          onerror: function(response){
+            alert("We are having some trouble with the authentication service. Please, log in again")
+          }
+        });
+      }.bind(this)).catch(error =>{
         console.log(error)
       });
-      this.gapi.client.request({
-        path: '/youtube/v3/channels',
-        params: {
-          part: 'snippet',
-          mine: true
-        },
-        callback: function(response) {
-          if (response.error) {
-            console.log(response.error.message);
-          }
-        }.bind(this),
-        onerror: function(response){
-
-        }
-      });
-
     }.bind(this)
   });
 };
@@ -108,21 +107,11 @@ UploadVideo.prototype.ready = function(accessToken) {
  * @param {object} file File object corresponding to the video to upload.
  */
 
-UploadVideo.prototype.uploadFile = function(file) {
-  var descrizione = generateDescription();
-  var metadata = {
-    snippet: {
-      title: "titolo della clip",
-      description: descrizione,
-      tags: this.tags,
-      categoryId: this.categoryId
-    },
-    status: {
-      privacyStatus: 'unlisted'//va poi settato a public su richiesta
-    }
-  };
+UploadVideo.prototype.uploadFile = function(file, metadata) {
+  metadata.snippet.tags=this.tags;
   if (!this.accessToken)
     return;
+  if (BLOCK_YT) return;
   var uploader = new MediaUploader({
     baseUrl: 'https://www.googleapis.com/upload/youtube/v3/videos',
     file: file,
@@ -168,9 +157,9 @@ UploadVideo.prototype.uploadFile = function(file) {
   uploader.upload();
 };
 
-UploadVideo.prototype.uploadBlob = function(blob) {
+UploadVideo.prototype.uploadBlob = function(blob, metadata) {
     if(blob != undefined)
-      this.uploadFile(blob);
+      this.uploadFile(blob, metadata);
 }
 
 UploadVideo.prototype.pollForVideoStatus = function() {

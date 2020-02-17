@@ -19,7 +19,7 @@ class Facade{
             // e.g to trigger Good Morning, you need to say "Jarvis Good Morning"
             name: "Paul"
         });
-        this.initPaulCommands(Paul);
+        this.initPaulCommands(this.Paul);
         this.url = "http://localhost:3000";
     }
 
@@ -49,7 +49,7 @@ class Facade{
                 description:"Vai al prossimo luogo",
                 indexes:["next", "paul next"],
                 action: function(i){
-                    // vai al prossimo punto nell' itinerario 
+                    // vai al prossimo punto nell' itinerario
                 }
             },
             {//why
@@ -341,10 +341,15 @@ class Facade{
         }
     }
 
-    generateDescription(waypoint){
+    locationString(latLng, begin, end){
       var olc='';
-      for (var i=6; i<=10; i+=2)
-        olc=olc.concat(OpenLocationCode.encode(waypoint.latLng.lat, waypoint.latLng.lat, i));
+      for (var i=begin; i<=end; i+=2)
+        olc=olc.concat(OpenLocationCode.encode(latLng.lat, latLng.lat, i));
+      return olc;
+    }
+
+    generateDescription(waypoint){
+      var olc=this.locationString(waypoint.latLng, 6, 10);
         olc=olc.concat(':', $("#purp").val());
         olc=olc.concat(':', $("#lang").val());
         olc=olc.concat(':', $("#cont").val());
@@ -358,5 +363,22 @@ class Facade{
         nav=new polloNavigator(navigatorControl.onpoint, navigatorControl.onend, navigatorControl.wondering);
         console.log(nav);
         nav.navigate();
+    }
+
+    uploadVideo(){
+      var title=$("#title").val();
+      var description=this.generateDescription(selectedWaypoint());
+      var category=22;
+      var metadata = {
+        snippet: {
+          title: title,
+          description: description,
+          categoryId: category
+        },
+        status: {
+          privacyStatus: 'unlisted'//va poi settato a public su richiesta
+        }
+      };
+      YTUploader.uploadBlob(SimpleRecorder.videoBlob, title, metadata);
     }
 }
