@@ -1,4 +1,4 @@
-YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0",yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){console.log(res);}});
+YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0",yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){console.log(res);}, wmiCallback:function(){}});
 
   parent = this;
   this._options={};
@@ -51,16 +51,17 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
     });
   }
 
-  this.wmivideo_search=function(_params){
+  _wmivideo_search = function(_params, spec_level){
+    if (spec_level<6)
+      return;
     var params={
       part: "snippet",
-      q: facade.locationString(map.getCenter()),
+      q: facade.locationString(map.getCenter(), spec_level, spec_level),
       key: parent._options.googlekey,
       type: "video",
       videoEmbeddable: true
     }
     // TODO: aggiungere topicId
-
     if (_params.pageToken)
       params["pageToken"]=_params.pageToken;
 
@@ -74,16 +75,23 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
       contentType: "application/json",
       format: "json",
       success: function(res){
+        console.log(res);
         parent.items=parent.items.concat(res.items);
         if (res.nextPageToken && _params.results-res.items.length>0)
-          this.wmivideo_search(Object.assign(_params, {pageToken: res.nextPageToken, results:_params.results-res.items.length}))
+          _wmivideo_search(Object.assign(_params, {pageToken: res.nextPageToken, results:_params.results-res.items.length}), spec_level)
+        else if (res.items.length==0 && _params.results-res.items.length>0)
+          _wmivideo_search(_params, spec_level-2);
         else
-        parent.get_yt_videos(parent.items);
+          parent.get_yt_videos(parent.items);
       }.bind(this),
       error: function(a,b,c){
         console.log(a,b,c);
       }
     });
+  }
+
+  this.wmivideo_search=function(_params){
+      _wmivideo_search(_params, 10);
   }
 
   this.get_yt_videos = function (search_resource_array){

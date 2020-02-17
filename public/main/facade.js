@@ -20,6 +20,7 @@ class Facade{
             name: "Paul"
         });
         this.initPaulCommands(this.Paul);
+        this.currentLvlSpec = 0;
         this.url = "http://localhost:3000";
     }
 
@@ -35,6 +36,7 @@ class Facade{
                 indexes:["Where am I", "Where", "paul where am i", "paul where"],
                 action: function(i){
                     //riproduci un video per dire dove sei (WHERE)
+                    Paul.say('Playing a video to tell you where you are');
 
                 }
             },
@@ -43,6 +45,8 @@ class Facade{
                 indexes:["more", "paul more"],
                 action: function(i){
                     //riproduci un video per dire dettagli sul posto dove sei
+                    this.currentLvlSpec += 1;
+                    Paul.say("Playing a video to tell you more details about the thing you're looking at. Level " + currentLvlSpec);
                 }
             },
             {//next
@@ -50,13 +54,31 @@ class Facade{
                 indexes:["next", "paul next"],
                 action: function(i){
                     // vai al prossimo punto nell' itinerario
+                    this.currentLvlSpec = 0;
+                    Paul.say("I'll guide you to your next location");
+
+                }
+            },
+            {//previous
+                description:"Vai al luogo precedente",
+                indexes:["previous", "paul previous"],
+                action: function(i){
+                    // vai al punto precedente nell' itinerario
+                    this.currentLvlSpec = 0;
+                    Paul.say("I'll guide you to your previous location");
+
                 }
             },
             {//why
                 description:"spiega come mai questo posto è interessante",
-                indexes:["why", "paul why"],
+                indexes:["why", "paul why", "tell me why", "paul tell me why"],
                 action: function(i){
                     //riproduci una clip WHY
+                    if (i >= 2){
+                        Paul.say("Ain't nothing but a heartache");
+                    }else{
+                        Paul.say("Playing a why clip. level "+currentLvlSpec);
+                    }
                 }
             },
             {//stop
@@ -64,6 +86,7 @@ class Facade{
                 indexes:["stop", "paul stop"],
                 action: function(i){
                     //stoppa la riproduzione del video corrente
+                    Paul.say("Stopping current video");
                 }
             },
             {//continue
@@ -71,6 +94,7 @@ class Facade{
                 indexes:["continue", "paul continue"],
                 action: function(i){
                     //continua la riproduzione del video corrente
+                    Paul.say("Resuming play");
                 }
             },
             {//how
@@ -78,6 +102,7 @@ class Facade{
                 indexes:["how", "paul how"],
                 action: function(i){
                     //riproduci info su come accedere al posto in questione
+                    Paul.say("This is how to visit this place");
                 }
             }
         ];
@@ -344,7 +369,7 @@ class Facade{
     locationString(latLng, begin, end){
       var olc='';
       for (var i=begin; i<=end; i+=2)
-        olc=olc.concat(OpenLocationCode.encode(latLng.lat, latLng.lat, i));
+        olc=olc.concat(OpenLocationCode.encode(latLng.lat, latLng.lng, i)+((i!=end)?"-":""));
       return olc;
     }
 
@@ -353,7 +378,7 @@ class Facade{
         olc=olc.concat(':', $("#purp").val());
         olc=olc.concat(':', $("#lang").val());
         olc=olc.concat(':', $("#cont").val());
-        olc=olc.concat(':', $("#aud").val());
+        olc=olc.concat(':A', $("#aud").val());
         olc=olc.concat(':P', $("#det").val());
         console.log(olc);
         return olc;

@@ -679,11 +679,12 @@ function checkDistance(){
 	<p>Audience:</p>
 	<label class="mr-sm-2 sr-only y-valoreDettaglio" for="aud"></label>
 	<select class="custom-select mr-sm-2" id="aud">
-	<option value="gen" selected>generical audience</option>
-	<option value="pre">pre-school audience</option>
-	<option value="elm">primary school</option>
-	<option value="mid">middle school</option>
-	<option value="scl">specialists</option>	</select>
+		<option value="gen" selected>generical audience</option>
+		<option value="pre">pre-school audience</option>
+		<option value="elm">primary school</option>
+		<option value="mid">middle school</option>
+		<option value="scl">specialists</option>
+	</select>
   </div>
   <div class="col-auto my-1">
 	<p>Detail level:</p>

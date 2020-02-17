@@ -1,0 +1,2 @@
+8FPHF800+-8FPHF8VV+-8FPHF8VV+57:why:ita:his-art:Aall:P2
+([A-Z,0-9]{8}\+[A-Z,0-9]{0,8})+(-[A-Z,0-9]{8}\+[A-Z,0-9]{0,8})*(:(why|how|what))?(:[a-z]{3})?(:(none|nat|art|his|flk|mod|rel|cui|spo|mus|mov|fas|shp|tec|pop|prs|oth)+(-(none|nat|art|his|flk|mod|rel|cui|spo|mus|mov|fas|shp|tec|pop|prs|oth))*)?(:A(gen|pre|elm|mid|scl|all)(-(gen|pre|elm|mid|scl|all))*)?(:P1?[0-9])?
