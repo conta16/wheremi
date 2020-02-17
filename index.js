@@ -759,7 +759,13 @@ app.post('/changeprofilepic', function(req, res){
   });
 });
 
-app.post('/savechanges', function(req, res){
+app.post('/savechanges',
+passport.authenticate("cookie", { session: false }),
+ function(req, res){
+	 if(!loggedin(req)){
+		res.status(403);
+	 	res.send({message:"error: non logged in."});
+	}
   var id = JSON.parse(req.body.id);
   var title = JSON.parse(req.body.title);
   var description = JSON.parse(req.body.description);

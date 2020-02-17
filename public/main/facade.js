@@ -296,6 +296,19 @@ class Facade{
         }
     }
 
+    generateDescription(waypoint){
+      var olc='';
+      for (var i=6; i<=10; i+=2)
+        olc=olc.concat(OpenLocationCode.encode(waypoint.latLng.lat, waypoint.latLng.lat, i));
+        olc=olc.concat(':', $("#purp").val());
+        olc=olc.concat(':', $("#lang").val());
+        olc=olc.concat(':', $("#cont").val());
+        olc=olc.concat(':', $("#aud").val());
+        olc=olc.concat(':P', $("#det").val());
+        console.log(olc);
+        return olc;
+    }
+
     startItinerary(){
         nav=new polloNavigator(navigatorControl.onpoint, navigatorControl.onend, navigatorControl.wondering);
         console.log(nav);
