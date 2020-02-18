@@ -261,6 +261,6 @@ class Graphics{
       }
 
       addStopButton(){
-          $('#inspect').append('<button type="button" class="btn btn-primary" id="stop" onclick="facade.Paul.shutUp()">Stop audio</button>');
+          $('#inspect').html('<button type="button" class="btn btn-primary" id="stop" onclick="facade.Paul.shutUp()">Stop audio</button>');
       }
 }

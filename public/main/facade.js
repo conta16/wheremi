@@ -30,6 +30,10 @@ class Facade{
     }
 
     initPaulCommands(Paul){
+        var htmlVideoPopup = `<div id="headerPopup" class="mfp-hide embed-responsive embed-responsive-21by9">
+                              <iframe class="embed-responsive-item" width="854" height="480" src="https://www.youtube.com/embed/qN3OueBm9F4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                              </div>`;
+        var olcCurrentPosition; //trova un modo per sapere a che punto sei più vicino
         var myGroup = [
             {//wheremi
                 description:"Where am I? L'utente chiede un video di spiegazione del post in cui è",
@@ -37,6 +41,7 @@ class Facade{
                 action: function(i){
                     //riproduci un video per dire dove sei (WHERE)
                     Paul.say('Playing a video to tell you where you are');
+                     //trova dove sei (usando olc) e poi carica un video di quel tipo
 
                 }
             },
@@ -358,7 +363,7 @@ class Facade{
             if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 50 && !wiki_points[i].played){
                 this.Paul.say(wiki_points[i].title);
                 this.Paul.say(wiki_points[i].extract);
-                $("#inspect").html("<div class='container'><h2>"+wiki_points[i].title+"</h2><p>"+wiki_points[i].extract+"</p></div>");
+                $("#inspect").append("<div class='container'><h2>"+wiki_points[i].title+"</h2><p>"+wiki_points[i].extract+"</p></div>");
                 gotoTab(INSPECT_TAB);
                 this.graphics.addStopButton();
                 wiki_points[i].played = true;
