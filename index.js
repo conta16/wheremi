@@ -190,7 +190,7 @@ function confirmMail(user){
 passport.use(new GoogleStrategy({
     clientID: "1082311706769-imjjc300bk99fval3kanm2u86ioaagud.apps.googleusercontent.com",
     clientSecret: "eiRQREZjOXviY_mIibKVxRa_",
-    callbackURL: "/auth/google/callback"
+    callbackURL: LOCAL?"":baseURL+"/auth/google/callback"
   },function(accessToken, refreshToken, profile, done) {
     UserDetails.findOne({ email: profile.emails[0].value }, function (err, user) {
       if (err)
