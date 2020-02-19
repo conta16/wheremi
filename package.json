@@ -11,6 +11,7 @@
   "dependencies": {
     "@sendgrid/mail": "^6.5.1",
     "blueimp-file-upload": "^10.5.0",
+    "braces": "^3.0.2",
     "connect-ensure-login": "^0.1.1",
     "cookie-parser": "^1.4.4",
     "core-js": "^3.3.2",
@@ -32,6 +33,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "passport-local-register": "^1.0.4",
+    "popper": "^1.0.1",
     "vue": "^2.6.10",
     "vue-sidebar-menu": "^4.4.0",
     "vue-slideout-panel": "^3.0.0",

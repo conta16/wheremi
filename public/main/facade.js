@@ -29,19 +29,37 @@ class Facade{
         return userLang;
     }
 
+    findPointForVideos(latLngMia){
+        var min = Infinity;
+        var point;
+        //for (punti vicini){
+        //if (min < distance(latLngMia.lat,latLngMia.lon,latPunto,lonPunto)){min = distance; point = i}
+        //return point;
+    }
+
     initPaulCommands(Paul){
         var htmlVideoPopup = `<div id="headerPopup" class="mfp-hide embed-responsive embed-responsive-21by9">
-                              <iframe class="embed-responsive-item" width="854" height="480" src="https://www.youtube.com/embed/qN3OueBm9F4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                              <iframe class="embed-responsive-item video-frame" width="854" height="480" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                               </div>`;
-        var olcCurrentPosition; //trova un modo per sapere a che punto sei più vicino
+        var olcCurrentPosition = this.locationString(/*findPointForVideos().latLng,?begin?,?end?*/); //trova un modo per sapere a che punto sei più vicino facade-distance(lat e lng dei due punti)
         var myGroup = [
             {//wheremi
                 description:"Where am I? L'utente chiede un video di spiegazione del post in cui è",
                 indexes:["Where am I", "Where", "paul where am i", "paul where"],
                 action: function(i){
+                    var params = {/*chiedi a davide che parametri vuole*/}
                     //riproduci un video per dire dove sei (WHERE)
                     Paul.say('Playing a video to tell you where you are');
-                     //trova dove sei (usando olc) e poi carica un video di quel tipo
+                     /*trova dove sei (usando olc) e poi carica un video di quel tipo
+                     var url = wmivideo_search(params)
+                     $(".video-container").append(htmlVideoPopup);
+                     $(".video-frame").attr('src', url);
+                     
+         $('#headerVideoLink').magnificPopup({
+          type:'inline',
+          midClick: true
+        });*/ //a sto punto il video dovrebbe essere un popup.
+                     
 
                 }
             },

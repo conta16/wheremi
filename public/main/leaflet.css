@@ -478,3 +478,13 @@
 	background: #fff;
 	border: 1px solid #666;
 	}
+
+	#headerPopup{
+  width:75%;
+  margin:0 auto;
+}
+
+#headerPopup iframe{
+  width:100%;
+  margin:0 auto;
+}
