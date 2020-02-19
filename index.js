@@ -15,11 +15,12 @@ var authCookie = "wH3r3M1k33p1nGMyK00k135";
 
 sgMail.setApiKey("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")
 
-const LOCAL=1;
+const LOCAL=0;
 
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
-var urldb = LOACAL?"mongodb://localhost:27017/sitedb":"mongodb://site181951:ak3neiSh@mongo_site181951";
+var urldb = LOCAL?"mongodb://localhost:27017/sitedb":"mongodb://site181951:ak3neiSh@mongo_site181951";
+var mongoose_urldb = LOCAL?"mongodb://localhost:27017/sitedb":"mongodb://wmi:clarissa@mongo_site181951/sitedb";
 var express = require("express");
 var cors = require('cors');
 var upload = require('jquery-file-upload-middleware');
@@ -69,7 +70,7 @@ const baseURL=protocol+baseDomain;
 
 /* MONGOOSE SETUP */
 
-mongoose.connect(urldb, { useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(mongoose_urldb, { useNewUrlParser: true, useUnifiedTopology: true});
 
 const Schema = mongoose.Schema;
 
@@ -673,7 +674,7 @@ app.get("/img/favicon.ico",function(req,res){
 app.get('/about', function (req, res){
 	var obj = {};
 	MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err, db) {
-		if (err) throw err;
+		if (err) console.log(err);
 		var dbo = db.db("sitedb");
 		dbo.collection("itineraries").aggregate([
 			{
@@ -733,7 +734,7 @@ app.get('/about', function (req, res){
                         	res.send(obj);
                 	});
 		});
-	});
+	}).catch(function(err){console.log(err)});
 });
 
 /*db.collection.find().sort({age:-1}).limit(1) // for MAX
