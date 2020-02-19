@@ -15,10 +15,11 @@ var authCookie = "wH3r3M1k33p1nGMyK00k135";
 
 sgMail.setApiKey("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")
 
+const LOCAL=1;
 
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
-var urldb = "mongodb://localhost:27017/sitedb";
+var urldb = LOACAL?"mongodb://localhost:27017/sitedb":"mongodb://site181951:ak3neiSh@mongo_site181951";
 var express = require("express");
 var cors = require('cors');
 var upload = require('jquery-file-upload-middleware');
@@ -61,8 +62,8 @@ var Strategy = require('passport-local').Strategy;
 var RegisterStrategy = require('passport-local-register').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
-const protocol="http://";
-const baseDomain="84.216.227.225:3000/";
+const protocol=LOCAL?"http://":"https://";
+const baseDomain=LOCAL?"localhost":"site181951.tw.cs.unibo.it"+(LOCAL?(":"+port):(""))+"/";
 const baseURL=protocol+baseDomain;
 
 
@@ -359,8 +360,10 @@ app.post('/login', function (req, res, next){
 					dbo.collection("userInfo").find({"_id": ObjectId(req.user._id)}, {fields:{token: 1}}).toArray(function (err, result) {
 						if (err)
 							throw(err)
-						token=result[0].token;
-						res.cookie(authCookie, token, {maxAge: 1000*60*60*24*14, path:'/'});
+						if (result[0] && result[0].token){
+							token=result[0].token;
+							res.cookie(authCookie, token, {maxAge: 1000*60*60*24*14, path:'/'});
+						}
 						return res.redirect('/');
 					});
 				});
@@ -1045,6 +1048,6 @@ app.use('/upload', function(req, res, next){
     })(req, res, next);
 });
 
-app.listen(3000,'0.0.0.0', function(){
-	console.log('server listening on 3000...');
+app.listen(8000,'0.0.0.0', function(){
+	console.log('server listening on 8000...\n Domain: '+baseURL);
 });
