@@ -54,12 +54,12 @@ class Facade{
                      var url = wmivideo_search(params)
                      $(".video-container").append(htmlVideoPopup);
                      $(".video-frame").attr('src', url);
-                     
+
          $('#headerVideoLink').magnificPopup({
           type:'inline',
           midClick: true
         });*/ //a sto punto il video dovrebbe essere un popup.
-                     
+
 
                 }
             },
@@ -138,6 +138,7 @@ class Facade{
             center: [44.7,10.633333],
             // Set the initial zoom level, values 0-18, where 0 is most zoomed-out (required)
             zoomControl: false,
+            dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true,
             zoom: 3,
             minZoom: 3
         });
@@ -152,9 +153,9 @@ class Facade{
 
         var bound = L.latLngBounds([[-90,-180], [90, 180]]);
         map.setMaxBounds(bound);
-        map.on('drag', function() {
-            map.panInsideBounds(bound, { animate: false });
-        });
+        // map.on('drag', function() {
+        //     map.panInsideBounds(bound, { animate: false });
+        // });
 
         L.control.scale({position: 'bottomright'}).addTo(map);
 
@@ -252,35 +253,35 @@ class Facade{
         var mode = this.itinerary.getMode();
         if (!mode){
             this.itinerary.setMode(!mode);
-            map.off('zoomend', loadPoints); //può essere cambiato in pointsofinterest.loadpoints?
-            map.off('drag', loadPoints);
+            // map.off('zoomend', loadPoints); //può essere cambiato in pointsofinterest.loadpoints?
+            // map.off('drag', loadPoints);
             this.pointsOfInterest.removeAllMarkers();
             this.itinerary.setWaypoints([]);
             this.graphics.removeButton.addTo(map);
-            map.on('click', (e) => {
-                if (parentThis.itinerary.getMode() != 2){
-                    loadPoints();
-                    map.on('zoomend', loadPoints);
-                    map.on('drag', loadPoints);
-                    if (parentThis.itinerary.getBlock()) parentThis.itinerary.setBlock(0);
-                    else {
-                        e.latLng = e.latlng;
-                        var waypoints = parentThis.itinerary.getWaypoints();
-                    parentThis.graphics.styleInspect(itineraryHTML);
-                        parentThis.itinerary.pushWaypoints([e.latLng]);
-                    }
-                }
-            });
+            // map.on('click', (e) => {
+            //     if (parentThis.itinerary.getMode() != 2){
+            //         loadPoints();
+            //         map.on('zoomend', loadPoints);
+            //         map.on('drag', loadPoints);
+            //         if (parentThis.itinerary.getBlock()) parentThis.itinerary.setBlock(0);
+            //         else {
+            //             e.latLng = e.latlng;
+            //             var waypoints = parentThis.itinerary.getWaypoints();
+            //         parentThis.graphics.styleInspect(itineraryHTML);
+            //             parentThis.itinerary.pushWaypoints([e.latLng]);
+            //         }
+            //     }
+            // });
         }
         else{
             parentThis.graphics.styleInspect("");
             parentThis.itinerary.setMode(!mode);
-            map.off('click');
+            // map.off('click');
             parentThis.itinerary.setWaypoints([]);
             map.removeControl(parentThis.graphics.removeButton);
             loadPoints();
-            map.on('zoomend', loadPoints);
-            map.on('drag', loadPoints);
+            // map.on('zoomend', loadPoints);
+            // map.on('drag', loadPoints);
         }
     }
 
