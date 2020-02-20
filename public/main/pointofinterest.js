@@ -15,7 +15,7 @@ class PointOfInterest{
         this.searchPointMarker = {};
         this.maxPoints = maxPoints;
         this.graphics = graphics;
-        this.url = "http://localhost:3000";
+        this.url = "https://site181951.tw.cs.unibo.it";
         this.wiki= undefined;
     }
 

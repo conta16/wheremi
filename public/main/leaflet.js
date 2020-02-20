@@ -1,5 +1,5 @@
 var map;
-var url = "http://localhost:3000";
+var url = "https://site181951.tw.cs.unibo.it";
 var tmp_index;
 var tmp_waypoint;
 var YTUploader;

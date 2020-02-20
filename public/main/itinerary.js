@@ -7,7 +7,7 @@ class Itinerary {
         this.id = "";
         this.childrenId = [];
         this.markers = [];
-        this.url = "http://localhost:3000";
+        this.url = "https://site181951.tw.cs.unibo.it";
         this.graphics = graphics;
         this.facade = facade;
         this.control = undefined;

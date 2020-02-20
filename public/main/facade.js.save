@@ -21,7 +21,7 @@ class Facade{
         });
         this.initPaulCommands(this.Paul);
         this.currentLvlSpec = 0;
-        this.url = "https://site181951.tw.cs.unibo.it";
+        this.url = "http://localhost:3000";
     }
 
     initLanguagePaul(){
@@ -31,41 +31,35 @@ class Facade{
 
     findPointForVideos(latLngMia){
         var min = Infinity;
-        var returnPoint;
-        var points = pointsOfInterest.points.concat(pointsOfInterest.wiki_points, pointsOfInterest.yt_points);
-        for (point in points){
-        if (min < distance(latLngMia.lat,latLngMia.lon,point.latLng.lat,point.latLng.lon)){min = distance; returnPoint = point}
-        }
-        return returnPoint;
+        var point;
+        //for (punti vicini){
+        //if (min < distance(latLngMia.lat,latLngMia.lon,latPunto,lonPunto)){min = distance; point = i}
+        //return point;
     }
 
     initPaulCommands(Paul){
         var htmlVideoPopup = `<div id="headerPopup" class="mfp-hide embed-responsive embed-responsive-21by9">
                               <iframe class="embed-responsive-item video-frame" width="854" height="480" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                               </div>`;
-        var olcCurrentPosition = this.locationString(findPointForVideos().latLng,10,10); //trova un modo per sapere a che punto sei più vicino facade-distance(lat e lng dei due punti)
+        var olcCurrentPosition = this.locationString(/*findPointForVideos().latLng,?begin?,?end?*/); //trova un modo per sapere a che punto sei più vicino facade-distance(lat e lng dei due punti)
         var myGroup = [
             {//wheremi
                 description:"Where am I? L'utente chiede un video di spiegazione del post in cui è",
                 indexes:["Where am I", "Where", "paul where am i", "paul where"],
                 action: function(i){
-                    var params = {
-                        coords: {latitude: L.userPosition.latLng.lat, longitude: L.userPosition.latLng.lng},
-                        pageToken: "", //non so cosa mettere qua -squest-
-                        topicId: "where" //non sono sicuro di cosa vada qua -squest-
-                    }
+                    var params = {/*chiedi a davide che parametri vuole*/}
                     //riproduci un video per dire dove sei (WHERE)
                     Paul.say('Playing a video to tell you where you are');
-                     /*trova dove sei (usando olc) e poi carica un video di quel tipo*/
+                     /*trova dove sei (usando olc) e poi carica un video di quel tipo
                      var url = wmivideo_search(params)
-                     /*$(".video-container").append(htmlVideoPopup);
+                     $(".video-container").append(htmlVideoPopup);
                      $(".video-frame").attr('src', url);
-
+                     
          $('#headerVideoLink').magnificPopup({
           type:'inline',
           midClick: true
         });*/ //a sto punto il video dovrebbe essere un popup.
-
+                     
 
                 }
             },
@@ -115,8 +109,7 @@ class Facade{
                 indexes:["stop", "paul stop"],
                 action: function(i){
                     //stoppa la riproduzione del video corrente
-                    $(".video-frame").pause()
-                    Paul.say("Current video paused");
+                    Paul.say("Stopping current video");
                 }
             },
             {//continue
@@ -125,7 +118,6 @@ class Facade{
                 action: function(i){
                     //continua la riproduzione del video corrente
                     Paul.say("Resuming play");
-                    $(".video-frame").play()
                 }
             },
             {//how
@@ -133,7 +125,7 @@ class Facade{
                 indexes:["how", "paul how"],
                 action: function(i){
                     //riproduci info su come accedere al posto in questione
-                    Paul.say("Here is how to visit this place");
+                    Paul.say("This is how to visit this place");
                 }
             }
         ];
@@ -146,29 +138,29 @@ class Facade{
             center: [44.7,10.633333],
             // Set the initial zoom level, values 0-18, where 0 is most zoomed-out (required)
             zoomControl: false,
-            dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true,
             zoom: 3,
-            minZoom: 3,
-dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
+	    maxZoom: 18,
+	    tileSize: 512,
+	    zoomOffset: -1,
+            minZoom: 3
         }).fitWorld();
+
+dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
 
         map = this.map;
 
         var WorldStreetMap = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}/?access_token={accessToken}', {
             attribution: 'Frank',
             noWrap: true,
-    maxZoom: 18,
-    tileSize: 512,
-    zoomOffset: -1,
             accessToken: 'pk.eyJ1Ijoid2hlcmVtaSIsImEiOiJjazZnajdnbmQwN29yM2xwODI5YnF2OWZtIn0.6Fr9OvAyxwthnY-ciTwJVg'
         }).addTo(map);
 
-/*        var bound = L.latLngBounds([[-90,-180], [90, 180]]);
+        var bound = L.latLngBounds([[-90,-180], [90, 180]]);
         map.setMaxBounds(bound);
         map.on('drag', function() {
             map.panInsideBounds(bound, { animate: false });
         });
-*/
+
         L.control.scale({position: 'bottomright'}).addTo(map);
 
         var mobile=window.matchMedia("(min-device-width : 320px)").matches;
@@ -265,35 +257,35 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
         var mode = this.itinerary.getMode();
         if (!mode){
             this.itinerary.setMode(!mode);
-            // map.off('zoomend', loadPoints); //può essere cambiato in pointsofinterest.loadpoints?
-            // map.off('drag', loadPoints);
+            map.off('zoomend', loadPoints); //può essere cambiato in pointsofinterest.loadpoints?
+            map.off('drag', loadPoints);
             this.pointsOfInterest.removeAllMarkers();
             this.itinerary.setWaypoints([]);
             this.graphics.removeButton.addTo(map);
-            // map.on('click', (e) => {
-            //     if (parentThis.itinerary.getMode() != 2){
-            //         loadPoints();
-            //         map.on('zoomend', loadPoints);
-            //         map.on('drag', loadPoints);
-            //         if (parentThis.itinerary.getBlock()) parentThis.itinerary.setBlock(0);
-            //         else {
-            //             e.latLng = e.latlng;
-            //             var waypoints = parentThis.itinerary.getWaypoints();
-            //         parentThis.graphics.styleInspect(itineraryHTML);
-            //             parentThis.itinerary.pushWaypoints([e.latLng]);
-            //         }
-            //     }
-            // });
+            map.on('click', (e) => {
+                if (parentThis.itinerary.getMode() != 2){
+                    loadPoints();
+                    map.on('zoomend', loadPoints);
+                    map.on('drag', loadPoints);
+                    if (parentThis.itinerary.getBlock()) parentThis.itinerary.setBlock(0);
+                    else {
+                        e.latLng = e.latlng;
+                        var waypoints = parentThis.itinerary.getWaypoints();
+                    parentThis.graphics.styleInspect(itineraryHTML);
+                        parentThis.itinerary.pushWaypoints([e.latLng]);
+                    }
+                }
+            });
         }
         else{
             parentThis.graphics.styleInspect("");
             parentThis.itinerary.setMode(!mode);
-            // map.off('click');
+            map.off('click');
             parentThis.itinerary.setWaypoints([]);
             map.removeControl(parentThis.graphics.removeButton);
             loadPoints();
-            // map.on('zoomend', loadPoints);
-            // map.on('drag', loadPoints);
+            map.on('zoomend', loadPoints);
+            map.on('drag', loadPoints);
         }
     }
 
