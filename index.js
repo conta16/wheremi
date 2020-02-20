@@ -734,7 +734,7 @@ app.get('/about', function (req, res){
                         	res.send(obj);
                 	});
 		});
-	}).catch(function(err){console.log(err)});
+	});
 });
 
 /*db.collection.find().sort({age:-1}).limit(1) // for MAX

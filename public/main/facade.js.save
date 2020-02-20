@@ -21,7 +21,7 @@ class Facade{
         });
         this.initPaulCommands(this.Paul);
         this.currentLvlSpec = 0;
-        this.url = "https://site181951.tw.cs.unibo.it";
+        this.url = "http://localhost:3000";
     }
 
     initLanguagePaul(){
@@ -139,27 +139,28 @@ class Facade{
             // Set the initial zoom level, values 0-18, where 0 is most zoomed-out (required)
             zoomControl: false,
             zoom: 3,
-            minZoom: 3,
-dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
+	    maxZoom: 18,
+	    tileSize: 512,
+	    zoomOffset: -1,
+            minZoom: 3
         }).fitWorld();
+
+dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
 
         map = this.map;
 
         var WorldStreetMap = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}/?access_token={accessToken}', {
             attribution: 'Frank',
             noWrap: true,
-    maxZoom: 18,
-    tileSize: 512,
-    zoomOffset: -1,
             accessToken: 'pk.eyJ1Ijoid2hlcmVtaSIsImEiOiJjazZnajdnbmQwN29yM2xwODI5YnF2OWZtIn0.6Fr9OvAyxwthnY-ciTwJVg'
         }).addTo(map);
 
-/*        var bound = L.latLngBounds([[-90,-180], [90, 180]]);
+        var bound = L.latLngBounds([[-90,-180], [90, 180]]);
         map.setMaxBounds(bound);
         map.on('drag', function() {
             map.panInsideBounds(bound, { animate: false });
         });
-*/
+
         L.control.scale({position: 'bottomright'}).addTo(map);
 
         var mobile=window.matchMedia("(min-device-width : 320px)").matches;
