@@ -32,9 +32,9 @@ class Facade{
     findPointForVideos(latLngMia){
         var min = Infinity;
         var returnPoint;
-        var points = pointsOfInterest.points.concat(pointsOfInterest.wiki_points, pointsOfInterest.yt_points);
-        for (point in points){
-        if (min < distance(latLngMia.lat,latLngMia.lon,point.latLng.lat,point.latLng.lon)){min = distance; returnPoint = point}
+        var points = this.pointsOfInterest.points.concat(this.pointsOfInterest.wiki_points, this.pointsOfInterest.yt_points);
+        for (var point in points){
+        if (min < this.distance(latLngMia.lat,latLngMia.lon,point.latLng.lat,point.latLng.lon)){min = distance; returnPoint = point}
         }
         return returnPoint;
     }
@@ -43,16 +43,18 @@ class Facade{
         var htmlVideoPopup = `<div id="headerPopup" class="mfp-hide embed-responsive embed-responsive-21by9">
                               <iframe class="embed-responsive-item video-frame" width="854" height="480" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                               </div>`;
-        var olcCurrentPosition = this.locationString(findPointForVideos().latLng,10,10); //trova un modo per sapere a che punto sei più vicino facade-distance(lat e lng dei due punti)
+        //var olcCurrentPosition = this.locationString(this.findPointForVideos(L.userPosition).latLng,10,10); //trova un modo per sapere a che punto sei più vicino facade-distance(lat e lng dei due punti)
+                                //questa cosa qui (^) ha senso, ma magari non qui, infatti se provi a decommentre dà l'errore latLngMia undefined perché L.userPosition dipende da due azioni asincorne indipendenti:
+                                //la richiesta della geolocalizzazione dell' ip utente e la richiesta di attivazione da parte di questo del GPS, entrambe le suddette azioni spesso non sono ancora avvenute quando il programma si trova a questo punto,
+                                //inoltre, siccome l'olc è una cosa che cambia nel tempo, non ha molto il suo valore all'accensione del programma (che avviene una tantum), quando poi sappiamo già che ci servirà in altri momenti. 
         var myGroup = [
             {//wheremi
                 description:"Where am I? L'utente chiede un video di spiegazione del post in cui è",
                 indexes:["Where am I", "Where", "paul where am i", "paul where"],
                 action: function(i){
-                    var params = {
+                  var params = {
                         coords: {latitude: L.userPosition.latLng.lat, longitude: L.userPosition.latLng.lng},
-                        pageToken: "", //non so cosa mettere qua -squest-
-                        topicId: "where" //non sono sicuro di cosa vada qua -squest-
+                        //per quando leggerai: topicid è deprecato ed è un prametro di YT, pageID è, se vuoto, quello della prima pagina, altrimenti non va specificato perché già gestito dall'api
                     }
                     //riproduci un video per dire dove sei (WHERE)
                     Paul.say('Playing a video to tell you where you are');
@@ -174,17 +176,15 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
         var mobile=window.matchMedia("(min-device-width : 320px)").matches;
         mobile=mobile && window.matchMedia("(max-device-width : 480px)").matches;
         mobile=mobile && window.matchMedia("only screen").matches;
-        var positionInfo;
         var defaultLatLng={}
 
         $.ajax({
             method: 'GET',
-            url: 'http://ip-api.com/json',
+            url: 'https://api.ipgeolocation.io/ipgeo?apiKey=c72a10aebeec445eb82dac923123e269',
             "content-type": 'json',
             success: function(data){
-            positionInfo=data;
-                defaultLatLng.lat=data.lat;
-                defaultLatLng.lng=data.lon;
+                defaultLatLng.lat=data.latitude;
+                defaultLatLng.lng=data.longitude;
             },
             error: function(a,b,c){
                 console.log(a,b,c)
@@ -192,6 +192,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
         }).always(function() {
             var options= {setView:'once', sharePosition: true, showCompass: true, markerStyle:{radius: mobile? 18: 9}, compassStyle:{radius: mobile? 18: 9}, flyTo:false,locateOptions:{watch:false, enableHighAccuracy:true}};
             options.defaultLatLng=Object.assign({}, defaultLatLng);
+            L.userPosition=Object.assign({}, defaultLatLng)
             L.control.locate(options).addTo(map);
         });
     }

@@ -64,7 +64,7 @@ var Strategy = require('passport-local').Strategy;
 var RegisterStrategy = require('passport-local-register').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
-const port=8000;
+const port=LOCAL?3000:8000;
 
 const protocol=LOCAL?"http://":"https://";
 const baseDomain=(LOCAL?("localhost"):("site181951.tw.cs.unibo.it"))+(LOCAL?(":"+port):(""))+"/";
