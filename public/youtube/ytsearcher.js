@@ -56,7 +56,7 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
       return;
     var params={
       part: "snippet",
-      q: facade.locationString(map.getCenter(), spec_level, spec_level),
+      q: facade.locationString(map.getCenter(), spec_level, spec_level), //maybe _params.coords ???? -squest-
       key: parent._options.googlekey,
       type: "video",
       videoEmbeddable: true

@@ -31,28 +31,34 @@ class Facade{
 
     findPointForVideos(latLngMia){
         var min = Infinity;
-        var point;
-        //for (punti vicini){
-        //if (min < distance(latLngMia.lat,latLngMia.lon,latPunto,lonPunto)){min = distance; point = i}
-        //return point;
+        var returnPoint;
+        var points = pointsOfInterest.points.concat(pointsOfInterest.wiki_points, pointsOfInterest.yt_points);
+        for (point in points){
+        if (min < distance(latLngMia.lat,latLngMia.lon,point.latLng.lat,point.latLng.lon)){min = distance; returnPoint = point}
+        }
+        return returnPoint;
     }
 
     initPaulCommands(Paul){
         var htmlVideoPopup = `<div id="headerPopup" class="mfp-hide embed-responsive embed-responsive-21by9">
                               <iframe class="embed-responsive-item video-frame" width="854" height="480" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                               </div>`;
-        var olcCurrentPosition = this.locationString(/*findPointForVideos().latLng,?begin?,?end?*/); //trova un modo per sapere a che punto sei più vicino facade-distance(lat e lng dei due punti)
+        var olcCurrentPosition = this.locationString(findPointForVideos().latLng,10,10); //trova un modo per sapere a che punto sei più vicino facade-distance(lat e lng dei due punti)
         var myGroup = [
             {//wheremi
                 description:"Where am I? L'utente chiede un video di spiegazione del post in cui è",
                 indexes:["Where am I", "Where", "paul where am i", "paul where"],
                 action: function(i){
-                    var params = {/*chiedi a davide che parametri vuole*/}
+                    var params = {
+                        coords: {latitude: L.userPosition.latLng.lat, longitude: L.userPosition.latLng.lng},
+                        pageToken: "", //non so cosa mettere qua -squest-
+                        topicId: "where" //non sono sicuro di cosa vada qua -squest-
+                    }
                     //riproduci un video per dire dove sei (WHERE)
                     Paul.say('Playing a video to tell you where you are');
-                     /*trova dove sei (usando olc) e poi carica un video di quel tipo
+                     /*trova dove sei (usando olc) e poi carica un video di quel tipo*/
                      var url = wmivideo_search(params)
-                     $(".video-container").append(htmlVideoPopup);
+                     /*$(".video-container").append(htmlVideoPopup);
                      $(".video-frame").attr('src', url);
 
          $('#headerVideoLink').magnificPopup({
@@ -109,7 +115,8 @@ class Facade{
                 indexes:["stop", "paul stop"],
                 action: function(i){
                     //stoppa la riproduzione del video corrente
-                    Paul.say("Stopping current video");
+                    $(".video-frame").pause()
+                    Paul.say("Current video paused");
                 }
             },
             {//continue
@@ -118,6 +125,7 @@ class Facade{
                 action: function(i){
                     //continua la riproduzione del video corrente
                     Paul.say("Resuming play");
+                    $(".video-frame").play()
                 }
             },
             {//how
@@ -125,7 +133,7 @@ class Facade{
                 indexes:["how", "paul how"],
                 action: function(i){
                     //riproduci info su come accedere al posto in questione
-                    Paul.say("This is how to visit this place");
+                    Paul.say("Here is how to visit this place");
                 }
             }
         ];
