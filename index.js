@@ -15,7 +15,7 @@ var authCookie = "wH3r3M1k33p1nGMyK00k135";
 
 sgMail.setApiKey("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")
 
-const LOCAL=0;
+const LOCAL=1;
 
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
@@ -63,8 +63,10 @@ var Strategy = require('passport-local').Strategy;
 var RegisterStrategy = require('passport-local-register').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
+const port=8000;
+
 const protocol=LOCAL?"http://":"https://";
-const baseDomain=LOCAL?"localhost":"site181951.tw.cs.unibo.it"+(LOCAL?(":"+port):(""))+"/";
+const baseDomain=(LOCAL?("localhost"):("site181951.tw.cs.unibo.it"))+(LOCAL?(":"+port):(""))+"/";
 const baseURL=protocol+baseDomain;
 
 
@@ -1049,6 +1051,6 @@ app.use('/upload', function(req, res, next){
     })(req, res, next);
 });
 
-app.listen(8000,'0.0.0.0', function(){
-	console.log('server listening on 8000...\n Domain: '+baseURL);
+app.listen(port,'0.0.0.0', function(){
+	console.log('server listening on '+port+'...\n Domain: '+baseURL);
 });

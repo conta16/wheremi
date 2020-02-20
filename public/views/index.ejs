@@ -3,8 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="./main/leaflet.css" />
@@ -50,8 +49,8 @@
       <strong>We're sorry but our website doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
 
-    <div id="map-wrapper" style="position:fixed; text-align:center; border-right: 1px solid rgba(0,0,0,0.3); box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 2px 0px;">
-      <div id="map">
+    <div id="map-wrapper" style="position:fixed; text-align:center; border-right: 1px solid rgba(0,0,0,0.3); box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 2px 0px; z-index: 0;">
+      <div id="map" class="leaflet-container leaflet-touch leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom" style="z-index: 0;">
       </div>
       <!--<button class="btn btn-primary" id="invisible" type="button" onclick="change()">change</button>-->
       <img src="./img/paul.svg" onclick="facade.getGraphics().change()" id="invisible" style="width:15%; height:15%"/>
