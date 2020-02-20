@@ -12,6 +12,7 @@ const sgMail = require('@sendgrid/mail');
 var cookieparser = require ('cookie-parser');
 var CookieStrategy = require('./src/passport-cookie');
 var authCookie = "wH3r3M1k33p1nGMyK00k135";
+var refresh = require('passport-oauth2-refresh');
 
 sgMail.setApiKey("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")
 
@@ -189,10 +190,10 @@ function confirmMail(user){
 //   Strategies in Passport require a `verify` function, which accept
 //   credentials (in this case, an accessToken, refreshToken, and Google
 //   profile), and invoke a callback with a user object.
-passport.use(new GoogleStrategy({
+GStrategy = new GoogleStrategy({
     clientID: "1082311706769-imjjc300bk99fval3kanm2u86ioaagud.apps.googleusercontent.com",
     clientSecret: "eiRQREZjOXviY_mIibKVxRa_",
-    callbackURL: LOCAL?"":baseURL+"auth/google/callback"
+    callbackURL: baseURL+"auth/google/callback"
   },function(accessToken, refreshToken, profile, done) {
     UserDetails.findOne({ email: profile.emails[0].value }, function (err, user) {
       if (err)
@@ -236,7 +237,11 @@ passport.use(new GoogleStrategy({
 			GoogleTokens.update({'email': profile.emails[0].value}, {accessToken: accessToken, refreshToken: refreshToken, email: profile.emails[0].value}, {upsert: true}, function(err, token){console.log(err, token)});
 			done(null, user);
     });
-  }));
+  });
+
+passport.use(GStrategy);
+refresh.use(GStrategy);
+
       // return done(null, {"username" : "davide", "password" : "c6e7eb6b2eb57b0fd7695c758a2be6ae7b33e4d9d1fe0ceaa2e822b47ad10cbc0d1f5f1a6b0bc391434e9357f8b10309d58a642e4d0f57ed71df604ad2e723d7", "name" : "davide", "surname" : "davoli", "email" : "davide@pollomoltofritto.tk", "salt" : "4466a6ea27d4707bf8831c995cbc6b76", "__v" : 0 });
 
 passport.use(new RegisterStrategy({
@@ -298,10 +303,19 @@ passport.use(new RegisterStrategy({
 
 passport.use(new CookieStrategy({cookieName: authCookie},
   function(token, done) {
-		console.log(token);
     UserDetails.findOne({ token: token }, function(err, user) {
-			console.log(user);
-			console.log(err);
+			if (user && user.googleuser){
+				GoogleTokens.findOne({email: user.email}, function(err, tokens){
+					if (err || !tokens) return done(err);
+					refresh.requestNewAccessToken('google', tokens.refreshToken, function(err, accessToken, refreshToken) {
+						if (err) return done(err);
+						if (refreshToken)
+							GoogleTokens.findOneAndUpdate({email: user.email}, {accessToken:accessToken, refreshToken: refreshToken}, function (err, data){if (err) console.log(err)})
+						else
+							GoogleTokens.findOneAndUpdate({email: user.email}, {accessToken:accessToken}, function (err, data){if (err) console.log(err)})
+				});
+				});
+			}
       if (err) { return done(err); }
       if (!user) { return done(null, true); }
       return done(null, user);
@@ -403,6 +417,15 @@ app.get('/logout',
     res.redirect('/');
   });
 
+app.get('/refresh',
+	passport.authenticate("cookie", { session: false }),
+	function(req, res){
+	if (req.user===true || req.user===undefined || req.user==null){
+		res.status(401)
+		res.end()
+	}
+})
+
   app.get('/verify',
     function(req, res){
       console.log(req.query);
@@ -449,7 +472,8 @@ app.get('/logout',
 		'https://www.googleapis.com/auth/userinfo.email',
 		'https://www.googleapis.com/auth/youtube',
 		'https://www.googleapis.com/auth/youtube.upload'
-    ]}));
+	],
+	accessType: 'offline'}));
 
 app.get('/auth/google/callback',
   passport.authenticate('google', {failureRedirect:"/login"}), function(req, res){

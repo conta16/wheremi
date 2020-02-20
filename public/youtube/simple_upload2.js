@@ -198,20 +198,3 @@ UploadVideo.prototype.pollForVideoStatus = function() {
     }.bind(this)
   });
 };
-
-// USAGE:
-
-// client_init()
-// var a=new UploadVideo()
-// a.ready(getAccess_Token());
-// a.uploadBlob(/*blob goes here*/)
-/*function f(){
-	var file = $('me')[0].files[0];//ove nel body c'è <input type="file" id="me"></input>
-	var fileReader = new FileReader();
-	fileReader.onloadend = function (e) {
-		array=new Uint8Array(e.target.result);
-		let blob = new Blob([array], {type: file.type });
-		console.log(blob);
-	};
-	fileReader.readAsArrayBuffer(file);
-}*/
