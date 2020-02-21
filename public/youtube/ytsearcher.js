@@ -44,6 +44,7 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
           yt_geovideo_search(Object.assign(_params, {pageToken: res.nextPageToken, results:_params.results-res.items.length}))
         else
         parent.get_yt_videos(parent.items);
+      return res;
       },
       error: function(a,b,c){
         console.log(a,b,c);

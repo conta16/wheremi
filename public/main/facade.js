@@ -2,6 +2,7 @@ class Facade{
     constructor(){
         this.inizialize_leaf();
 
+        this.htmlInspectBefore = "";
         this.graphics = new Graphics(this);
         this.itinerary = new Itinerary(this.graphics, this);
         this.pointsOfInterest = new PointOfInterest(this.itinerary, 5, this.graphics);
@@ -21,12 +22,25 @@ class Facade{
         });
         this.initPaulCommands(this.Paul);
         this.currentLvlSpec = 0;
+        this.lvlSpec = ['gen','pre','elm','mid','scl','all'];
         this.url = "https://site181951.tw.cs.unibo.it";
     }
 
     initLanguagePaul(){
         var userLang = navigator.language || navigator.userLanguage;
         return userLang;
+    }
+
+    getOlcForUser (){
+        return this.locationString(this.findPointForVideos(L.userPosition).latLng,10,10);
+    }
+
+    saveHtmlInspectBefore(str){ //salvo lo stato di inspect prima di infilarci il video così quando finisce posso ripristinarlo
+        this.htmlInspectBefore = str;
+    }
+
+    loadHtmlInspectBefore(){ //risistemo inspect per usarlo la volta dopo da nuovo
+        $("#inspect").html(this.htmlInspectBefore);
     }
 
     findPointForVideos(latLngMia){
@@ -52,6 +66,8 @@ class Facade{
                 description:"Where am I? L'utente chiede un video di spiegazione del post in cui è",
                 indexes:["Where am I", "Where", "paul where am i", "paul where"],
                 action: function(i){
+                    this.loadHtmlInspectBefore();
+                    //var olcCurrentPosition = getOlcForUser();
                   var params = {
                         coords: {latitude: L.userPosition.latLng.lat, longitude: L.userPosition.latLng.lng},
                         //per quando leggerai: topicid è deprecato ed è un prametro di YT, pageID è, se vuoto, quello della prima pagina, altrimenti non va specificato perché già gestito dall'api
@@ -59,31 +75,38 @@ class Facade{
                     //riproduci un video per dire dove sei (WHERE)
                     Paul.say('Playing a video to tell you where you are');
                      /*trova dove sei (usando olc) e poi carica un video di quel tipo*/
-                     var url = wmivideo_search(params)
-                     /*$(".video-container").append(htmlVideoPopup);
+                     
+                     this.saveHtmlInspectBefore($("#inspect").html());
+                     while (resultJson.purpose.toLowerCase() != 'where'){
+                         var res = wmivideo_search(params);
+                         var resultJson = utils.mahmood(res);
+                    }
+                     
+                     $("#inspect").append(htmlVideoPopup);
+                     //$(".video-container").append(htmlVideoPopup);
                      $(".video-frame").attr('src', url);
-
-         $('#headerVideoLink').magnificPopup({
-          type:'inline',
-          midClick: true
-        });*/ //a sto punto il video dovrebbe essere un popup.
-
-
+                     $('#headerVideoLink').magnificPopup({
+                        type:'inline',
+                        midClick: true
+                     }); //a sto punto il video dovrebbe essere un popup.
                 }
             },
             {//more
                 description:"aumenta il livello di specificità ad ogni more. quando cambi posto ritorna all' inizio",
                 indexes:["more", "paul more"],
                 action: function(i){
+                    this.loadHtmlInspectBefore();
                     //riproduci un video per dire dettagli sul posto dove sei
                     this.currentLvlSpec += 1;
                     Paul.say("Playing a video to tell you more details about the thing you're looking at. Level " + currentLvlSpec);
+
                 }
             },
             {//next
                 description:"Vai al prossimo luogo",
                 indexes:["next", "paul next"],
                 action: function(i){
+                    this.loadHtmlInspectBefore();
                     // vai al prossimo punto nell' itinerario
                     this.currentLvlSpec = 0;
                     Paul.say("I'll guide you to your next location");
@@ -94,6 +117,7 @@ class Facade{
                 description:"Vai al luogo precedente",
                 indexes:["previous", "paul previous"],
                 action: function(i){
+                    this.loadHtmlInspectBefore();
                     // vai al punto precedente nell' itinerario
                     this.currentLvlSpec = 0;
                     Paul.say("I'll guide you to your previous location");
@@ -104,12 +128,32 @@ class Facade{
                 description:"spiega come mai questo posto è interessante",
                 indexes:["why", "paul why", "tell me why", "paul tell me why"],
                 action: function(i){
+                    this.loadHtmlInspectBefore();
                     //riproduci una clip WHY
                     if (i >= 2){
                         Paul.say("Ain't nothing but a heartache");
                     }else{
                         Paul.say("Playing a why clip. level "+currentLvlSpec);
                     }
+                    var params = {
+                        coords: {latitude: L.userPosition.latLng.lat, longitude: L.userPosition.latLng.lng},
+                        //per quando leggerai: topicid è deprecato ed è un prametro di YT, pageID è, se vuoto, quello della prima pagina, altrimenti non va specificato perché già gestito dall'api
+                    }
+                     /*trova dove sei (usando olc) e poi carica un video di quel tipo*/
+                     
+                     this.saveHtmlInspectBefore($("#inspect").html());
+                     while (resultJson.purpose.toLowerCase() != 'why'){
+                         var res = wmivideo_search(params);
+                         var resultJson = utils.mahmood(res);
+                    }
+                     
+                     $("#inspect").append(htmlVideoPopup);
+                     //$(".video-container").append(htmlVideoPopup);
+                     $(".video-frame").attr('src', url);
+                     $('#headerVideoLink').magnificPopup({
+                        type:'inline',
+                        midClick: true
+                     }); //a sto punto il video dovrebbe essere un popup.
                 }
             },
             {//stop
@@ -134,6 +178,7 @@ class Facade{
                 description:"indica come accedere e orari del punto corrente",
                 indexes:["how", "paul how"],
                 action: function(i){
+                    this.loadHtmlInspectBefore();
                     //riproduci info su come accedere al posto in questione
                     Paul.say("Here is how to visit this place");
                 }
