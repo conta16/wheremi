@@ -1076,5 +1076,5 @@ app.use('/upload', function(req, res, next){
 });
 
 app.listen(port,'0.0.0.0', function(){
-	console.log('server listening on '+port+'...\n Domain: '+baseURL);
+	console.log('server listening on '+port+'...\nDomain: '+baseURL);
 });

@@ -198,3 +198,88 @@ UploadVideo.prototype.pollForVideoStatus = function() {
     }.bind(this)
   });
 };
+
+UploadVideo.prototype.setVideoPrivacy=function(id, value, done){
+  this.gapi.client.request({
+    path:"youtube/v3/videos",
+    method:"PUT",
+    headers: {'Authorization': 'Bearer '+this.accessToken},
+    params:{part: 'status', key:this.accessToken},
+    body:{
+      id: id,
+      status: {
+        privacyStatus: value
+      }
+    }
+  }).then( function(response) {
+    if (response.error) {
+      return console.log(response.error);
+    }
+    return done(response.result)
+
+  }.bind(this),function(response){
+    if (response.status=="404"){
+      //il video non è più online, rimuovere la clip dal nostro db
+      return;
+    }
+  })
+}
+
+UploadVideo.prototype.getVideos=function(done){
+  this.gapi.client.request({
+    path:"youtube/v3/search",
+    method:"GET",
+    headers: {'Authorization': 'Bearer '+this.accessToken},
+    params:{part: 'snippet', key:this.accessToken, forMine: true, type:"video", maxResults:"50"},
+  }).then( function(response) {
+    if (response.error) {
+      return console.log(response.error);
+    }
+    return done(response.result)
+
+  }.bind(this),function(response){
+    if (response.status!="200"){
+
+      return;
+    }
+  })
+}
+
+UploadVideo.prototype.retreiveVideos=function(id, done){  //come YTSearcher.get_yt_videos, ma più potente perché vede anche i video dell'utente
+  this.gapi.client.request({
+    path:"youtube/v3/videos",
+    method:"GET",
+    headers: {'Authorization': 'Bearer '+this.accessToken},
+    params:{part: 'snippet, status', key:this.accessToken, type:"video", maxResults:"50", id:id},
+  }).then( function(response) {
+    if (response.error) {
+      return console.log(response.error);
+    }
+    return done(response.result)
+
+  }.bind(this),function(response){
+    if (response.status!="200"){
+
+      return;
+    }
+  })
+}
+
+UploadVideo.prototype.deleteVideo=function(id, done){
+  this.gapi.client.request({
+    path:"youtube/v3/videos",
+    method:"DELETE",
+    headers: {'Authorization': 'Bearer '+this.accessToken},
+    params: {id:id},
+  }).then( function(response) {
+    if (response.error) {
+      return console.log(response.error);
+    }
+    return done(response.result)
+
+  }.bind(this),function(response){
+    if (response.status!="204"){
+      return;
+    }
+  })
+}

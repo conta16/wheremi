@@ -108,6 +108,8 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
       id: list
     };
 
+    console.log(params);
+
     get_url=parse_params(parent._options.yt_url+"videos", params);
 
     $.ajax({
