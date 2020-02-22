@@ -2,7 +2,7 @@
 function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){
 			var parent = this;
 
-			this.WONDERING_LIMIT = 0.030;
+			this._LIMIT = 0.030;
 			this.RECALCULATE_LIMIT = 0.060;
 			this.NEAR_LIMIT = 0.020;
 
