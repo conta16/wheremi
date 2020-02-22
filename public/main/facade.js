@@ -20,6 +20,7 @@ class Facade{
             // e.g to trigger Good Morning, you need to say "Jarvis Good Morning"
             name: "Paul"
         });
+        this.selectedWaypoint=undefined;
         this.initPaulCommands(this.Paul);
         this.currentLvlSpec = 0;
         this.lvlSpec = ['gen','pre','elm','mid','scl','all'];
@@ -228,8 +229,9 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
             url: 'https://api.ipgeolocation.io/ipgeo?apiKey=c72a10aebeec445eb82dac923123e269',
             "content-type": 'json',
             success: function(data){
-                defaultLatLng.lat=data.latitude;
-                defaultLatLng.lng=data.longitude;
+                defaultLatLng.lat=parseFloat(data.latitude);
+                defaultLatLng.lng=parseFloat(data.longitude);
+                defaultLatLng.latLng=defaultLatLng;
             },
             error: function(a,b,c){
                 console.log(a,b,c)
@@ -237,7 +239,8 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
         }).always(function() {
             var options= {setView:'once', sharePosition: true, showCompass: true, markerStyle:{radius: mobile? 18: 9}, compassStyle:{radius: mobile? 18: 9}, flyTo:false,locateOptions:{watch:false, enableHighAccuracy:true}};
             options.defaultLatLng=Object.assign({}, defaultLatLng);
-            L.userPosition=Object.assign({}, defaultLatLng)
+            L.userPosition={}
+            L.userPosition.latLng=Object.assign({}, defaultLatLng);
             L.control.locate(options).addTo(map);
         });
     }

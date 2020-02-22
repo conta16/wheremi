@@ -17,7 +17,7 @@ class Graphics{
             position:'bottomleft'
         }).addTo(map);
 
-        /*this.nav_controller = L.control.custom({
+        this.nav_controller = L.control.custom({
             position: 'topleft',
           content : '<div class=""><a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 30px; height: 30px; width: 30px" height="30px"><img src="./img/nav.svg" width="30px" height="30px"></img></a></div>',
             classes : 'leaflet-control leaflet-bar',
@@ -28,7 +28,7 @@ class Graphics{
                     nav.navigate();
                 },
             }
-        }).addTo(map);*/
+        }).addTo(map);
 
         this.create = L.control.custom({
             position: 'topleft',
@@ -83,6 +83,9 @@ class Graphics{
 
     loadMenu(waypoints, index, write_permit = true, nextnprevious = false){
         var parentThis = this;
+
+        Facade.selectedWaypoint=Object.assign({}, waypoints[index]);
+
         if (this.facade.getItinerary().user_id == this.facade.getAccount()._id && this.facade.getItinerary().getMode() == 0){
             write_permit = true;
         }

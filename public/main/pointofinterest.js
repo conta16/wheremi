@@ -61,7 +61,7 @@ class PointOfInterest{
                     parentThis.points[i].write_permit = false;
                 }
                 if (!parentThis.currentItinerary.getMode()) parentThis.itineraryStartPoints.forEach((obj, index) => {
-                    parentThis.itineraryStartMarkers[index].on('click', () => {
+                    parentThis.itineraryStartMarkers[index].on('click', (e) => {
                         parentThis.removeSearchMarker();
                         parentThis.currentItinerary.getRouteFromDB(parentThis.itineraryStartPoints[index]._id)
                             .then((data) => {
@@ -85,7 +85,8 @@ class PointOfInterest{
 
                 });
                 parentThis.points.forEach((obj,index) => {
-                    if (parentThis.markers[index]) parentThis.markers[index].on('click', () => {
+                    if (parentThis.markers[index]) parentThis.markers[index].on('click', (e) => {
+
                         parentThis.graphics.loadMenu(parentThis.points, index, false);
                     });
                     $.ajax({
@@ -172,6 +173,7 @@ class PointOfInterest{
             parentThis.markers[len].closePopup();
         });*/
         this.markers[len].on('click', (e) => {
+
             var do_nothing;
 
             do_nothing = parentThis.check_in_waypoints(len);
@@ -217,6 +219,8 @@ class PointOfInterest{
         this.itineraryStartMarkers[len].off('click');
 
         this.itineraryStartMarkers[len].on('click', (e) => {
+
+
             var do_nothing;
             do_nothing = parentThis.check_in_waypoints(len,1);
             //$("#inspect").text(parentThis.itineraryStartPoints[0].label);
@@ -279,11 +283,14 @@ class PointOfInterest{
         var title=parentThis.wikipediaPoints[len].title.toString();
         var extract=parentThis.wikipediaPoints[len].extract.toString();
         this.wikipediaMarkers[len].on('click', (e) => {
+
+
             $("#inspect").html("<div class='container'><h2>"+title+"</h2><p>"+extract+"</p></div>");
             gotoTab(INSPECT_TAB);
             if (parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.wikipediaPoints[len]);
             }
+        Facade.selectedWaypoint=Object.assign({}, parentThis.wikipediaPoints[len]);
         });
         this.wikipediaMarkers[len].addTo(map);
     }
@@ -324,12 +331,14 @@ class PointOfInterest{
             }
         );
         var title=this.yt_points[len].snippet.title.toString();
-        this.yt_markers[len].on('click', () => {
+        this.yt_markers[len].on('click', (e) => {
+
             $("#inspect").text(title);
             gotoTab(INSPECT_TAB);
             if (parentThis.currentItinerary.getMode()){
-                parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.wikipediaPoints[len]);
+                parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.yt_points[len]);
             }
+            Facade.selectedWaypoint=Object.assign({}, parentThis.yt_points[len]);
         });
         this.yt_markers[len].addTo(map);
     }
@@ -426,5 +435,5 @@ class PointOfInterest{
             }
         return false;
     }
-    
+
 }
