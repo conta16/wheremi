@@ -52,12 +52,13 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
     });
   }
 
-  _wmivideo_search = function(_params, spec_level){
+  _wmivideo_search = function(_params, latLng, spec_level){
+    console.log(spec_level);
     if (spec_level<6)
       return;
     var params={
       part: "snippet",
-      q: facade.locationString(map.getCenter(), spec_level, spec_level), //maybe _params.coords ???? -squest-
+      q: facade.locationString(latLng, spec_level, spec_level), //maybe _params.coords ???? -squest-
       key: parent._options.googlekey,
       type: "video",
       videoEmbeddable: true
@@ -79,9 +80,9 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
         console.log(res);
         parent.items=parent.items.concat(res.items);
         if (res.nextPageToken && _params.results-res.items.length>0)
-          _wmivideo_search(Object.assign(_params, {pageToken: res.nextPageToken, results:_params.results-res.items.length}), spec_level)
+          _wmivideo_search(Object.assign(_params, {pageToken: res.nextPageToken, results:_params.results-res.items.length}), latLng, spec_level)
         else if (res.items.length==0 && _params.results-res.items.length>0)
-          _wmivideo_search(_params, spec_level-2);
+          _wmivideo_search(_params, latLng, spec_level-2);
         else
           parent.get_yt_videos(parent.items);
       }.bind(this),
@@ -91,8 +92,8 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
     });
   }
 
-  this.wmivideo_search=function(_params){
-      _wmivideo_search(_params, 10);
+  this.wmivideo_search=function(_params, latLng){
+      _wmivideo_search(_params, latLng, 10);
   }
 
   this.get_yt_videos = function (search_resource_array){
@@ -107,8 +108,6 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
       key: parent._options.googlekey,
       id: list
     };
-
-    console.log(params);
 
     get_url=parse_params(parent._options.yt_url+"videos", params);
 

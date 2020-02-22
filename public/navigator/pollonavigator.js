@@ -1,4 +1,3 @@
-
 function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){
 			var parent = this;
 

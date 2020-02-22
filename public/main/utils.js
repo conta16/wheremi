@@ -32,10 +32,6 @@ function gotoTab(tab){
   }
 }
 
-function selectedWaypoint(){
-  return facade.itinerary.graphics.tmp_waypoint[facade.graphics.tmp_index];
-}
-
 function mahmood(res){
   var position;
   yt_videos=[]
@@ -93,3 +89,36 @@ function mahmood(res){
   }
   return yt_videos;
 }
+
+function result_filter(yt_videos, props){
+  function filter(item){
+    for (var i in props){
+      if (item[i] && item[i]==props[i]);
+      else return false;
+    }
+    return true
+  }
+  yt_videos=yt_videos.filter(filter);
+  return yt_videos;
+}
+
+function wmi_search(results, position, filter, callback){
+  var raw_videos;
+  var filtered_videos;
+  var yt=new YTSearcher({googlekey: "AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0",yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){
+    raw_videos=mahmood(res);
+    filtered_videos=result_filter(raw_videos, filter);
+    console.log(raw_videos);
+    callback(filtered_videos);
+  }, errorCallback: function(a, b, c){
+    console.log(a, b, c);
+  }});
+  yt.wmivideo_search({results: results}, position);
+}
+
+/*
+Esempio: per cercare 10 video che circondano l'utente con purpose why e loggarli basterà chiamare
+
+wmi_search(10, L.userPosition.latLng, {purpose: "why"}, function(videos){console.log(videos)})
+
+*/

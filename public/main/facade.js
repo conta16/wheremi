@@ -475,9 +475,13 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
         nav.navigate();
     }
 
+    getselectedWaypoint(){
+      return this.selectedWaypoint
+    }
+
     uploadVideo(){
       var title=$("#title").val();
-      var description=this.generateDescription(selectedWaypoint());
+      var description=this.generateDescription(this.getselectedWaypoint());
       var category=22;
       var metadata = {
         snippet: {
