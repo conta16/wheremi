@@ -60,7 +60,7 @@ class Facade{
         //var olcCurrentPosition = this.locationString(this.findPointForVideos(L.userPosition).latLng,10,10); //trova un modo per sapere a che punto sei più vicino facade-distance(lat e lng dei due punti)
                                 //questa cosa qui (^) ha senso, ma magari non qui, infatti se provi a decommentre dà l'errore latLngMia undefined perché L.userPosition dipende da due azioni asincorne indipendenti:
                                 //la richiesta della geolocalizzazione dell' ip utente e la richiesta di attivazione da parte di questo del GPS, entrambe le suddette azioni spesso non sono ancora avvenute quando il programma si trova a questo punto,
-                                //inoltre, siccome l'olc è una cosa che cambia nel tempo, non ha molto il suo valore all'accensione del programma (che avviene una tantum), quando poi sappiamo già che ci servirà in altri momenti. 
+                                //inoltre, siccome l'olc è una cosa che cambia nel tempo, non ha molto il suo valore all'accensione del programma (che avviene una tantum), quando poi sappiamo già che ci servirà in altri momenti.
         var myGroup = [
             {//wheremi
                 description:"Where am I? L'utente chiede un video di spiegazione del post in cui è",
@@ -75,13 +75,13 @@ class Facade{
                     //riproduci un video per dire dove sei (WHERE)
                     Paul.say('Playing a video to tell you where you are');
                      /*trova dove sei (usando olc) e poi carica un video di quel tipo*/
-                     
+
                      this.saveHtmlInspectBefore($("#inspect").html());
                      while (resultJson.purpose.toLowerCase() != 'where'){
                          var res = wmivideo_search(params);
                          var resultJson = utils.mahmood(res);
                     }
-                     
+
                      $("#inspect").append(htmlVideoPopup);
                      //$(".video-container").append(htmlVideoPopup);
                      $(".video-frame").attr('src', url);
@@ -140,13 +140,13 @@ class Facade{
                         //per quando leggerai: topicid è deprecato ed è un prametro di YT, pageID è, se vuoto, quello della prima pagina, altrimenti non va specificato perché già gestito dall'api
                     }
                      /*trova dove sei (usando olc) e poi carica un video di quel tipo*/
-                     
+
                      this.saveHtmlInspectBefore($("#inspect").html());
                      while (resultJson.purpose.toLowerCase() != 'why'){
                          var res = wmivideo_search(params);
                          var resultJson = utils.mahmood(res);
                     }
-                     
+
                      $("#inspect").append(htmlVideoPopup);
                      //$(".video-container").append(htmlVideoPopup);
                      $(".video-frame").attr('src', url);
@@ -486,6 +486,6 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
           privacyStatus: 'unlisted'//va poi settato a public su richiesta
         }
       };
-      YTUploader.uploadBlob(SimpleRecorder.videoBlob, title, metadata);
+      YTUploader.uploadBlob(SimpleRecorder.videoBlob, metadata);
     }
 }

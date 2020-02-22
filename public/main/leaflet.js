@@ -22,6 +22,15 @@ $(document).ready(function() {
     	provider: provider,
 	});
 
+	function show_progress(percentage){
+		$("#uploadOnYT")[0].innerHTML="uploading: "+percentage;
+		$("#uploadOnYT").prop('disabled', true);
+	}
+
+	function done(){
+		$("#uploadOnYT")[0].innerHTML='done'
+	}
+
   map.addControl(searchControl);
   facade.getGraphics().loadControllers();
 	gapi.load('client:youtube', {
@@ -33,7 +42,7 @@ $(document).ready(function() {
 			success:function(data){
 				console.log("accessToken "+data.accessToken);
 				if (data.accessToken)
-					YTUploader.ready(data.accessToken);
+					YTUploader.ready(data.accessToken, show_progress, done);
 			}
 		});
 }
