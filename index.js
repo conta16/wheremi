@@ -828,6 +828,10 @@ passport.authenticate("cookie", { session: false }),
   });
 });
 
+app.get('/voicetesting', function(req,res){
+  res.render('voice')
+});
+
 app.get('/route', function(req, res){
   var tmp = ObjectId(req.query.id);
 	MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err, db) {

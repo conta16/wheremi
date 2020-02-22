@@ -1,5 +1,5 @@
 
-function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have called this function simply navigator, but it already exists, so i spend 2 hrs of my life ttryin'to find out why calling it i broke up everything.
+function polloNavigator(usr_onpoint, usr_onstop, usr_){ // I'd have called this function simply navigator, but it already exists, so i spend 2 hrs of my life ttryin'to find out why calling it i broke up everything.
 			var parent = this;
 			if (!'routes' in L)
 				return;
@@ -8,7 +8,7 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 			if (!'latLng' in L.userPosition)
 				return;
 
-			this.WONDERING_LIMIT = 0.030;
+			this._LIMIT = 0.030;
 			this.RECALCULATE_LIMIT = 0.060;
 			this.NEAR_LIMIT = 0.020;
 

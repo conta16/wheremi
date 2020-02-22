@@ -84,7 +84,7 @@ class Facade{
                      
                      $("#inspect").append(htmlVideoPopup);
                      //$(".video-container").append(htmlVideoPopup);
-                     $(".video-frame").attr('src', url);
+                     $(".video-frame").attr('src', res);
                      $('#headerVideoLink').magnificPopup({
                         type:'inline',
                         midClick: true
@@ -149,7 +149,7 @@ class Facade{
                      
                      $("#inspect").append(htmlVideoPopup);
                      //$(".video-container").append(htmlVideoPopup);
-                     $(".video-frame").attr('src', url);
+                     $(".video-frame").attr('src', res);
                      $('#headerVideoLink').magnificPopup({
                         type:'inline',
                         midClick: true
@@ -173,7 +173,7 @@ class Facade{
                     Paul.say("Resuming play");
                     $(".video-frame").play()
                 }
-            },
+            }/*,
             {//how
                 description:"indica come accedere e orari del punto corrente",
                 indexes:["how", "paul how"],
@@ -182,7 +182,7 @@ class Facade{
                     //riproduci info su come accedere al posto in questione
                     Paul.say("Here is how to visit this place");
                 }
-            }
+            }*/
         ];
         Paul.addCommands(myGroup);
     }
