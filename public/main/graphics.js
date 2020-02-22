@@ -121,17 +121,27 @@ class Graphics{
         }
         if (nextnprevious) $('.footer').css('display', 'inline');
         else $('.footer').css('display', 'none');
+          var i = 0;
           var slideItem;
-          for (var i in waypoints[index].img){
+          var numslides = 0;
+          for (i in waypoints[index].img){
           if (i==0) slideItem = "<div class='carousel-item active'><img class='d-inline-block w-100' style='height:300px;' src='"+waypoints[index].img[0]+"' alt=''></div>";
           else slideItem = "<div class='carousel-item'><img class='d-inline-block w-100' style='height:300px;' src='"+waypoints[index].img[i]+"' alt=''></div>";
           $('.carousel-inner').append(slideItem);
         }
+        for (var num in waypoints[index].clips){
+            if (i == 0 && num == 0)
+                slideItem = "<div class='carousel-item active' data-id='"+numslides+"'><div class='carousel-video-inner'><iframe type='text/html' class='d-inline-block w-100' style='height:300px;' src='https://www.youtube.com/embed/"+waypoints[index].clips[0]+"' alt='' frameborder='0'></iframe></div></div>";
+                else slideItem = "<div class='carousel-item' data-id='"+numslides+"'><div class='carousel-video-inner'><iframe type='text/html' class='d-inline-block w-100' style='height:300px;' src='https://www.youtube.com/embed/"+waypoints[index].clips[num]+"' alt='' frameborder='0'></div></div>";
+            numslides++;
+            $('.carousel-inner').append(slideItem);
+        }
+
         var e;
           $('#title').val(waypoints[index].title);
         $('#description').val(waypoints[index].description);
 
-        $("select#purp option").filter(function() {
+        /*$("select#purp option").filter(function() {
             return $(this).text() == waypoints[index].purpose;
         }).prop('selected', true);
 
@@ -152,7 +162,7 @@ class Graphics{
         $("select#det option").filter(function() {
             return $(this).val() == waypoints[index].detail;
         }).prop('selected', true);
-
+*/
         $('.nopermit').html("<p class='h2'>"+waypoints[index].title+"</p><p class='h6'>"+waypoints[index].description+"</p>");
         $('#left').on('click',() => {
             if (index > 0) parentThis.loadMenu(waypoints, index-1, write_permit, nextnprevious);
@@ -169,7 +179,7 @@ class Graphics{
           $('#description').on('input', function(){
           waypoints[index].description = $('#description').val();
         });
-        $('#purp').on('change', () => {
+/*        $('#purp').on('change', () => {
             e = document.getElementById("purp");
             waypoints[index].purpose = e.options[e.selectedIndex].val();
         });
@@ -189,7 +199,7 @@ class Graphics{
         $('#det').on('input', () => {
             e = document.getElementById("det");
             waypoints[index].detail = e.options[e.selectedIndex].val();
-        });
+        });*/
         for (var i in waypoints[index].comments){
             $('#comment-list').append("<p>"+waypoints[index].comments[i].madeBy.name+": "+waypoints[index].comments[i].text+"</p><br>");
         }
