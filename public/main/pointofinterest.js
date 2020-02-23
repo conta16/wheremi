@@ -280,6 +280,7 @@ class PointOfInterest{
         var extract=parentThis.wikipediaPoints[len].extract.toString();
         this.wikipediaMarkers[len].on('click', (e) => {
             $("#inspect").html("<div class='container'><h2>"+title+"</h2><p>"+extract+"</p></div>");
+            parentThis.graphics.addBeginButton(title, extract);
             gotoTab(INSPECT_TAB);
             if (parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.wikipediaPoints[len]);

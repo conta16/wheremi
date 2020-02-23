@@ -1,7 +1,7 @@
 class Facade{
     constructor(){
         this.inizialize_leaf();
-
+        this.visitedWikiIds = [];
         this.htmlInspectBefore = "";
         this.graphics = new Graphics(this);
         this.itinerary = new Itinerary(this.graphics, this);
@@ -415,7 +415,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
 
         for (var i in it_points){
             var pos = it_points[i].inputWaypoints[0].latLng;
-            if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 50 && !it_points[i].inputWaypoints[0].played){
+            if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 20 && !it_points[i].inputWaypoints[0].played){
                 this.Paul.say(it_points[i].inputWaypoints[0].title);
                 this.Paul.say(it_points[i].inputWaypoints[0].description);
                 this.graphics.loadMenu(it_points[i].inputWaypoints,0,false,false);
@@ -426,7 +426,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
 
         for (var i in points){
             var pos = points[i].latLng;
-            if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 50 && !points[i].played){
+            if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 20 && !points[i].played){
                 this.Paul.say(points[i].title);
                 this.Paul.say(points[i].description);
                 this.graphics.loadMenu(points,i,false,false);
@@ -437,13 +437,16 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
 
         for (var i in wiki_points){
             var pos = wiki_points[i].latLng;
-            if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 50 && !wiki_points[i].played){
+            if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 20 && !this.visitedWikiIds.includes(wiki_points[i].pageid)){
+                this.Paul.shutUp();
                 this.Paul.say(wiki_points[i].title);
                 this.Paul.say(wiki_points[i].extract);
-                $("#inspect").append("<div class='container'><h2>"+wiki_points[i].title+"</h2><p>"+wiki_points[i].extract+"</p></div>");
                 gotoTab(INSPECT_TAB);
-                this.graphics.addStopButton();
-                wiki_points[i].played = true;
+                console.log($("#inspect"));
+                $("#inspect").html("<div class='container'><h2>"+wiki_points[i].title+"</h2><p>"+wiki_points[i].extract+"</p></div>");
+                this.graphics.addStopButton(wiki_points[i].title, wiki_points[i].extract);
+                this.visitedWikiIds.push(wiki_points[i].pageid);
+                break;
             }
         }
     }

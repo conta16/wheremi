@@ -270,7 +270,24 @@ class Graphics{
         }
       }
 
-      addStopButton(){
-          $('#inspect').html('<button type="button" class="btn btn-primary" id="stop" onclick="facade.Paul.shutUp()">Stop audio</button>');
+      addStopButton(title, description){
+          var parentThis = this;
+          $('#inspect').append('<button type="button" class="btn btn-primary" id="stop" onclick="">Stop audio</button>');
+          $('#stop').on('click', () => {
+            parentThis.facade.Paul.shutUp();
+            $('#stop').css('display', 'none');
+            parentThis.addBeginButton(title, description);
+          });
+      }
+
+      addBeginButton(title, description){
+          var parentThis = this;
+        $('#inspect').append('<button type="button" class="btn btn-primary" id="begin" onclick="">Start audio</button>');
+        $('#begin').on('click', () => {
+            parentThis.facade.Paul.say(title);
+            parentThis.facade.Paul.say(description);
+            $('#begin').css('display', 'none');
+            parentThis.addStopButton(title, description);
+        });
       }
 }
