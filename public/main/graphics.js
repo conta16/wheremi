@@ -17,7 +17,7 @@ class Graphics{
             position:'bottomleft'
         }).addTo(map);
 
-        this.nav_controller = L.control.custom({
+        /*this.nav_controller = L.control.custom({
             position: 'topleft',
           content : '<div class=""><a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 30px; height: 30px; width: 30px" height="30px"><img src="./img/nav.svg" width="30px" height="30px"></img></a></div>',
             classes : 'leaflet-control leaflet-bar',
@@ -28,7 +28,7 @@ class Graphics{
                     nav.navigate();
                 },
             }
-        }).addTo(map);
+        }).addTo(map);*/
 
         this.create = L.control.custom({
             position: 'topleft',
@@ -86,7 +86,7 @@ class Graphics{
 
         Facade.selectedWaypoint=Object.assign({}, waypoints[index]);
 
-        if (this.facade.getItinerary().user_id == this.facade.getAccount()._id && this.facade.getItinerary().getMode() == 0){
+        if (this.facade.getItinerary().user_id === this.facade.getAccount()._id && this.facade.getItinerary().getMode() == 0){
             write_permit = true;
         }
         this.styleInspect(itineraryHTML);
@@ -141,7 +141,7 @@ class Graphics{
         }
 
         var e;
-          $('#title').val(waypoints[index].title);
+        $('#title').val(waypoints[index].title);
         $('#description').val(waypoints[index].description);
 
         /*$("select#purp option").filter(function() {
@@ -203,6 +203,8 @@ class Graphics{
             e = document.getElementById("det");
             waypoints[index].detail = e.options[e.selectedIndex].val();
         });*/
+        if (L.userPosition) wmi_search(10, L.userPosition.latLng, {}, function(videos){console.log(videos)});
+
         for (var i in waypoints[index].comments){
             $('#comment-list').append("<p>"+waypoints[index].comments[i].madeBy.name+": "+waypoints[index].comments[i].text+"</p><br>");
         }
@@ -278,7 +280,8 @@ class Graphics{
           $('#inspect').append('<button type="button" class="btn btn-primary" id="stop" onclick="">Stop audio</button>');
           $('#stop').on('click', () => {
             parentThis.facade.Paul.shutUp();
-            $('#stop').css('display', 'none');
+            //$('#stop').css('display', 'none');
+            document.getElementById("stop").remove();
             parentThis.addBeginButton(title, description);
           });
       }
@@ -289,7 +292,8 @@ class Graphics{
         $('#begin').on('click', () => {
             parentThis.facade.Paul.say(title);
             parentThis.facade.Paul.say(description);
-            $('#begin').css('display', 'none');
+            //$('#begin').css('display', 'none');
+            document.getElementById("begin").remove();
             parentThis.addStopButton(title, description);
         });
       }

@@ -168,19 +168,31 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){
 						parent._timeoutChain=setTimeout(f, 300);
 				}
 
-				this.navigate= function(){
-					parent._initListeners()
-					if (!L.routes || !L.routes[0]){
-						if (Facade.selectedWaypoint){
-							document.removeEventListener("route-available", this.navigate);
-							document.addEventListener("route-available", this.navigate);
+				this.navigate= function(begin_itinerary = false){
+					parent._initListeners();
+					console.log("boh");
+					//if (!L.routes || !L.routes[0]){
+						console.log("routes");
+						if (facade.selectedWaypoint){
+							console.log("navigate");
+							//document.removeEventListener("route-available", this.navigate);
+							//document.addEventListener("route-available", this.navigate);
+							var itin = Object.assign({},facade.getItinerary().getWaypoints());
 							facade.getItinerary().setWaypoints([]);
 							facade.getItinerary().pushWaypoints([L.userPosition.latLng],undefined, false);
-							facade.getItinerary().pushWaypoints([Facade.selectedWaypoint.latLng],undefined, false);
+							if (!begin_itinerary) facade.getItinerary().pushWaypoints([facade.selectedWaypoint.latLng],undefined, false);
+							else {
+								console.log("!begin_itinerary");
+								for (var i in itin){
+									console.log(itin);
+									facade.getItinerary().pushWaypoints([{}], itin[i], false);
+									i++;
+								}
+							}
 							facade.getItinerary().showOnMap();
 							return;
-						}
-						else return;
+					//	}
+					//	else return;
 					}
 					init();
 					parent._timeoutChain= setTimeout(f,300);

@@ -13,6 +13,7 @@ class Users{
         var parentThis = this;
         document.addEventListener('userLogged', function(e){
             parentThis.setAccount(e.detail.account);
+            console.log(e.detail.account);
             parentThis.facade.getGraphics().create.addTo(map);
             parentThis.facade.getGraphics().upload.addTo(map);
             parentThis.getItineraries();
@@ -27,36 +28,38 @@ class Users{
                 YTUploader.ready(data.accessToken);
             }
           });
-
-
-            $(document).on('change','#uploadpic', function () {
-              var file = this.files;
-                    if (this.files.length == 1) {
-                        //$.each(this.files, function (index, value) {
-                            var reader = new FileReader();
-                            reader.onload = function (e) {
-                              $('img#profilepic').attr('src', e.target.result);
-                                $.ajax({
-                      url: '/changeprofilepic',
-                      method: 'POST',
-                      dataType: 'json',
-                      data: {
-                        pic: JSON.stringify(e.target.result),
-                        id: JSON.stringify(use._id)
-                      },
-                      success: () => {
-                        console.log("pic changed");
-                      },
-                      error: () => {
-                        console.log("error in changing pic");
-                      }
-                    });
-                            };
-                            reader.readAsDataURL(file[0]);
-                        //});
-                    }
-                });
           });
+          $(document).on('change','#uploadpic', function () {
+            var file = this.files;
+            console.log(file);
+                  if (this.files.length == 1) {
+                      //$.each(this.files, function (index, value) {
+                          var reader = new FileReader();
+                          reader.onload = function (e) {
+                            $('img#profilepic').attr('src', e.target.result);
+                            console.log(e.target.result);
+                            console.log(parentThis.account);
+                              $.ajax({
+                    url: url+'/changeprofilepic',
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {
+                      pic: JSON.stringify(e.target.result),
+                      id: JSON.stringify(parentThis.getAccount()._id)
+                    },
+                    success: () => {
+                      console.log("pic changed");
+                    },
+                    error: (error) => {
+                      console.log("error in changing pic");
+                      console.log(error);
+                    }
+                  });
+                          };
+                          reader.readAsDataURL(file[0]);
+                      //});
+                  }
+              });
     }
 
     getLogged(){

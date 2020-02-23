@@ -68,11 +68,11 @@ class Itinerary {
                 img: [],
                 title: "",
                 description: "",
-                purpose: {},
+                /*purpose: {},
                 lang: {},
                 content: {},
                 audience: {},
-                detail: {},
+                detail: {},*/
                 write_permit: true
             };
             else {

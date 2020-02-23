@@ -187,6 +187,7 @@ class PointOfInterest{
             if (!do_nothing) if (parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.points[len]);
             }
+            facade.selectedWaypoint=Object.assign({}, parentThis.points[len]);
         });
         do_nothing = this.check_in_waypoints(len);
         if (!do_nothing) this.markers[len].addTo(map);
@@ -229,6 +230,7 @@ class PointOfInterest{
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.itineraryStartPoints[len].inputWaypoints[0]);
             }
             parentThis.graphics.loadMenu(parentThis.itineraryStartPoints[len].inputWaypoints, 0, false, true);
+            facade.selectedWaypoint=Object.assign({}, parentThis.itineraryStartPoints[len]);
         });
         var do_nothing = this.check_in_waypoints(len,1);
         if(!do_nothing) this.itineraryStartMarkers[len].addTo(map);
@@ -286,12 +288,13 @@ class PointOfInterest{
 
 
             $("#inspect").html("<div class='container'><h2>"+title+"</h2><p>"+extract+"</p></div>");
+            $("#inspect").append('<div style="margin-bottom: 50px"><button type="button" class="btn btn-primary startItinerary" onclick="facade.go()">Go to place</button></div>');
             parentThis.graphics.addBeginButton(title, extract);
             gotoTab(INSPECT_TAB);
             if (parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.wikipediaPoints[len]);
             }
-        Facade.selectedWaypoint=Object.assign({}, parentThis.wikipediaPoints[len]);
+        facade.selectedWaypoint=Object.assign({}, parentThis.wikipediaPoints[len]);
         });
         this.wikipediaMarkers[len].addTo(map);
     }
@@ -339,7 +342,7 @@ class PointOfInterest{
             if (parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.yt_points[len]);
             }
-            Facade.selectedWaypoint=Object.assign({}, parentThis.yt_points[len]);
+            facade.selectedWaypoint=Object.assign({}, parentThis.yt_points[len]);
         });
         this.yt_markers[len].addTo(map);
     }

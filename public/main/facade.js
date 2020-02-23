@@ -297,9 +297,10 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
     checkLoggedIn() {
         var a=false;
           $.ajax({
-            url: "/user",
+            url: url+"/user",
             method: "GET",
             success: function(data){
+              console.log(data);
               if (!$.isEmptyObject(data)){
                   console.log(data);
                 var event =new CustomEvent('userLogged', {detail: {account:data}});
@@ -374,11 +375,11 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
                 id: JSON.stringify(waypoint._id),
                 title: JSON.stringify(waypoint.title),
                 description: JSON.stringify(waypoint.description),
-                purpose: JSON.stringify(waypoint.purpose),
+                /*purpose: JSON.stringify(waypoint.purpose),
                 language: JSON.stringify(waypoint.lang),
                 content: JSON.stringify(waypoint.content),
                 audience: JSON.stringify(waypoint.audience),
-                detail: JSON.stringify(waypoint.detail),
+                detail: JSON.stringify(waypoint.detail),*/
                 img: JSON.stringify(waypoint.img)
             },
             success: () => {
@@ -447,6 +448,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
                 gotoTab(INSPECT_TAB);
                 console.log($("#inspect"));
                 $("#inspect").html("<div class='container'><h2>"+wiki_points[i].title+"</h2><p>"+wiki_points[i].extract+"</p></div>");
+                //$("#inspect").append('<div style="margin-bottom: 50px"><button type="button" class="btn btn-primary startItinerary" onclick="facade.go()">Start Itinerary</button></div>');
                 this.graphics.addStopButton(wiki_points[i].title, wiki_points[i].extract);
                 this.visitedWikiIds.push(wiki_points[i].pageid);
                 break;
@@ -472,10 +474,10 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
         return olc;
     }
 
-    startItinerary(){
+    go(begin_itinerary = false){
         nav=new polloNavigator(navigatorControl.onpoint, navigatorControl.onend, navigatorControl.wondering);
         console.log(nav);
-        nav.navigate();
+        nav.navigate(begin_itinerary);
     }
 
     getselectedWaypoint(){

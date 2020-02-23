@@ -159,7 +159,7 @@ function checkDistance(){
 	  </div>
   </div>
   <div style="margin-bottom: 50px">
-    <button type="button" class="btn btn-primary" id="startItinerary" onclick="facade.startItinerary()">Start Itinerary</button>
+    <button type="button" class="btn btn-primary startItinerary" onclick="facade.go(`+true+`)">Start Itinerary</button>
   </div>
   </div>
 
