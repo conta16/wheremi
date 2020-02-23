@@ -1,14 +1,7 @@
-
-function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have called this function simply navigator, but it already exists, so i spend 2 hrs of my life ttryin'to find out why calling it i broke up everything.
+function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){
 			var parent = this;
-			if (!'routes' in L)
-				return;
-			if (!'userPosition'in L || L.userPosition==undefined)
-				return;
-			if (!'latLng' in L.userPosition)
-				return;
 
-			this.WONDERING_LIMIT = 0.030;
+			this._LIMIT = 0.030;
 			this.RECALCULATE_LIMIT = 0.060;
 			this.NEAR_LIMIT = 0.020;
 
@@ -22,29 +15,16 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 				this.onstop = usr_onstop;
 			if (typeof usr_wondering == "function")
 				this.wondering = usr_wondering;
+
+
 			function init (){
 				parent._prevdist=Infinity;
 				parent._prevpos={lat: undefined, lng:undefined};
 				parent._targetindex = 0;
+				console.log(L.routes);
 				parent.stopped=false;
 				parent._targetpoint = L.routes[0].coordinates[L.routes[0].instructions[parent._targetindex].index];
 			};
-
-			this.nearest = function (latlng) {
-				var min=Infinity, index=undefined;
-				var dist;
-				for (var i=0; i < L.routes[0].coordinates.length; i++){
-					dist=parent._calculate_distance(latlng, L.routes[0].coordinates[i])
-					if (dist<min){
-						min=dist;
-						index=i;
-					}
-				}
-				return {
-					dist: min,
-					index: index
-				};
-			}
 
 			this.nearestPoint= function (latlng){
 				var min=Infinity;
@@ -190,7 +170,27 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){ // I'd have cal
 
 				this.navigate= function(){
 					parent._initListeners()
+					if (!L.routes || !L.routes[0]){
+						if (Facade.selectedWaypoint){
+							document.removeEventListener("route-available", this.navigate);
+							document.addEventListener("route-available", this.navigate);
+							facade.getItinerary().setWaypoints([]);
+							facade.getItinerary().pushWaypoints([L.userPosition.latLng],undefined, false);
+							facade.getItinerary().pushWaypoints([Facade.selectedWaypoint.latLng],undefined, false);
+							facade.getItinerary().showOnMap();
+							return;
+						}
+						else return;
+					}
 					init();
 					parent._timeoutChain= setTimeout(f,300);
 				};
+
+				if (!'routes' in L)
+					return;
+				if (!'userPosition'in L || L.userPosition==undefined)
+					return;
+				if (!'latLng' in L.userPosition)
+					return;
+
 }

@@ -16170,8 +16170,9 @@ module.exports={
 						routes.forEach(function(route, i) { route.routesIndex = i; });
 
 						if (!options.geometryOnly) {
-                            this.fire('routesfound', {waypoints: wps, routes: routes});
 							this.setAlternatives(routes);
+              this.fire('routesfound', {waypoints: wps, routes: routes});
+
 						} else {
 							var selectedRoute = routes.splice(0,1)[0];
 							this._routeSelected({route: selectedRoute, alternatives: routes});
@@ -16782,11 +16783,11 @@ module.exports = L.Routing = {
 			    altDiv;
 
             this._clearAlts();
-            
+
             this._routes = routes;
 
 
-            L.routes = this._routes;
+            L.routes = Object.assign({}, this._routes);
 
 
 			for (i = 0; i < this._routes.length; i++) {
@@ -17072,12 +17073,12 @@ module.exports = L.Routing = {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],57:[function(_dereq_,module,exports){
-/* 
+/*
    NOTICE
    Since version 3.2.5, the functionality in this file is by
    default NOT used for localizing OSRM instructions.
    Instead, we rely on the module osrm-text-instructions (https://github.com/Project-OSRM/osrm-text-instructions/).
-   
+
    This file can still be used for other routing backends, or if you specify the
    stepToText option in the OSRMv1 class.
 */
@@ -17371,7 +17372,7 @@ module.exports = L.Routing = {
 
 		'es': spanish,
 		'sp': spanish,
-		
+
 		'nl': {
 			directions: {
 				N: 'noordelijke',
@@ -17798,7 +17799,7 @@ module.exports = L.Routing = {
 				seconds: 'с'
 			}
 		},
-                
+
                 'pl': {
 			directions: {
 				N: 'północ',

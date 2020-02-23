@@ -20,6 +20,7 @@ class Facade{
             // e.g to trigger Good Morning, you need to say "Jarvis Good Morning"
             name: "Paul"
         });
+        this.selectedWaypoint=undefined;
         this.initPaulCommands(this.Paul);
         this.currentLvlSpec = 0;
         this.lvlSpec = ['gen','pre','elm','mid','scl','all'];
@@ -60,7 +61,7 @@ class Facade{
         //var olcCurrentPosition = this.locationString(this.findPointForVideos(L.userPosition).latLng,10,10); //trova un modo per sapere a che punto sei più vicino facade-distance(lat e lng dei due punti)
                                 //questa cosa qui (^) ha senso, ma magari non qui, infatti se provi a decommentre dà l'errore latLngMia undefined perché L.userPosition dipende da due azioni asincorne indipendenti:
                                 //la richiesta della geolocalizzazione dell' ip utente e la richiesta di attivazione da parte di questo del GPS, entrambe le suddette azioni spesso non sono ancora avvenute quando il programma si trova a questo punto,
-                                //inoltre, siccome l'olc è una cosa che cambia nel tempo, non ha molto il suo valore all'accensione del programma (che avviene una tantum), quando poi sappiamo già che ci servirà in altri momenti. 
+                                //inoltre, siccome l'olc è una cosa che cambia nel tempo, non ha molto il suo valore all'accensione del programma (che avviene una tantum), quando poi sappiamo già che ci servirà in altri momenti.
         var myGroup = [
             {//wheremi
                 description:"Where am I? L'utente chiede un video di spiegazione del post in cui è",
@@ -75,16 +76,16 @@ class Facade{
                     //riproduci un video per dire dove sei (WHERE)
                     Paul.say('Playing a video to tell you where you are');
                      /*trova dove sei (usando olc) e poi carica un video di quel tipo*/
-                     
+
                      this.saveHtmlInspectBefore($("#inspect").html());
                      while (resultJson.purpose.toLowerCase() != 'where'){
                          var res = wmivideo_search(params);
                          var resultJson = utils.mahmood(res);
                     }
-                     
+
                      $("#inspect").append(htmlVideoPopup);
                      //$(".video-container").append(htmlVideoPopup);
-                     $(".video-frame").attr('src', url);
+                     $(".video-frame").attr('src', res);
                      $('#headerVideoLink').magnificPopup({
                         type:'inline',
                         midClick: true
@@ -140,16 +141,16 @@ class Facade{
                         //per quando leggerai: topicid è deprecato ed è un prametro di YT, pageID è, se vuoto, quello della prima pagina, altrimenti non va specificato perché già gestito dall'api
                     }
                      /*trova dove sei (usando olc) e poi carica un video di quel tipo*/
-                     
+
                      this.saveHtmlInspectBefore($("#inspect").html());
                      while (resultJson.purpose.toLowerCase() != 'why'){
                          var res = wmivideo_search(params);
                          var resultJson = utils.mahmood(res);
                     }
-                     
+
                      $("#inspect").append(htmlVideoPopup);
                      //$(".video-container").append(htmlVideoPopup);
-                     $(".video-frame").attr('src', url);
+                     $(".video-frame").attr('src', res);
                      $('#headerVideoLink').magnificPopup({
                         type:'inline',
                         midClick: true
@@ -173,7 +174,7 @@ class Facade{
                     Paul.say("Resuming play");
                     $(".video-frame").play()
                 }
-            },
+            }/*,
             {//how
                 description:"indica come accedere e orari del punto corrente",
                 indexes:["how", "paul how"],
@@ -182,7 +183,7 @@ class Facade{
                     //riproduci info su come accedere al posto in questione
                     Paul.say("Here is how to visit this place");
                 }
-            }
+            }*/
         ];
         Paul.addCommands(myGroup);
     }
@@ -228,8 +229,9 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
             url: 'https://api.ipgeolocation.io/ipgeo?apiKey=c72a10aebeec445eb82dac923123e269',
             "content-type": 'json',
             success: function(data){
-                defaultLatLng.lat=data.latitude;
-                defaultLatLng.lng=data.longitude;
+                defaultLatLng.lat=parseFloat(data.latitude);
+                defaultLatLng.lng=parseFloat(data.longitude);
+                defaultLatLng.latLng=defaultLatLng;
             },
             error: function(a,b,c){
                 console.log(a,b,c)
@@ -237,7 +239,8 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
         }).always(function() {
             var options= {setView:'once', sharePosition: true, showCompass: true, markerStyle:{radius: mobile? 18: 9}, compassStyle:{radius: mobile? 18: 9}, flyTo:false,locateOptions:{watch:false, enableHighAccuracy:true}};
             options.defaultLatLng=Object.assign({}, defaultLatLng);
-            L.userPosition=Object.assign({}, defaultLatLng)
+            L.userPosition={}
+            L.userPosition.latLng=Object.assign({}, defaultLatLng);
             L.control.locate(options).addTo(map);
         });
     }
@@ -475,9 +478,13 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
         nav.navigate();
     }
 
+    getselectedWaypoint(){
+      return this.selectedWaypoint
+    }
+
     uploadVideo(){
       var title=$("#title").val();
-      var description=this.generateDescription(selectedWaypoint());
+      var description=this.generateDescription(this.getselectedWaypoint());
       var category=22;
       var metadata = {
         snippet: {
@@ -489,6 +496,6 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
           privacyStatus: 'unlisted'//va poi settato a public su richiesta
         }
       };
-      YTUploader.uploadBlob(SimpleRecorder.videoBlob, title, metadata);
+      YTUploader.uploadBlob(SimpleRecorder.videoBlob, metadata);
     }
 }

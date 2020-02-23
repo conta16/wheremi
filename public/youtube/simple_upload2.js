@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-var BLOCK_YT=1
+var BLOCK_YT=0
 
 var STATUS_POLLING_INTERVAL_MILLIS = 60 * 1000; // One minute.
 
@@ -62,9 +62,11 @@ client_init = function(){
   gapi.load('client:youtube');
 }
 
-UploadVideo.prototype.ready = function(accessToken) {
+UploadVideo.prototype.ready = function(accessToken, show_progress, done) {
   this.accessToken = accessToken;
   this.gapi = gapi;
+  this.show_progress = show_progress;
+  this.done = done;
   this.authenticated = true;
   $.ajax({
     url: "https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest",
@@ -111,7 +113,8 @@ UploadVideo.prototype.uploadFile = function(file, metadata) {
   metadata.snippet.tags=this.tags;
   if (!this.accessToken)
     return;
-  if (BLOCK_YT) return;
+  if (BLOCK_YT===1) return;
+  console.log(file, metadata)
   var uploader = new MediaUploader({
     baseUrl: 'https://www.googleapis.com/upload/youtube/v3/videos',
     file: file,
@@ -142,7 +145,7 @@ UploadVideo.prototype.uploadFile = function(file, metadata) {
       var estimatedSecondsRemaining = (totalBytes - bytesUploaded) / bytesPerSecond;
       var percentageComplete = (bytesUploaded * 100) / totalBytes;
 
-      // TODO: presentare, se si vuole, questi dati.
+      this.show_progress(percentageComplete);
 
 
     }.bind(this),
@@ -187,7 +190,7 @@ UploadVideo.prototype.pollForVideoStatus = function() {
             break;
           // The video was successfully transcoded and is available.
           case 'processed':
-          // TODO: Dire che abbiamo finito
+            this.done();
             break;
           // All other statuses indicate a permanent transcoding failure.
           default:

@@ -28,18 +28,17 @@ function aggiornaBio(){
   }
 
 function privacyupload_done(){
-  $("#usersvideos")[0].innerHTML=''
   carica_video()
   console.log("fatto")
 }
 
 function video_deleted(){
-  $("#usersvideos")[0].innerHTML=''
   carica_video()
   console.log("fatto")
 }
 
 function carica_video(){
+  $("#usersvideos")[0].innerHTML=''
   YTUploader.getVideos(function(response){
     cb=function(res){
       console.log(res);

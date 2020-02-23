@@ -5,6 +5,8 @@ class navigatorController{
         this.wondering = this.wondering.bind(this);
         this.onpoint = this.onpoint.bind(this);
         this.onend = this.onend.bind(this);
+        this.listOfPoints = [];
+		this.indexOfList = -1;
     }
 
     reachItinerary(position, itin) {
@@ -58,6 +60,8 @@ class navigatorController{
     }
 
     onend (){
+        this.indexOfList += 1;
+        this.listOfPoints[this.indexOfList] = L.userPosition
         //Paul.say("You reached your destination");
     }
 }
