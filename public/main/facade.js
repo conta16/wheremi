@@ -9,7 +9,7 @@ class Facade{
         this.user = new Users(this.itinerary, this);
         this.Paul = new Artyom();
         this.Paul.initialize({
-            lang: this.initLanguagePaul(), //todo: change language based on location or user preferences
+            lang: this.initLanguagePaul(),
             continuous: false, // Listen forever
             soundex: true,// Use the soundex algorithm to increase accuracy
             debug: true, // Show messages in the console
@@ -67,25 +67,18 @@ class Facade{
                 description:"Where am I? L'utente chiede un video di spiegazione del post in cui è",
                 indexes:["Where am I", "Where", "paul where am i", "paul where"],
                 action: function(i){
-                    this.loadHtmlInspectBefore();
-                    //var olcCurrentPosition = getOlcForUser();
-                  var params = {
-                        coords: {latitude: L.userPosition.latLng.lat, longitude: L.userPosition.latLng.lng},
-                        //per quando leggerai: topicid è deprecato ed è un prametro di YT, pageID è, se vuoto, quello della prima pagina, altrimenti non va specificato perché già gestito dall'api
-                    }
-                    //riproduci un video per dire dove sei (WHERE)
-                    Paul.say('Playing a video to tell you where you are');
+                     this.loadHtmlInspectBefore();
+                     //var olcCurrentPosition = getOlcForUser();
+                     //riproduci un video per dire dove sei (WHERE)
+                     Paul.say('Playing a video to tell you where you are');
                      /*trova dove sei (usando olc) e poi carica un video di quel tipo*/
 
                      this.saveHtmlInspectBefore($("#inspect").html());
-                     while (resultJson.purpose.toLowerCase() != 'where'){
-                         var res = wmivideo_search(params);
-                         var resultJson = utils.mahmood(res);
-                    }
+                     
+                     var video = wmi_search(1, L.userPosition.latLng, {purpose: "where"}, function(videos){return videos;});
 
                      $("#inspect").append(htmlVideoPopup);
-                     //$(".video-container").append(htmlVideoPopup);
-                     $(".video-frame").attr('src', res);
+                     $(".video-frame").attr('src', video);
                      $('#headerVideoLink').magnificPopup({
                         type:'inline',
                         midClick: true
@@ -98,8 +91,19 @@ class Facade{
                 action: function(i){
                     this.loadHtmlInspectBefore();
                     //riproduci un video per dire dettagli sul posto dove sei
-                    this.currentLvlSpec += 1;
-                    Paul.say("Playing a video to tell you more details about the thing you're looking at. Level " + currentLvlSpec);
+                    var video = wmi_search(1, L.userPosition.latLng, {purpose: "why", level: lvlSpec[currentLvlSpec]}, function(videos){return videos;});
+    
+                    Paul.say("Playing a video to tell you more details about the thing you're looking at. Level " + lvlSpec[currentLvlSpec]);
+                    if (currentLvlSpec <= 6){
+                        this.currentLvlSpec += 1;
+                    }
+                    $("#inspect").append(htmlVideoPopup);
+                
+                     $(".video-frame").attr('src', video);
+                     $('#headerVideoLink').magnificPopup({
+                        type:'inline',
+                        midClick: true
+                     }); //a sto punto il video dovrebbe essere un popup.
 
                 }
             },
@@ -136,21 +140,13 @@ class Facade{
                     }else{
                         Paul.say("Playing a why clip. level "+currentLvlSpec);
                     }
-                    var params = {
-                        coords: {latitude: L.userPosition.latLng.lat, longitude: L.userPosition.latLng.lng},
-                        //per quando leggerai: topicid è deprecato ed è un prametro di YT, pageID è, se vuoto, quello della prima pagina, altrimenti non va specificato perché già gestito dall'api
-                    }
-                     /*trova dove sei (usando olc) e poi carica un video di quel tipo*/
-
+                   
                      this.saveHtmlInspectBefore($("#inspect").html());
-                     while (resultJson.purpose.toLowerCase() != 'why'){
-                         var res = wmivideo_search(params);
-                         var resultJson = utils.mahmood(res);
-                    }
-
+                     var video = wmi_search(1, L.userPosition.latLng, {purpose: "why", level: lvlSpec[0]}, function(videos){return videos;});
+                     currentLvlSpec += 1;
                      $("#inspect").append(htmlVideoPopup);
-                     //$(".video-container").append(htmlVideoPopup);
-                     $(".video-frame").attr('src', res);
+                
+                     $(".video-frame").attr('src', video);
                      $('#headerVideoLink').magnificPopup({
                         type:'inline',
                         midClick: true
