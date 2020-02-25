@@ -20,28 +20,20 @@ function initLanguagePaul(){
     return userLang;
 }
 
-var htmlVideoPopup = `<div id="headerPopup" class="mfp-hide embed-responsive embed-responsive-21by9">
-                              <iframe class="embed-responsive-item video-frame" width="854" height="480" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+var htmlVideo = `<div id="headerPopup" class="">
+                              <iframe class="embed-responsive-item " id="video-frame" width="854" height="480" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                               </div>`;
 
 function badPaulWmi(){//wheremi
-    
-         facade.loadHtmlInspectBefore();
-         //var olcCurrentPosition = getOlcForUser();
+         $(".test-container-for-vids").html("");
          //riproduci un video per dire dove sei (WHERE)
          badPaul.say('Playing a video to tell you where you are');
-         /*trova dove sei (usando olc) e poi carica un video di quel tipo*/
-
-         facade.saveHtmlInspectBefore($("#inspect").html());
-         
-         var video = wmi_search(1, L.userPosition.latLng, {purpose: "where"}, function(videos){return videos;});
-
-         $("#inspect").append(htmlVideoPopup);
-         $(".video-frame").attr('src', video);
-         $('#headerVideoLink').magnificPopup({
-            type:'inline',
-            midClick: true
-         }); //a sto punto il video dovrebbe essere un popup.
+         var prom = new Promise(()=>{var video = wmi_search(1, L.userPosition.latLng, {purpose: "where"}, function(videos){return videos;});
+         var urlgiusto = "https://youtube.com/video/" + video[0].id;}).then(()=>{$(".test-container-for-vids").append(htmlVideoPopup);
+         $("#video-frame").attr('src', urlgiusto);
+         $("#video-frame").play()})
+                  
+        //a sto punto il video dovrebbe essere un popup.
 }
 
 function badPaulWhy(){
@@ -51,9 +43,11 @@ function badPaulWhy(){
      facade.saveHtmlInspectBefore($("#inspect").html());
      var video = wmi_search(1, L.userPosition.latLng, {purpose: "why", level: badLvlSpec[0]}, function(videos){return videos;});
      badCurrentLvlSpec += 1;
-     $("#inspect").append(htmlVideoPopup);
+     var urlgiusto = "https://youtube.com/video/" + video;
 
-     $(".video-frame").attr('src', video);
+     $("#inspect").append(htmlVideo);
+
+     $(".video-frame").attr('src', urlgiusto);
      $('#headerVideoLink').magnificPopup({
         type:'inline',
         midClick: true
@@ -69,9 +63,10 @@ function badPaulMore(){
     if (badcurrentLvlSpec <= 6){
         badcurrentLvlSpec += 1;
     }
+    var urlgiusto = "https://youtube.com/video/" + video;
     $("#inspect").append(htmlVideoPopup);
 
-     $(".video-frame").attr('src', video);
+     $(".video-frame").attr('src', urlgiusto);
      $('#headerVideoLink').magnificPopup({
         type:'inline',
         midClick: true
@@ -88,9 +83,9 @@ function badPaulPrev(){
     badCurrentLvlSpec = 0
 }
 
-function badPaulStop(){
+function badPaulPause(){
     //stoppa la riproduzione del video corrente
-    $(".video-frame").pause()
+    $("#video-frame").pause();
     badPaul.say("Current video paused");
     
 }
@@ -98,5 +93,5 @@ function badPaulStop(){
 function badPaulContinue(){
     //continua la riproduzione del video corrente
     badPaul.say("Resuming play");
-    $(".video-frame").play()
+    $("#video-frame").play();
 }

@@ -170,9 +170,11 @@ class PointOfInterest{
             $("#inspect").text(parentThis.points[len].description);
             $("a[href='#feed']").removeClass("active");
             $("a[href='profile']").removeClass("active");
+            $("a[href='#voice']").removeClass("active");
             $("a[href='#inspect']").addClass("active");
             $("#feed").removeClass("active show");
             $("#profile").removeClass("active show");
+            $("#voice").removeClass("active show");
             $("#inspect").addClass("active show");
             if (!do_nothing) if (parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.points[len]);

@@ -49,7 +49,7 @@ class Facade{
         var min = Infinity;
         var returnPoint;
         var points = this.pointsOfInterest.points.concat(this.pointsOfInterest.wiki_points, this.pointsOfInterest.yt_points);
-        for (var point in points){
+        for (var point of points){
         if (min < this.distance(latLngMia.lat,latLngMia.lon,point.latLng.lat,point.latLng.lon)){min = distance; returnPoint = point}
         }
         return returnPoint;
@@ -414,7 +414,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
         var points = this.pointsOfInterest.getPoints();
         var wiki_points = this.pointsOfInterest.getWikipediaPoints();
 
-        for (var i in it_points){
+        for (var i of it_points){
             var pos = it_points[i].inputWaypoints[0].latLng;
             if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 20 && !it_points[i].inputWaypoints[0].played){
                 this.Paul.say(it_points[i].inputWaypoints[0].title);
@@ -425,7 +425,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
             }
         }
 
-        for (var i in points){
+        for (var i of points){
             var pos = points[i].latLng;
             if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 20 && !points[i].played){
                 this.Paul.say(points[i].title);
@@ -436,7 +436,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
             }
         }
 
-        for (var i in wiki_points){
+        for (var i of wiki_points){
             var pos = wiki_points[i].latLng;
             if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 20 && !this.visitedWikiIds.includes(wiki_points[i].pageid)){
                 this.Paul.shutUp();

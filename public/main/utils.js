@@ -1,6 +1,7 @@
 const FEED_TAB=0;
 const INSPECT_TAB=1;
 const PROFILE_TAB=2;
+const VOICE_TAB=3;
 
 const DESCRIPTION_REGEX=/([A-Z,0-9]{8}\+[A-Z,0-9]{0,8})+(-[A-Z,0-9]{8}\+[A-Z,0-9]{0,8})*(:(why|how|what))?(:[a-z]{3})?(:(none|nat|art|his|flk|mod|rel|cui|spo|mus|mov|fas|shp|tec|pop|prs|oth)+(-(none|nat|art|his|flk|mod|rel|cui|spo|mus|mov|fas|shp|tec|pop|prs|oth))*)?(:A(gen|pre|elm|mid|scl|all)(-(gen|pre|elm|mid|scl|all))*)?(:P1?[0-9])?/;
 const OLC_REGEX=/([A-Z,0-9]{8}\+[A-Z,0-9]{0,8})/;
@@ -13,9 +14,12 @@ function gotoTab(tab){
   $("a[href='#feed']").removeClass("active");
   $("a[href='#profile']").removeClass("active");
   $("a[href='#inspect']").removeClass("active");
+  $("a[href='#voice']").removeClass("active");
   $("#feed").removeClass("active show");
   $("#profile").removeClass("active show");
   $("#inspect").removeClass("active show");
+  $("#voice").removeClass("active show");
+
   switch(tab){
     case FEED_TAB:
     $("a[href='#feed']").addClass("active");
@@ -29,6 +33,9 @@ function gotoTab(tab){
     $("a[href='#profile']").addClass("active");
       $("#profile").addClass("active show");
       break;
+    case VOICE_TAB:
+      $("a[href='#voice']").addClass("active");
+      $("#voice").addClass("active show");
   }
 }
 
@@ -105,7 +112,7 @@ function result_filter(yt_videos, props){
 function wmi_search(results, position, filter, callback){
   var raw_videos;
   var filtered_videos;
-  var yt=new YTSearcher({googlekey: "AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0",yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){
+  /*TITS*/var yt=new YTSearcher({googlekey: "AIzaSyCntiI4kbASipSjAzrS9yo75YS_WXQa0ls"/* davolz"AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0"*/,yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){
     raw_videos=mahmood(res);
     filtered_videos=result_filter(raw_videos, filter);
     console.log(raw_videos);
