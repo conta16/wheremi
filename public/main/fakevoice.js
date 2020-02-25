@@ -25,20 +25,29 @@ var htmlVideo = `<div id="headerPopup" class="">
                               </div>`;
 
 function badPaulWmi(){//wheremi
-         $(".test-container-for-vids").html("");
+
+         facade.loadHtmlInspectBefore();
+         //var olcCurrentPosition = getOlcForUser();
          //riproduci un video per dire dove sei (WHERE)
          badPaul.say('Playing a video to tell you where you are');
-         var prom = new Promise(()=>{var video = wmi_search(1, L.userPosition.latLng, {purpose: "where"}, function(videos){return videos;});
-         var urlgiusto = "https://youtube.com/video/" + video[0].id;}).then(()=>{$(".test-container-for-vids").append(htmlVideoPopup);
-         $("#video-frame").attr('src', urlgiusto);
-         $("#video-frame").play()})
-                  
-        //a sto punto il video dovrebbe essere un popup.
+         /*trova dove sei (usando olc) e poi carica un video di quel tipo*/
+
+         facade.saveHtmlInspectBefore($("#inspect").html());
+
+         var video = wmi_search(1, L.userPosition.latLng, {purpose: "where"}, function(videos){
+           console.log(videos);
+           $("#inspect").append(htmlVideoPopup);
+           $(".video-frame").attr('src', video);
+           $('#headerVideoLink').magnificPopup({
+              type:'inline',
+              midClick: true
+           }); //a sto punto il video dovrebbe essere un popup.
+         });
 }
 
 function badPaulWhy(){
      facade.loadHtmlInspectBefore();
-    
+
      badPaul.say("Playing a why clip. level "+badLvlSpec[badCurrentLvlSpec]);
      facade.saveHtmlInspectBefore($("#inspect").html());
      var video = wmi_search(1, L.userPosition.latLng, {purpose: "why", level: badLvlSpec[0]}, function(videos){return videos;});
@@ -76,7 +85,7 @@ function badPaulMore(){
 
 function badPaulNext(){
     badCurrentLvlSpec = 0
-    
+
 }
 
 function badPaulPrev(){
@@ -87,11 +96,11 @@ function badPaulPause(){
     //stoppa la riproduzione del video corrente
     $("#video-frame").pause();
     badPaul.say("Current video paused");
-    
+
 }
 
 function badPaulContinue(){
     //continua la riproduzione del video corrente
     badPaul.say("Resuming play");
-    $("#video-frame").play();
+    $(".video-frame").play()
 }
