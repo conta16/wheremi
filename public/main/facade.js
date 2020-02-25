@@ -24,7 +24,8 @@ class Facade{
         this.initPaulCommands(this.Paul);
         this.currentLvlSpec = 0;
         this.lvlSpec = ['gen','pre','elm','mid','scl','all'];
-        this.url = "https://site181951.tw.cs.unibo.it";
+//        this.url = "https://site181951.tw.cs.unibo.it";
+        this.url = "http://localhost:3000";
     }
 
     initLanguagePaul(){
@@ -74,7 +75,7 @@ class Facade{
                      /*trova dove sei (usando olc) e poi carica un video di quel tipo*/
 
                      this.saveHtmlInspectBefore($("#inspect").html());
-                     
+
                      var video = wmi_search(1, L.userPosition.latLng, {purpose: "where"}, function(videos){return videos;});
 
                      $("#inspect").append(htmlVideoPopup);
@@ -92,13 +93,13 @@ class Facade{
                     this.loadHtmlInspectBefore();
                     //riproduci un video per dire dettagli sul posto dove sei
                     var video = wmi_search(1, L.userPosition.latLng, {purpose: "why", level: lvlSpec[currentLvlSpec]}, function(videos){return videos;});
-    
+
                     Paul.say("Playing a video to tell you more details about the thing you're looking at. Level " + lvlSpec[currentLvlSpec]);
                     if (currentLvlSpec <= 6){
                         this.currentLvlSpec += 1;
                     }
                     $("#inspect").append(htmlVideoPopup);
-                
+
                      $(".video-frame").attr('src', video);
                      $('#headerVideoLink').magnificPopup({
                         type:'inline',
@@ -140,12 +141,12 @@ class Facade{
                     }else{
                         Paul.say("Playing a why clip. level "+currentLvlSpec);
                     }
-                   
+
                      this.saveHtmlInspectBefore($("#inspect").html());
                      var video = wmi_search(1, L.userPosition.latLng, {purpose: "why", level: lvlSpec[0]}, function(videos){return videos;});
                      currentLvlSpec += 1;
                      $("#inspect").append(htmlVideoPopup);
-                
+
                      $(".video-frame").attr('src', video);
                      $('#headerVideoLink').magnificPopup({
                         type:'inline',
@@ -466,7 +467,6 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
         olc=olc.concat(':', $("#cont").val());
         olc=olc.concat(':A', $("#aud").val());
         olc=olc.concat(':P', $("#det").val());
-        console.log(olc);
         return olc;
     }
 
@@ -481,7 +481,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
     }
 
     uploadVideo(){
-      var title=$("#title").val();
+      var title=$("#video-title").val();
       var description=this.generateDescription(this.getselectedWaypoint());
       var category=22;
       var metadata = {
@@ -491,9 +491,12 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
           categoryId: category
         },
         status: {
-          privacyStatus: 'unlisted'//va poi settato a public su richiesta
+          privacyStatus: 'private'//SE HO MESSO PRIVATE È PERCHÉ VA PRIVATE 
         }
       };
+      if (!title || title.length==0){
+        return alert("Specify track's title");
+      }
       YTUploader.uploadBlob(SimpleRecorder.videoBlob, metadata);
     }
 }

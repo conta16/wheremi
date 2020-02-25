@@ -89,18 +89,8 @@ class PointOfInterest{
 
                         parentThis.graphics.loadMenu(parentThis.points, index, false);
                     });
-                    $.ajax({
-                        url: parentThis.url+"/getUsername?id="+parentThis.points[index].user_id.toString(),
-                        method: "GET",
-                        dataType: "json",
-                        success: (data) => {
-                            parentThis.points[index].username = data[0].username;
-                            parentThis.graphics.loadCard(parentThis.points, index, 0);
-                        },
-                        error: () => {
-                            console.log("error in getting username");
-                        }
-                    });
+                    parentThis.points[index].username = facade.user.account.username;
+                    parentThis.graphics.loadCard(parentThis.points, index, 0);
                 });
 
                 this.wikipediaPoints = []; //with wikipedia stuff here, wikipedia links are loaded only if database responds successfully. Maybe it can be changed

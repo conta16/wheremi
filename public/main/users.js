@@ -19,15 +19,18 @@ class Users{
             parentThis.getItineraries();
             var use=Object.assign({}, e.detail.account);
             $('img#profilepic').attr('src', e.detail.account.profilepic);
-
-            $.ajax({
-            url:'/user',
-            method:'GET',
-            success:function(err, data){
-              if (data.accessToken)
-                YTUploader.ready(data.accessToken);
+            function show_progress(percentage){
+              $("#uploadOnYT")[0].innerHTML="uploading: "+percentage;
+              $("#uploadOnYT").prop('disabled', true);
             }
-          });
+
+            function done(){
+              $("#uploadOnYT")[0].innerHTML='done'
+              $("#recordAudio").prop('disabled', true);
+              $("#recordVideo").prop('disabled', true);
+              $("#uploadOnYT").prop('disabled', true);
+            }
+            YTUploader.ready(e.detail.account.accessToken, show_progress, done);
           });
           $(document).on('change','#uploadpic', function () {
             var file = this.files;

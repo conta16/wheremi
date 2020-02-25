@@ -115,8 +115,8 @@ this.stopRecording=function() {
 }
 
 this.drawCanvas=function(canvasCtx, img){
-  title=$("textarea#title");
-  description=$("textarea#description");
+  title=$("textarea#video-title");
+  description=$("textarea#video-description");
   canvasCtx.drawImage(img, 0, 0, 1920, 1080);
   canvasCtx.fillStyle = 'rgb(0, 0, 0)';
   canvasCtx.font = "96px Comic Sans MS";
