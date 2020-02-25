@@ -20,28 +20,18 @@ function initLanguagePaul(){
     return userLang;
 }
 
-var htmlVideo = `<div id="headerPopup" class="">
-                              <iframe class="embed-responsive-item " id="video-frame" width="854" height="480" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                              </div>`;
+
 
 function badPaulWmi(){//wheremi
 
-         facade.loadHtmlInspectBefore();
-         //var olcCurrentPosition = getOlcForUser();
-         //riproduci un video per dire dove sei (WHERE)
+         
          badPaul.say('Playing a video to tell you where you are');
-         /*trova dove sei (usando olc) e poi carica un video di quel tipo*/
-
-         facade.saveHtmlInspectBefore($("#inspect").html());
 
          var video = wmi_search(1, L.userPosition.latLng, {purpose: "where"}, function(videos){
            console.log(videos);
-           $("#inspect").append(htmlVideoPopup);
-           $(".video-frame").attr('src', video);
-           $('#headerVideoLink').magnificPopup({
-              type:'inline',
-              midClick: true
-           }); //a sto punto il video dovrebbe essere un popup.
+           var url = "https://youtube.com/video/" + videos[0].id
+           $("#video-frame").attr('src', url);
+           $("#video-frame").play() //a sto punto il video dovrebbe essere un popup.
          });
 }
 
@@ -102,5 +92,5 @@ function badPaulPause(){
 function badPaulContinue(){
     //continua la riproduzione del video corrente
     badPaul.say("Resuming play");
-    $(".video-frame").play()
+    $("#video-frame").play()
 }

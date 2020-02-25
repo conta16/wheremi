@@ -154,10 +154,12 @@
       <%}else{ %>
           <div style="display: inline-block; text-align: center;"><p>You're not Logged In!</p></div>
       <% } %>
-
     </div>
     <div role="tabpanel" class="tab-pane fade-in h-100" id="voice">
-      <div class="test-container-for-vids" id="vid-container" style="height: 350px; width: 100%; border-color: red; border-style: solid; border-width: 1px;"></div>
+      <div class="test-container-for-vids" id="vid-container" style="height: 350px; width: 100%; border-color: red; border-style: solid; border-width: 1px;"><div id="headerPopup" class="">
+        <iframe class="embed-responsive-item" id="video-frame" width="100%" height="100%" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
                 <button class="btn btn-primary dis" id="buttonWmi" onclick="badPaulWmi()" >Where am i?</button>
                 <button class="btn btn-primary dis" id="buttonWhy" onclick="badPaulWhy()" >Why</button>
                 <button class="btn btn-primary dis" id="buttonMore" onclick="badPaulMore()" >More</button>
