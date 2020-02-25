@@ -43,7 +43,7 @@ function wikiSearcher(options){
           }
 
       if (pages) requestAndCallback(wiki_url, function(res){
-        if (!res.query.pages)
+        if (!res.query || !res.query.pages)
         return;
         console.log(res.query.pages);
            for (var i in res.query.pages){
