@@ -25,7 +25,7 @@ var htmlVideoPopup = `<div id="headerPopup" class="mfp-hide embed-responsive emb
                               </div>`;
 
 function badPaulWmi(){//wheremi
-    
+
          facade.loadHtmlInspectBefore();
          //var olcCurrentPosition = getOlcForUser();
          //riproduci un video per dire dove sei (WHERE)
@@ -33,20 +33,21 @@ function badPaulWmi(){//wheremi
          /*trova dove sei (usando olc) e poi carica un video di quel tipo*/
 
          facade.saveHtmlInspectBefore($("#inspect").html());
-         
-         var video = wmi_search(1, L.userPosition.latLng, {purpose: "where"}, function(videos){return videos;});
 
-         $("#inspect").append(htmlVideoPopup);
-         $(".video-frame").attr('src', video);
-         $('#headerVideoLink').magnificPopup({
-            type:'inline',
-            midClick: true
-         }); //a sto punto il video dovrebbe essere un popup.
+         var video = wmi_search(1, L.userPosition.latLng, {purpose: "where"}, function(videos){
+           console.log(videos);
+           $("#inspect").append(htmlVideoPopup);
+           $(".video-frame").attr('src', video);
+           $('#headerVideoLink').magnificPopup({
+              type:'inline',
+              midClick: true
+           }); //a sto punto il video dovrebbe essere un popup.
+         });
 }
 
 function badPaulWhy(){
      facade.loadHtmlInspectBefore();
-    
+
      badPaul.say("Playing a why clip. level "+badLvlSpec[badCurrentLvlSpec]);
      facade.saveHtmlInspectBefore($("#inspect").html());
      var video = wmi_search(1, L.userPosition.latLng, {purpose: "why", level: badLvlSpec[0]}, function(videos){return videos;});
@@ -81,7 +82,7 @@ function badPaulMore(){
 
 function badPaulNext(){
     badCurrentLvlSpec = 0
-    
+
 }
 
 function badPaulPrev(){
@@ -92,7 +93,7 @@ function badPaulStop(){
     //stoppa la riproduzione del video corrente
     $(".video-frame").pause()
     badPaul.say("Current video paused");
-    
+
 }
 
 function badPaulContinue(){

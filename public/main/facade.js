@@ -24,8 +24,8 @@ class Facade{
         this.initPaulCommands(this.Paul);
         this.currentLvlSpec = 0;
         this.lvlSpec = ['gen','pre','elm','mid','scl','all'];
-//        this.url = "https://site181951.tw.cs.unibo.it";
-        this.url = "http://localhost:3000";
+        this.url = "https://site181951.tw.cs.unibo.it";
+//        this.url = "http://localhost:3000";
     }
 
     initLanguagePaul(){
@@ -491,7 +491,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
           categoryId: category
         },
         status: {
-          privacyStatus: 'private'//SE HO MESSO PRIVATE È PERCHÉ VA PRIVATE 
+          privacyStatus: 'private'//SE HO MESSO PRIVATE È PERCHÉ VA PRIVATE
         }
       };
       if (!title || title.length==0){

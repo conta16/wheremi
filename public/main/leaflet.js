@@ -1,6 +1,6 @@
 var map;
-//var url = "https://site181951.tw.cs.unibo.it";
-var url = "http://localhost:3000";
+var url = "https://site181951.tw.cs.unibo.it";
+//var url = "http://localhost:3000";
 var tmp_index;
 var tmp_waypoint;
 var YTUploader;
@@ -81,7 +81,7 @@ function reloadInspect(){
 	$('#video-div').html('<video id="monitor" width="100%" autoplay="autoplay"></video>');
 	$('#uploadOnYT').html('Upload on Youtube');
 	$('#recordAudio').html('Record audio');
-	$('#recordVideo').html('Record video');	
+	$('#recordVideo').html('Record video');
 }
 
 
