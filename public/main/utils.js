@@ -112,10 +112,11 @@ function result_filter(yt_videos, props){
 function wmi_search(results, position, filter, callback){
   var raw_videos;
   var filtered_videos;
-  /*TITS*/var yt=new YTSearcher({googlekey: "AIzaSyCntiI4kbASipSjAzrS9yo75YS_WXQa0ls"/* davolz"AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0"*/,yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){
+  var yt=new YTSearcher({googlekey: "AIzaSyCntiI4kbASipSjAzrS9yo75YS_WXQa0ls"/*"AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0"*/,yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){
     raw_videos=mahmood(res);
     filtered_videos=result_filter(raw_videos, filter);
     console.log(raw_videos);
+    console.log(filtered_videos);
     callback(filtered_videos);
   }, errorCallback: function(a, b, c){
     console.log(a, b, c);

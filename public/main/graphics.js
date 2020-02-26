@@ -17,18 +17,7 @@ class Graphics{
             position:'bottomleft'
         }).addTo(map);
 
-        /*this.nav_controller = L.control.custom({
-            position: 'topleft',
-          content : '<div class=""><a class="leaflet-bar-part leaflet-bar-part-single" width="30px" style="line-height: 30px; height: 30px; width: 30px" height="30px"><img src="./img/nav.svg" width="30px" height="30px"></img></a></div>',
-            classes : 'leaflet-control leaflet-bar',
-            events : {
-                click : function(e){
-                    nav=new polloNavigator(navigatorControl.onpoint, navigatorControl.onend, navigatorControl.wondering);
-                    console.log(nav);
-                    nav.navigate();
-                },
-            }
-        }).addTo(map);*/
+        
 
         this.create = L.control.custom({
             position: 'topleft',
@@ -144,28 +133,6 @@ class Graphics{
         $('#title').val(waypoints[index].title);
         $('#description').val(waypoints[index].description);
 
-        /*$("select#purp option").filter(function() {
-            return $(this).text() == waypoints[index].purpose;
-        }).prop('selected', true);
-
-        //$('#lang').val(waypoints[index].lang);
-
-        $('select#lang option').filter(function(){
-            return $(this).val() == waypoints[index].lang;
-        });
-
-        $("select#cont option").filter(function() {
-            return $(this).val() == waypoints[index].content;
-        }).prop('selected', true);
-
-        $("select#aud option").filter(function() {
-            return $(this).val() == waypoints[index].audience;
-        }).prop('selected', true);
-
-        $("select#det option").filter(function() {
-            return $(this).val() == waypoints[index].detail;
-        }).prop('selected', true);
-*/
         $('.nopermit').html("<p class='h2'>"+waypoints[index].title+"</p><p class='h6'>"+waypoints[index].description+"</p>");
         $('#left').on('click',() => {
             if (index > 0) parentThis.loadMenu(waypoints, index-1, write_permit, nextnprevious);
@@ -182,27 +149,7 @@ class Graphics{
           $('#description').on('input', function(){
           waypoints[index].description = $('#description').val();
         });
-/*        $('#purp').on('change', () => {
-            e = document.getElementById("purp");
-            waypoints[index].purpose = e.options[e.selectedIndex].val();
-        });
-        $('#lang').on('input', () => {
-            e = document.getElementById("lang");
-            waypoints[index].lang = e.options[e.selectedIndex].val();
-        });
-        $('#cont').on('input', () => {
-            e = document.getElementById("cont");
-            waypoints[index].content = e.options[e.selectedIndex].val();
-            console.log(waypoints[index].content);
-        });
-        $('#aud').on('input', () => {
-            e = document.getElementById("aud");
-            waypoints[index].audience = e.options[e.selectedIndex].val();
-        });
-        $('#det').on('input', () => {
-            e = document.getElementById("det");
-            waypoints[index].detail = e.options[e.selectedIndex].val();
-        });*/
+
         if (L.userPosition) wmi_search(10, L.userPosition.latLng, {}, function(videos){console.log(videos)});
 
         for (var i in waypoints[index].comments){

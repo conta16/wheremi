@@ -20,18 +20,19 @@ function initLanguagePaul(){
     return userLang;
 }
 
-
+var tmpuser = {}
+tmpuser.latLng = {lat: '44.488998044', lng: '11.339498642'}
 
 function badPaulWmi(){//wheremi
 
          
          badPaul.say('Playing a video to tell you where you are');
 
-         var video = wmi_search(1, L.userPosition.latLng, {purpose: "where"}, function(videos){
+           wmi_search(1, tmpuser.latLng, {purpose: "what"}, function(videos){
            console.log(videos);
-           var url = "https://youtube.com/video/" + videos[0].id
+           var url = "https://www.youtube.com/embed/" + videos[0].id
            $("#video-frame").attr('src', url);
-           $("#video-frame").play() //a sto punto il video dovrebbe essere un popup.
+           $("#video-frame").play()
          });
 }
 
@@ -40,7 +41,7 @@ function badPaulWhy(){
 
      badPaul.say("Playing a why clip. level "+badLvlSpec[badCurrentLvlSpec]);
      facade.saveHtmlInspectBefore($("#inspect").html());
-     var video = wmi_search(1, L.userPosition.latLng, {purpose: "why", level: badLvlSpec[0]}, function(videos){return videos;});
+     var video = wmi_search(1, L.userPosition.latLng, [{purpose: "why", level: badLvlSpec[0]}], function(videos){return videos;});
      badCurrentLvlSpec += 1;
      var urlgiusto = "https://youtube.com/video/" + video;
 
