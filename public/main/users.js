@@ -89,10 +89,12 @@ class Users{
     }
 
     getItineraries(){
+        console.log("in getItineraries");
         var parentThis = this;
         for (var i in this.account.itinerary_id){
             this.itinerary.getRouteFromDB(this.account.itinerary_id[i])
             .then((data) => {
+                console.log(data);
 
                 if (!data.inputWaypoints[0].img[0]) $(".profile-usermenu").prepend(
                     "<img src='./img/unknown_person.png' class='img-thumbnail' style='height:30%;width:33%; display: inline' alt=''>"

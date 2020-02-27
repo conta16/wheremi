@@ -78,6 +78,21 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
       format: "json",
       success: function(res){
         console.log(res);
+        if (res.items.length > 0){
+          var yt_points = facade.getPointsOfInterest().yt_points;
+          yt_points = Object.assign({},res.items);
+          for (var i in yt_points){
+            var str = yt_points[i].snippet.description.substr(0, yt_points[i].snippet.description.indexOf(":"));
+            var num = str.split("+").length-1
+            if (num > 1) str = str.substr(nthIndex(str,"+", num-1)+2, str.length-1); //from the second + onwards you get the right olc
+
+              var decodedOLC = OpenLocationCode.decode(str);
+              var latlng = {};
+              latlng.lat = decodedOLC.latitudeCenter;
+              latlng.lng = decodedOLC.longitudeCenter;
+              facade.getPointsOfInterest().setYoutubeMarker(latlng, i);
+          }
+        }
         parent.items=parent.items.concat(res.items);
         if (res.nextPageToken && _params.results-res.items.length>0)
           _wmivideo_search(Object.assign(_params, {pageToken: res.nextPageToken, results:_params.results-res.items.length}), latLng, spec_level)
@@ -134,10 +149,10 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
 
   function onYouTubeIframeAPIReady(id) {
     $('#inspect').html(itineraryHTML);
-    var player = new YT.Player('player', {
+    player = new YT.Player('video-frame', {
       height: '360',
       width: '640',
-      videoId: id, //'M7lc1UVf-VE',
+      //videoId: id, //'M7lc1UVf-VE',
       events: {
         'onReady': onPlayerReady
         //'onStateChange': onPlayerStateChange

@@ -20,20 +20,32 @@ function initLanguagePaul(){
     return userLang;
 }
 
-var tmpuser = {}
-tmpuser.latLng = {lat: '44.488998044', lng: '11.339498642'}
+//var tmpuser = {}
+//tmpuser.latLng = {lat: '44.488998044', lng: '11.339498642'}
 
 function badPaulWmi(){//wheremi
 
-         
+    if (L.userPosition){         
          badPaul.say('Playing a video to tell you where you are');
 
-           wmi_search(1, tmpuser.latLng, {purpose: "what"}, function(videos){
-           console.log(videos);
-           var url = "https://www.youtube.com/embed/" + videos[0].id
+           wmi_search(1, L.userPosition.latLng, {purpose: "what"}, function(videos){
+           var url = "https://www.youtube.com/embed/" + videos[0].id +"?enablejsapi=1&version=3&playerapiid=ytplayer";
            $("#video-frame").attr('src', url);
-           $("#video-frame").play()
+           $("#video-frame").contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+
+           $("#buttonPause").on("click", () => {
+               console.log("video");
+               /*$('.embed-responsive-item').each(function(){
+                this.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+              });*/
+              $('#video-frame').contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+           });
+           $("#buttonCont").on("click", () => {
+            $('#video-frame').contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+           });
          });
+    }
+    else alert("You have to activate the geolocalisation");
 }
 
 function badPaulWhy(){
@@ -41,7 +53,8 @@ function badPaulWhy(){
 
      badPaul.say("Playing a why clip. level "+badLvlSpec[badCurrentLvlSpec]);
      facade.saveHtmlInspectBefore($("#inspect").html());
-     var video = wmi_search(1, L.userPosition.latLng, [{purpose: "why", level: badLvlSpec[0]}], function(videos){return videos;});
+     var video = wmi_search(1, L.userPosition.latLng, [{purpose: "why", level: badLvlSpec[0]}], function(videos){console.log(videos);return videos;});
+     console.log(video);
      badCurrentLvlSpec += 1;
      var urlgiusto = "https://youtube.com/video/" + video;
 
@@ -85,7 +98,7 @@ function badPaulPrev(){
 
 function badPaulPause(){
     //stoppa la riproduzione del video corrente
-    $("#video-frame").pause();
+    //$("#video-frame").pause();
     badPaul.say("Current video paused");
 
 }
@@ -93,5 +106,5 @@ function badPaulPause(){
 function badPaulContinue(){
     //continua la riproduzione del video corrente
     badPaul.say("Resuming play");
-    $("#video-frame").play()
+    //$("#video-frame").play()
 }

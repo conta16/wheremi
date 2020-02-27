@@ -4,6 +4,13 @@ var url = "https://site181951.tw.cs.unibo.it";
 var tmp_index;
 var tmp_waypoint;
 var YTUploader;
+var player;
+var yt;
+
+var tag = document.createElement('script');
+tag.src = "//www.youtube.com/player_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 /*const choiceControl = new ChoiceControl({
     provider: provider,

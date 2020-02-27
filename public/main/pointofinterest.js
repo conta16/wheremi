@@ -311,7 +311,7 @@ class PointOfInterest{
         return this.searchPointMarker;
     }
 
-    setYoutubeMarker(latLng){
+    setYoutubeMarker(latLng, index){
         var parentThis = this;
         var len = this.yt_markers.length;
         var icon = L.icon({
@@ -326,7 +326,7 @@ class PointOfInterest{
                 draggable: false
             }
         );
-        var title=this.yt_points[len].snippet.title.toString();
+        /*var title=this.yt_points[len].snippet.title.toString();
         this.yt_markers[len].on('click', (e) => {
 
             $("#inspect").text(title);
@@ -335,7 +335,7 @@ class PointOfInterest{
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.yt_points[len]);
             }
             facade.selectedWaypoint=Object.assign({}, parentThis.yt_points[len]);
-        });
+        });*/
         this.yt_markers[len].addTo(map);
     }
 

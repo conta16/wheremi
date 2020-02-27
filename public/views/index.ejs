@@ -53,7 +53,7 @@
       <div id="map" class="leaflet-container leaflet-touch leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom" style="z-index: 0;">
       </div>
       <!--<button class="btn btn-primary" id="invisible" type="button" onclick="change()">change</button>-->
-      <img src="./img/paul.svg" onclick="facade.getGraphics().change()" id="invisible" style="width:15%; height:15%"/>
+      <img src="./img/paul.svg" onclick="facade.getGraphics().change()" id="invisible" style="width:15%; height:15%" alt=""/>
 
     </div>
 
@@ -61,7 +61,7 @@
       <div class="row mt-2 mb-2">
       <div class="col">
         <div class="float-right" align="left" style="width: 100%;">
-          <a href="./"><img class="" src="./img/paul.svg" style="height: 38px"></a>
+          <a href="./"><img class="" src="./img/paul.svg" style="height: 38px" alt=""></a>
           <% if (!user) { %>
           <a href="/login"><button class="btn btn-primary float-right" type="button" id="buttonLogin" style="height: 100%;">Login</button></a>
           <% } else { %>
@@ -90,7 +90,7 @@
       </div>
       <!--<button class="btn btn-primary" id="invisible2" type="button" onclick="change()">change</button>-->
 
-          <img src="./img/paul.svg" onclick="facade.getGraphics().change()" id="invisible2" style="width:15%; height:15%;"/>
+          <img src="./img/paul.svg" onclick="facade.getGraphics().change()" id="invisible2" style="width:15%; height:15%;" alt=""/>
 
     <!-- Tab panes -->
     <div class="tab-content h-100">
@@ -101,7 +101,7 @@
       </div>
       <div role="tabpanel" class="tab-pane fade-in h-100" id="profile">
         <%if(user){%>
-        <body>
+        <!--<body>-->
         <div class="container ">
             <div class="row profile">
                 <div class="col-lg-12">
@@ -111,7 +111,8 @@
                 <label for ="uploadpic">
                 <div class ="centering">
         				<div class="image-cropper">
-        					<img src="../img/standard_profile.jpg" class="profile-pic" id="profilepic">
+                  <img src="../img/standard_profile.jpg" class="profile-pic" id="profilepic" alt=""/>
+                </div>
                 </div>
                 </label>
                 <input id="uploadpic" type="file" accept="image/*" style='display: none'/>
@@ -155,23 +156,26 @@
           <div style="display: inline-block; text-align: center;"><p>You're not Logged In!</p></div>
       <% } %>
     </div>
+    <!--<div id="headerPopup" class="">-->
     <div role="tabpanel" class="tab-pane fade-in h-100" id="voice">
-      <div class="test-container-for-vids" id="vid-container" style="height: 350px; width: 100%; border-color: red; border-style: solid; border-width: 1px;"><div id="headerPopup" class="">
+      <div class="test-container-for-vids" id="vid-container" style="height: 350px; width: 100%; border-color: red; border-style: solid; border-width: 1px;">
         <iframe type="text/html" class="embed-responsive-item" id="video-frame" width="100%" height="100%" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        </div>
       </div>
-                <button class="btn btn-primary dis" id="buttonWmi" onclick="badPaulWmi()" >Where am i?</button>
-                <button class="btn btn-primary dis" id="buttonWhy" onclick="badPaulWhy()" >Why</button>
-                <button class="btn btn-primary dis" id="buttonMore" onclick="badPaulMore()" >More</button>
-                <br>
-                <button class="btn btn-primary dis" id="buttonNext" onclick="badPaulNext()" >Next</button>
-                <button class="btn btn-primary dis" id="buttonPrev" onclick="badPaulPrev()" >Previous</button>
-                <button class="btn btn-primary dis" id="buttonPause" onclick="badPaulPause()" >Pause</button>
-                <br>
-                <button class="btn btn-primary dis" id="buttonCont" onclick="badPaulContinue()" >Continue</button>
+      <button class="btn btn-primary dis" id="buttonWmi" onclick="badPaulWmi()" >Where am i?</button>
+      <button class="btn btn-primary dis" id="buttonWhy" onclick="badPaulWhy()" >Why</button>
+      <button class="btn btn-primary dis" id="buttonMore" onclick="badPaulMore()" >More</button>
+      <br>
+      <button class="btn btn-primary dis" id="buttonNext" onclick="badPaulNext()" >Next</button>
+      <button class="btn btn-primary dis" id="buttonPrev" onclick="badPaulPrev()" >Previous</button>
+      <button class="btn btn-primary dis" id="buttonPause" onclick="badPaulPause()" >Pause</button>
+      <br>
+      <button class="btn btn-primary dis" id="buttonCont" onclick="badPaulContinue()" >Continue</button>
+      </div>
     </div>
-    <canvas id="canvas" width="1920" height="1080" style="display: none" tabindex="-1"></canvas>
-  </body>
+    </div>
+    </div>
+    <!--<canvas id="canvas" width="1920" height="1080" style="display: none" tabindex="-1"></canvas>-->
+  
 
     <script type="text/javascript" src="./main/utils.js"></script>
     <script type="text/javascript" src="./navigator/artyom.window.min.js"></script>

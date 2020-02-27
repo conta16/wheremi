@@ -298,7 +298,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
             method: "GET",
             success: function(data){
               console.log(data);
-              if (!$.isEmptyObject(data)){
+              if (!$.isEmptyObject(data)){ //qua data è sempre vuoto, anche se il login avviene con successo
                   console.log(data);
                 var event =new CustomEvent('userLogged', {detail: {account:data}});
                 document.dispatchEvent(event);
@@ -413,8 +413,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
         var it_points = this.pointsOfInterest.getItineraryStartPoints();
         var points = this.pointsOfInterest.getPoints();
         var wiki_points = this.pointsOfInterest.getWikipediaPoints();
-
-        for (var i of it_points){
+        for (var i in it_points){
             var pos = it_points[i].inputWaypoints[0].latLng;
             if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 20 && !it_points[i].inputWaypoints[0].played){
                 this.Paul.say(it_points[i].inputWaypoints[0].title);
@@ -425,7 +424,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
             }
         }
 
-        for (var i of points){
+        for (var i in points){
             var pos = points[i].latLng;
             if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 20 && !points[i].played){
                 this.Paul.say(points[i].title);
@@ -436,7 +435,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
             }
         }
 
-        for (var i of wiki_points){
+        for (var i in wiki_points){
             var pos = wiki_points[i].latLng;
             if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 20 && !this.visitedWikiIds.includes(wiki_points[i].pageid)){
                 this.Paul.shutUp();

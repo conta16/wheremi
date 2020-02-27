@@ -109,14 +109,25 @@ function result_filter(yt_videos, props){
   return yt_videos;
 }
 
+function nthIndex(str, pat, n){ //find n-th occurence of pat in str 
+  var L= str.length, i= -1;
+  while(n-- && i++<L){
+      i= str.indexOf(pat, i);
+      if (n == 0 || i == -1) break;
+  }
+  if (n == 0 && i >= 0) return i;
+  else return -1;
+}
+
 function wmi_search(results, position, filter, callback){
   var raw_videos;
   var filtered_videos;
-  var yt=new YTSearcher({googlekey: "AIzaSyCntiI4kbASipSjAzrS9yo75YS_WXQa0ls"/*"AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0"*/,yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){
+  yt=new YTSearcher({googlekey: "AIzaSyCntiI4kbASipSjAzrS9yo75YS_WXQa0ls"/*"AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0"*/,yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){
     raw_videos=mahmood(res);
     filtered_videos=result_filter(raw_videos, filter);
     console.log(raw_videos);
     console.log(filtered_videos);
+    console.log(this);
     callback(filtered_videos);
   }, errorCallback: function(a, b, c){
     console.log(a, b, c);
