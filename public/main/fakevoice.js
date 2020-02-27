@@ -20,8 +20,8 @@ function initLanguagePaul(){
     return userLang;
 }
 
-var tmpuser = {}
-tmpuser.latLng = {lat: '44.488998044', lng: '11.339498642'}
+var tmpuser = L.userPosition/*{}
+tmpuser.latLng = {lat: '44.488998044', lng: '11.339498642'}*/
 
 function badPaulWmi(){//wheremi
 
