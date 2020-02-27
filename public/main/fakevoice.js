@@ -25,54 +25,85 @@ tmpuser.latLng = {lat: '44.488998044', lng: '11.339498642'}
 
 function badPaulWmi(){//wheremi
 
-         
-         badPaul.say('Playing a video to tell you where you are');
-
            wmi_search(1, tmpuser.latLng, {purpose: "what"}, function(videos){
            console.log(videos);
-           var url = "https://www.youtube.com/embed/" + videos[0].id
-           $("#video-frame").attr('src', url);
-           $("#video-frame").play()
+           var url;
+           if (videos.length > 0){
+            if (videos[0].id){
+                 url = "https://www.youtube.com/embed/" + videos[0].id
+                badPaul.say("Playing a video to tell you where you are")
+            } else if (videos.id){ url = "https://www.youtube.com/embed/" + videos.id
+              badPaul.say("Playing a video to tell you where you are")
+            }}
+            else {badPaul.say("We couldn't find the right video for the occasion")
+            }
+            if (url){$("#video-frame").attr('src', url); $("#video-frame").play()}
          });
 }
 
 function badPaulWhy(){
-     facade.loadHtmlInspectBefore();
-
-     badPaul.say("Playing a why clip. level "+badLvlSpec[badCurrentLvlSpec]);
-     facade.saveHtmlInspectBefore($("#inspect").html());
-     var video = wmi_search(1, L.userPosition.latLng, [{purpose: "why", level: badLvlSpec[0]}], function(videos){return videos;});
-     badCurrentLvlSpec += 1;
-     var urlgiusto = "https://youtube.com/video/" + video;
-
-     $("#inspect").append(htmlVideo);
-
-     $(".video-frame").attr('src', urlgiusto);
-     $('#headerVideoLink').magnificPopup({
-        type:'inline',
-        midClick: true
-     }); //a sto punto il video dovrebbe essere un popup.
+    wmi_search(1, tmpuser.latLng, {purpose: "why", level: badLvlSpec[0]}, function(videos){
+        console.log(videos);
+        var url;
+        if (videos.length > 0){
+         if (videos[0].id){
+              url = "https://www.youtube.com/embed/" + videos[0].id
+             badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[0])
+             badCurrentLvlSpec += 1;
+         } else if (videos.id){ url = "https://www.youtube.com/embed/" + videos.id
+           badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[0])
+           badCurrentLvlSpec += 1;
+         }
+        }
+        else {badPaul.say("We couldn't find the right video for the occasion")
+         }
+         if (url){$("#video-frame").attr('src', url); $("#video-frame").play()}
+        
+      });
 }
 
 function badPaulMore(){
-    facade.loadHtmlInspectBefore();
-    //riproduci un video per dire dettagli sul posto dove sei
-    var video = wmi_search(1, L.userPosition.latLng, {purpose: "why", level: badLvlSpec[badCurrentLvlSpec]}, function(videos){return videos;});
-
-    badPaul.say("Playing a video to give you more details about the thing you're looking at. Level " + lvlSpec[currentLvlSpec]);
-    if (badcurrentLvlSpec <= 6){
-        badcurrentLvlSpec += 1;
+    if (badCurrentLvlSpec == 0){badPaulWhy()}
+    else{
+        wmi_search(1, tmpuser.latLng, {purpose: "why", level: badLvlSpec[badCurrentLvlSpec]}, function(videos){
+            console.log(videos);
+            var url;
+            if (videos.length > 0){
+             if (videos[0].id){
+                 url = "https://www.youtube.com/embed/" + videos[0].id
+                 badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[badCurrentLvlSpec])
+                 if (badCurrentLvlSpec < 6){
+                 badCurrentLvlSpec += 1;}
+             } else if (videos.id){url = "https://www.youtube.com/embed/" + videos.id
+               badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[badCurrentLvlSpec])
+               if (badCurrentLvlSpec < 6){
+                badCurrentLvlSpec += 1;}
+             }}
+             else {badPaul.say("We couldn't find the right video for the occasion")
+             }
+             if (url){$("#video-frame").attr('src', url); $("#video-frame").play()}
+          });
     }
-    var urlgiusto = "https://youtube.com/video/" + video;
-    $("#inspect").append(htmlVideoPopup);
-
-     $(".video-frame").attr('src', urlgiusto);
-     $('#headerVideoLink').magnificPopup({
-        type:'inline',
-        midClick: true
-     }); //a sto punto il video dovrebbe essere un popup.
 
 }
+
+function badPaulHow(){
+    wmi_search(1, tmpuser.latLng, {purpose: "how"}, function(videos){
+        console.log(videos);
+        var url;
+        if (videos.length > 0){
+         if (videos[0].id){
+              url = "https://www.youtube.com/embed/" + videos[0].id + "?autoplay=1s"
+             badPaul.say("Playing a video to tell you how to visit this place.")
+         } else if (videos.id){ url = "https://www.youtube.com/embed/" + videos.id +"?autoplay=1"
+           badPaul.say("Playing a video to tell you how to visit this place.");
+         }}
+         else {badPaul.say("We couldn't find the right video for the occasion")
+         }
+         if (url){$("#video-frame").attr('src', url); $("#video-frame").playVideo()}
+        
+      });
+    }
 
 function badPaulNext(){
     badCurrentLvlSpec = 0
