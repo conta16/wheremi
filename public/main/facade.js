@@ -228,7 +228,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
             success: function(data){
                 defaultLatLng.lat=parseFloat(data.latitude);
                 defaultLatLng.lng=parseFloat(data.longitude);
-                defaultLatLng.latLng=defaultLatLng;
+                //defaultLatLng.latLng=defaultLatLng;
             },
             error: function(a,b,c){
                 console.log(a,b,c)
@@ -409,7 +409,35 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
         return d;
     }
 
-    checkDistance(){
+    checkPointDistance(points, i){
+        var pos = points[i].latLng;
+        if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 20 && !points[i].played){
+            this.Paul.shutUp();
+            this.Paul.say(points[i].title);
+            this.Paul.say(points[i].description);
+            gotoTab(INSPECT_TAB);
+            this.graphics.loadMenu(points,i,false,false);
+            this.graphics.addStopButton();
+            points[i].played = true;
+        }
+    }
+
+    checkWikiDistance(wiki_points, i){
+        var pos = wiki_points[i].latLng;
+        if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 20 && !this.visitedWikiIds.includes(wiki_points[i].pageid)){
+            this.Paul.shutUp();
+            this.Paul.say(wiki_points[i].title);
+            this.Paul.say(wiki_points[i].extract);
+            gotoTab(INSPECT_TAB);
+            console.log($("#inspect"));
+            $("#inspect").html("<div class='container'><h2>"+wiki_points[i].title+"</h2><p>"+wiki_points[i].extract+"</p></div>");
+            //$("#inspect").append('<div style="margin-bottom: 50px"><button type="button" class="btn btn-primary startItinerary" onclick="facade.go()">Start Itinerary</button></div>');
+            this.graphics.addStopButton(wiki_points[i].title, wiki_points[i].extract);
+            this.visitedWikiIds.push(wiki_points[i].pageid);
+        }
+    }
+
+    /*checkDistance(){
         var it_points = this.pointsOfInterest.getItineraryStartPoints();
         var points = this.pointsOfInterest.getPoints();
         var wiki_points = this.pointsOfInterest.getWikipediaPoints();
@@ -429,6 +457,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
             if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 20 && !points[i].played){
                 this.Paul.say(points[i].title);
                 this.Paul.say(points[i].description);
+                gotoTab(INSPECT_TAB);
                 this.graphics.loadMenu(points,i,false,false);
                 this.graphics.addStopButton();
                 points[i].played = true;
@@ -450,7 +479,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
                 break;
             }
         }
-    }
+    }*/
 
     locationString(latLng, begin, end){
       var olc='';

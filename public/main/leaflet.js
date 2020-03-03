@@ -74,7 +74,17 @@ function youtubeUpload(){
 }
 
 function checkDistance(){
-  facade.checkDistance();
+	console.log("dentro check");
+	console.log(dest_point);
+	if (dest_point.type && dest_point.type == "wiki") {
+		console.log("dentro wiki");
+		facade.checkWikiDistance([dest_point.data],0);
+		dest_point = {};
+	}
+	if (dest_point.type && dest_point.type == "point"){
+		facade.checkPointDistance([dest_point.data],0);
+		dest_point = {};
+	}
 }
 
 function copyVideoFields() {

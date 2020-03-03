@@ -244,4 +244,13 @@ class Graphics{
             parentThis.addStopButton(title, description);
         });
       }
+      loadVideoAndPlay(video_id){
+        var url = "https://www.youtube.com/embed/" + video_id +"?enablejsapi=1&version=3&playerapiid=ytplayer";
+        $("#video-frame").attr('src', url);
+        setTimeout(() => {
+          $('.embed-responsive-item').each(function(){
+              this.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+          });
+        },2000);
+      }
 }

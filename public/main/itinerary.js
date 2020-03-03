@@ -90,6 +90,7 @@ class Itinerary {
                     delete point.pageid;
                     delete point.extract;
                 }
+                
                 obj = point;
             }
             if (i==0 && point && point.id) {

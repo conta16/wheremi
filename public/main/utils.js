@@ -119,6 +119,19 @@ function nthIndex(str, pat, n){ //find n-th occurence of pat in str
   else return -1;
 }
 
+function ytOLCtolatlng(yt_points){
+  console.log(yt_points);
+  var str = yt_points.snippet.description.substr(0, yt_points.snippet.description.indexOf(":"));
+  var num = str.split("+").length-1
+  if (num > 1) str = str.substr(nthIndex(str,"+", num-1)+2, str.length-1); //from the second + onwards you get the right olc
+
+    var decodedOLC = OpenLocationCode.decode(str);
+    var latlng = {};
+    latlng.lat = decodedOLC.latitudeCenter;
+    latlng.lng = decodedOLC.longitudeCenter;
+    return latlng;
+}
+
 function wmi_search(results, position, filter, callback){
   var raw_videos;
   var filtered_videos;

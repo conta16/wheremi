@@ -1,5 +1,7 @@
 var badLvlSpec = ['gen','pre','elm','mid','scl','all']
 var badCurrentLvlSpec = 0;
+var purpose = "";
+var dest_point = {};
 
 
 var badPaul = new Artyom();
@@ -25,104 +27,120 @@ function initLanguagePaul(){
 
 function badPaulWmi(){//wheremi
 
-    if (L.userPosition && videos[0].id){         
-         badPaul.say('Playing a video to tell you where you are');
-
-           wmi_search(1, L.userPosition.latLng, {purpose: "what"}, function(videos){
-           var url = "https://www.youtube.com/embed/" + videos[0].id +"?enablejsapi=1&version=3&playerapiid=ytplayer";
-           $("#video-frame").attr('src', url);
-           $("#video-frame").contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-
-           $("#buttonPause").on("click", () => {
-               console.log("video");
-               /*$('.embed-responsive-item').each(function(){
-                this.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-              });*/
-              $('#video-frame').contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+    if (L.userPosition){         
+         purpose = "what";
+         badCurrentLvlSpec = 0;
+           wmi_search(1, L.userPosition.latLng, {purpose: purpose}, function(videos){
+            if (videos[0] && videos[0].id){
+                facade.getPointsOfInterest().setYTPoint(videos[0].id, videos[0].latLng);
+                dest_point = facade.getPointsOfInterest().calculateClosestPoint();
+                
+                var tmp = []; tmp.push(L.userPosition.latLng); tmp.push(dest_point.data.latLng);
+                facade.getItinerary().setWaypoints(tmp); // per wiki e point l'audio parte quando viene cambiato L.userPosition e diventa <20, guarda su l0controllocate (mi sembra)
+                if (dest_point.type == "yt"){
+                    badPaul.say('Playing a video to tell you where you are');
+                    facade.getGraphics().loadVideoAndPlay(videos[0].id);
+                    $("#buttonPause").on("click", () => {
+                        $('.embed-responsive-item').each(function(){
+                            this.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                        });
+                    });
+                    $("#buttonCont").on("click", () => {
+                        $('.embed-responsive-item').each(function(){
+                            this.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+                        });
+                    });
+                }
+            }
+            else {
+                badPaul.say("Sorry, we couldn't find any videos");
+            }
            });
-           $("#buttonCont").on("click", () => {
-            $('#video-frame').contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-           });
-         });
     }
     else if (!L.userPosition) badPaul.say("You have to activate the geolocalisation");
-    else if (!videos[0].id) badPaul.say("Sorry, we couldn't find any videos");
 }
 
 function badPaulWhy(){
-    wmi_search(1, tmpuser.latLng, {purpose: "why", level: badLvlSpec[0]}, function(videos){
-        console.log(videos);
-        var url;
-        if (videos.length > 0){
-         if (videos[0].id){
-              url = "https://www.youtube.com/embed/" + videos[0].id
-             badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[0])
-             badCurrentLvlSpec += 1;
-         } else if (videos.id){ url = "https://www.youtube.com/embed/" + videos.id
-           badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[0])
-           badCurrentLvlSpec += 1;
-         }
-        }
-        else {badPaul.say("We couldn't find the right video for the occasion")
-         }
-         if (url){$("#video-frame").attr('src', url); $("#video-frame").play()}
-        
-      });
-}
-
-function badPaulMore(){
-    if (badCurrentLvlSpec == 0){badPaulWhy()}
-    else{
-        wmi_search(1, tmpuser.latLng, {purpose: "why", level: badLvlSpec[badCurrentLvlSpec]}, function(videos){
+    if (L.userPosition){
+        purpose = "why";
+        badCurrentLvlSpec = 0;
+        wmi_search(1, L.userPosition.latLng, {purpose: purpose, level: badLvlSpec[0]}, function(videos){
             console.log(videos);
             var url;
             if (videos.length > 0){
+                if (videos[0].id){
+                facade.getGraphics().loadVideoAndPlay(videos[0].id);
+                badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[0])
+            } else if (videos.id){ url = "https://www.youtube.com/embed/" + videos.id
+                badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[0])
+            }
+        }
+        else badPaul.say("We couldn't find the right video for the occasion");
+      });
+    }
+    else badPaul.say("You have to activate the geolocalisation");
+}
+
+function badPaulMore(){
+    var url;
+    if (L.userPosition){
+        wmi_search(1, L.userPosition.latLng, {purpose: purpose, level: badLvlSpec[++badCurrentLvlSpec]}, function(videos){
+            console.log(videos);
+            if (videos.length > 0 && badCurrentLvlSpec <= 5){
              if (videos[0].id){
-                 url = "https://www.youtube.com/embed/" + videos[0].id
-                 badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[badCurrentLvlSpec])
-                 if (badCurrentLvlSpec < 6){
-                 badCurrentLvlSpec += 1;}
-             } else if (videos.id){url = "https://www.youtube.com/embed/" + videos.id
-               badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[badCurrentLvlSpec])
-               if (badCurrentLvlSpec < 6){
-                badCurrentLvlSpec += 1;}
-             }}
-             else {badPaul.say("We couldn't find the right video for the occasion")
+                badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[badCurrentLvlSpec])
+                facade.getGraphics().loadVideoAndPlay(videos[0].id);
+             } else if (videos.id){
+                url = "https://www.youtube.com/embed/" + videos.id //videos non dovrebbe essere sempre un vettore?? 
+                facade.getGraphics().loadVideoAndPlay(videos.id);
+                badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[badCurrentLvlSpec])
              }
-             if (url){$("#video-frame").attr('src', url); $("#video-frame").play()}
+            }
+             else {
+                 //badPaul.say("We couldn't find the right video for the occasion");
+                 if (badCurrentLvlSpec > 5){
+                     badPaul.say("Reached maximum detail level");
+                     badCurrentLvlSpec = 0;
+                 }
+                 else badPaulMore();
+             }
+             //if (url){$("#video-frame").attr('src', url); $("#video-frame").play()}
           });
     }
+    else badPaul.say("You have to activate the geolocalisation");
 
 }
 
 function badPaulHow(){
-    wmi_search(1, tmpuser.latLng, {purpose: "how"}, function(videos){
+    if (L.userPosition){
+        purpose = "how";
+        badCurrentLvlSpec = 0;
+    wmi_search(1, tmpuser.latLng, {purpose: purpose, level: badLvlSpec[0]}, function(videos){
         console.log(videos);
         var url;
         if (videos.length > 0){
          if (videos[0].id){
-              url = "https://www.youtube.com/embed/" + videos[0].id + "?autoplay=1s"
-             badPaul.say("Playing a video to tell you how to visit this place.")
-         } else if (videos.id){ url = "https://www.youtube.com/embed/" + videos.id +"?autoplay=1"
+             badPaul.say("Playing a video to tell you how to visit this place.");
+             facade.getGraphics().loadVideoAndPlay(videos[0].id);
+         }/* else if (videos.id){ url = "https://www.youtube.com/embed/" + videos.id +"?autoplay=1"
            badPaul.say("Playing a video to tell you how to visit this place.");
-         }}
-         else {badPaul.say("We couldn't find the right video for the occasion")
-         }
-         if (url){$("#video-frame").attr('src', url); $("#video-frame").playVideo()}
-        
+         }*/
+        }
+         else badPaul.say("We couldn't find the right video for the occasion");    
       });
     }
+    else badPaul.say("You have to activate the geolocalisation");
+}
 
 function badPaulNext(){
-    badCurrentLvlSpec = 0
 
 }
 
 function badPaulPrev(){
-    badCurrentLvlSpec = 0
+
 }
 
-function badPaulPause(){
+/*function badPaulPause(){
     //stoppa la riproduzione del video corrente
     //$("#video-frame").pause();
     badPaul.say("Current video paused");
@@ -133,4 +151,4 @@ function badPaulContinue(){
     //continua la riproduzione del video corrente
     badPaul.say("Resuming play");
     //$("#video-frame").play()
-}
+}*/

@@ -53,7 +53,7 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
   }
 
   _wmivideo_search = function(_params, latLng, spec_level){
-    console.log(spec_level);
+    console.log(latLng);
     if (spec_level<6)
       return;
     var params={
@@ -82,15 +82,9 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
           var yt_points = facade.getPointsOfInterest().yt_points;
           yt_points = Object.assign({},res.items);
           for (var i in yt_points){
-            var str = yt_points[i].snippet.description.substr(0, yt_points[i].snippet.description.indexOf(":"));
-            var num = str.split("+").length-1
-            if (num > 1) str = str.substr(nthIndex(str,"+", num-1)+2, str.length-1); //from the second + onwards you get the right olc
-
-              var decodedOLC = OpenLocationCode.decode(str);
-              var latlng = {};
-              latlng.lat = decodedOLC.latitudeCenter;
-              latlng.lng = decodedOLC.longitudeCenter;
-              facade.getPointsOfInterest().setYoutubeMarker(latlng, i);
+              var latLn = ytOLCtolatlng(yt_points[i]);
+              yt_points[i].latLng = Object.assign({},latLn);
+              facade.getPointsOfInterest().setYoutubeMarker(latLn, i);
           }
         }
         parent.items=parent.items.concat(res.items);

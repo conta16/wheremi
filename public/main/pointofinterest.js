@@ -3,7 +3,7 @@ class PointOfInterest{
         this.itineraryStartPoints = [];
         this.points = [];
         this.wikipediaPoints = [];
-        this.yt_points = [];
+        this.yt_points = {};
         this.wikipediaMarkers = [];
         this.markers = [];
         this.itineraryStartMarkers = [];
@@ -143,6 +143,48 @@ class PointOfInterest{
                 console.log(data);
             }
         });
+}
+
+setYTPoint(id, latLng){
+    this.yt_points = {};
+    this.yt_points.id = id;
+    this.yt_points.latLng = Object.assign({}, latLng);
+}
+
+calculateClosestPoint(){
+    
+    var min_distance = Infinity;
+    var closestPoint = {};
+    for (var i in this.points){
+        var tmp = facade.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, this.points[i].latLng.lat, this.points[i].latLng.lng);
+        if (tmp < min_distance){
+            min_distance = tmp;
+            closestPoint.type = "point";
+            closestPoint.data = Object.assign({}, this.points[i]);
+        }
+    }
+
+    for (var i in this.wikipediaPoints){
+        var tmp = facade.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, this.wikipediaPoints[i].latLng.lat, this.wikipediaPoints[i].latLng.lng);
+        if (tmp < min_distance){
+            min_distance = tmp;
+            closestPoint.type = "wiki";
+            closestPoint.data = Object.assign({}, this.wikipediaPoints[i]);
+        }
+    }
+
+
+    if (this.yt_points.id){
+        var tmp = facade.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, this.yt_points.latLng.lat, this.yt_points.latLng.lng);
+
+        if (tmp < min_distance){
+            min_distance = tmp;
+            closestPoint.type = "yt";
+            closestPoint.data = Object.assign({}, this.yt_points);
+        }
+    }
+
+    return Object.assign({}, closestPoint);
 }
 
     setPointsMarker(latLng){
