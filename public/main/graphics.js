@@ -17,7 +17,7 @@ class Graphics{
             position:'bottomleft'
         }).addTo(map);
 
-        
+
 
         this.create = L.control.custom({
             position: 'topleft',
@@ -85,7 +85,6 @@ class Graphics{
             $(".fileinput-button").css("display", "none");
             $(".nopermit").css("display", "inline");
             $(".d").prop("disabled", true);
-            $(".custom-select").prop('disabled', true);
             $("#saveChanges").css("display", "none");
             if (!$.isEmptyObject(this.facade.getAccount())){
                 $(".comment").css("display", "inline");

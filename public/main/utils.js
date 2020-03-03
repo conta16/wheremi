@@ -64,7 +64,7 @@ function mahmood(res){
           purp=(parseInt(j)+1<parts.length)?(parseInt(j)+1):undefined;
           lang=(parseInt(j)+2<parts.length)?(parseInt(j)+2):undefined;
         }
-        else if (parts[j].search(DESCRIPTION_REGEX)==0){
+        else if (parts[j].search(CONTENT_REGEX)==0){
           content=Object.assign([], parts[j].split("-"))
         }
         else if (parts[j].search(AUDIENCE_REGEX)==0){
@@ -109,7 +109,7 @@ function result_filter(yt_videos, props){
   return yt_videos;
 }
 
-function nthIndex(str, pat, n){ //find n-th occurence of pat in str 
+function nthIndex(str, pat, n){ //find n-th occurence of pat in str
   var L= str.length, i= -1;
   while(n-- && i++<L){
       i= str.indexOf(pat, i);

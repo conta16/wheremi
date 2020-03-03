@@ -760,13 +760,13 @@ function reloadInspect(){
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="reloadInspect()">Close</button>
-				<span class="btn btn-danger fileinput-button" id="recordVideo" onclick="SimpleRecorder.initVideoStream(this)">
+				<span class="btn btn-danger" id="recordVideo" onclick="SimpleRecorder.initVideoStream(this)">
 					<span>Record video</span>
 				</span>
-				<span id="recordAudio" class="btn btn-secondary fileinput-button" onclick="SimpleRecorder.initAudioStream(this)">
+				<span id="recordAudio" class="btn btn-secondary" onclick="SimpleRecorder.initAudioStream(this)">
 					<span>Record audio</span>
 				</span>
-				<span id="uploadOnYT" class="btn btn-primary fileinput-button" onclick="facade.uploadVideo()">
+				<span id="uploadOnYT" class="btn btn-primary" onclick="facade.uploadVideo()">
 					Upload on Youtube
 				</span>
       </div>
