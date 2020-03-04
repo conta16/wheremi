@@ -15,6 +15,8 @@ class PointOfInterest{
         this.searchPointMarker = {};
         this.maxPoints = maxPoints;
         this.graphics = graphics;
+        this.yt_visitedPlaces = []; this.wiki_visitedPlaces = []; this.points_visitedPlaces = [];
+        this.listOfPlacesVisited = [];
         this.url = "https://site181951.tw.cs.unibo.it";
         this.wiki= undefined;
     }
@@ -157,7 +159,8 @@ calculateClosestPoint(){
     var closestPoint = {};
     for (var i in this.points){
         var tmp = facade.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, this.points[i].latLng.lat, this.points[i].latLng.lng);
-        if (tmp < min_distance){
+        var bool = this.checkPointInVisited(this.points[i].latLng, 2);
+        if (tmp < min_distance && !bool){
             min_distance = tmp;
             closestPoint.type = "point";
             closestPoint.data = Object.assign({}, this.points[i]);
@@ -166,7 +169,8 @@ calculateClosestPoint(){
 
     for (var i in this.wikipediaPoints){
         var tmp = facade.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, this.wikipediaPoints[i].latLng.lat, this.wikipediaPoints[i].latLng.lng);
-        if (tmp < min_distance){
+        var bool = this.checkPointInVisited(this.wikipediaPoints[i].latLng, 1);
+        if (tmp < min_distance && !bool){
             min_distance = tmp;
             closestPoint.type = "wiki";
             closestPoint.data = Object.assign({}, this.wikipediaPoints[i]);
@@ -176,8 +180,8 @@ calculateClosestPoint(){
 
     if (this.yt_points.id){
         var tmp = facade.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, this.yt_points.latLng.lat, this.yt_points.latLng.lng);
-
-        if (tmp < min_distance){
+        var bool = this.checkPointInVisited(this.yt_points.latLng, 0);
+        if (tmp < min_distance && !bool){
             min_distance = tmp;
             closestPoint.type = "yt";
             closestPoint.data = Object.assign({}, this.yt_points);
@@ -474,4 +478,27 @@ calculateClosestPoint(){
         return false;
     }
 
+    checkPointInVisited(latLng, type){
+        if (type == 0){ //youtube
+            for (var i in this.yt_visitedPlaces){
+                if (latLng.lat === this.yt_visitedPlaces[i].data.latLng.lat && latLng.lng === this.yt_visitedPlaces[i].data.latLng.lng)
+                    return true;
+            }
+            return false;
+        }
+        if (type == 1){ //wiki
+            for (var i in this.wiki_visitedPlaces){
+                if (latLng.lat === this.wiki_visitedPlaces[i].data.latLng.lat && latLng.lng === this.wiki_visitedPlaces[i].data.latLng.lng)
+                    return true;
+            }
+            return false;
+        }
+        if (type == 2){ //points
+            for (var i in this.points_visitedPlaces){
+                if (latLng.lat === this.points_visitedPlaces[i].data.latLng.lat && latLng.lng === this.points_visitedPlaces[i].data.latLng.lng)
+                    return true;
+            }
+            return false;
+        }
+    }
 }

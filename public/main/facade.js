@@ -409,31 +409,70 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
         return d;
     }
 
+
+
     checkPointDistance(points, i){
         var pos = points[i].latLng;
-        if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 20 && !points[i].played){
-            this.Paul.shutUp();
-            this.Paul.say(points[i].title);
-            this.Paul.say(points[i].description);
-            gotoTab(INSPECT_TAB);
-            this.graphics.loadMenu(points,i,false,false);
-            this.graphics.addStopButton();
-            points[i].played = true;
-        }
+        if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 20){
+
+                if (next){
+                    var pointsOfInterest = this.getPointsOfInterest();
+                    var obj = {"data": {"id": points[i]._id, "latLng":{"lat": pos.lat, "lng": pos.lng}}, "type": "point", "title": points[i].title, "description": points[i].description};
+                    pointsOfInterest.points_visitedPlaces.push(obj);
+                    pointsOfInterest.listOfPlacesVisited.push(obj);
+                }
+                this.Paul.shutUp();
+                this.Paul.say(points[i].title);
+                this.Paul.say(points[i].description);
+                gotoTab(INSPECT_TAB);
+                this.graphics.loadMenu(points,i,false,false);
+                this.graphics.addStopButton();
+            }
     }
 
     checkWikiDistance(wiki_points, i){
         var pos = wiki_points[i].latLng;
-        if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 20 && !this.visitedWikiIds.includes(wiki_points[i].pageid)){
+        if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 20){
+                if (next){
+                    var pointsOfInterest = this.getPointsOfInterest();
+                    var obj = {"data": {"id": wiki_points[i].pageid, "latLng":{"lat": pos.lat, "lng": pos.lng}}, "type": "wiki", "title": wiki_points[i].title, "extract": wiki_points[i].extract};
+                    pointsOfInterest.wiki_visitedPlaces.push(obj);
+                    pointsOfInterest.listOfPlacesVisited.push(obj);
+                }
+                this.Paul.shutUp();
+                this.Paul.say(wiki_points[i].title);
+                this.Paul.say(wiki_points[i].extract);
+                gotoTab(INSPECT_TAB);
+                console.log($("#inspect"));
+                $("#inspect").html("<div class='container'><h2>"+wiki_points[i].title+"</h2><p>"+wiki_points[i].extract+"</p></div>");
+                //$("#inspect").append('<div style="margin-bottom: 50px"><button type="button" class="btn btn-primary startItinerary" onclick="facade.go()">Start Itinerary</button></div>');
+                this.graphics.addStopButton(wiki_points[i].title, wiki_points[i].extract);
+            
+        }
+    }
+
+    checkYtDistance(yt_points,i){
+        var pos = yt_points[i].latLng;
+        if (this.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, pos.lat, pos.lng) < 20){
+            if (next){
+                var pointsOfInterest = this.getPointsOfInterest();
+                var obj = {"data": {"id": yt_points[i].id, "latLng":{"lat": pos.lat, "lng": pos.lng}}, "type": "yt"};
+                pointsOfInterest.yt_visitedPlaces.push(obj);
+                pointsOfInterest.listOfPlacesVisited.push(obj);
+            }
             this.Paul.shutUp();
-            this.Paul.say(wiki_points[i].title);
-            this.Paul.say(wiki_points[i].extract);
-            gotoTab(INSPECT_TAB);
-            console.log($("#inspect"));
-            $("#inspect").html("<div class='container'><h2>"+wiki_points[i].title+"</h2><p>"+wiki_points[i].extract+"</p></div>");
-            //$("#inspect").append('<div style="margin-bottom: 50px"><button type="button" class="btn btn-primary startItinerary" onclick="facade.go()">Start Itinerary</button></div>');
-            this.graphics.addStopButton(wiki_points[i].title, wiki_points[i].extract);
-            this.visitedWikiIds.push(wiki_points[i].pageid);
+            badPaul.say('Playing a video to tell you where you are');
+            facade.getGraphics().loadVideoAndPlay(yt_points[i].id);
+            $("#buttonPause").on("click", () => {
+                $('.embed-responsive-item').each(function(){
+                    this.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                });
+            });
+            $("#buttonCont").on("click", () => {
+                $('.embed-responsive-item').each(function(){
+                    this.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+                });
+            });       
         }
     }
 

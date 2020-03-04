@@ -2,7 +2,8 @@ var badLvlSpec = ['gen','pre','elm','mid','scl','all']
 var badCurrentLvlSpec = 0;
 var purpose = "";
 var dest_point = {};
-
+var next = 1; //1 when next, 0 when previous
+var prev_value = 0 //when you're always pressing previous, this keeps track of how far back you've gone
 
 var badPaul = new Artyom();
 badPaul.initialize({
@@ -27,37 +28,28 @@ function initLanguagePaul(){
 
 function badPaulWmi(){//wheremi
 
-    if (L.userPosition){         
-         purpose = "what";
-         badCurrentLvlSpec = 0;
-           wmi_search(1, L.userPosition.latLng, {purpose: purpose}, function(videos){
-            if (videos[0] && videos[0].id){
-                facade.getPointsOfInterest().setYTPoint(videos[0].id, videos[0].latLng);
-                dest_point = facade.getPointsOfInterest().calculateClosestPoint();
-                
-                var tmp = []; tmp.push(L.userPosition.latLng); tmp.push(dest_point.data.latLng);
-                facade.getItinerary().setWaypoints(tmp); // per wiki e point l'audio parte quando viene cambiato L.userPosition e diventa <20, guarda su l0controllocate (mi sembra)
-                if (dest_point.type == "yt"){
-                    badPaul.say('Playing a video to tell you where you are');
-                    facade.getGraphics().loadVideoAndPlay(videos[0].id);
-                    $("#buttonPause").on("click", () => {
-                        $('.embed-responsive-item').each(function(){
-                            this.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-                        });
-                    });
-                    $("#buttonCont").on("click", () => {
-                        $('.embed-responsive-item').each(function(){
-                            this.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-                        });
-                    });
-                }
-            }
-            else {
-                badPaul.say("Sorry, we couldn't find any videos");
-            }
-           });
+    if (L.userPosition){
+        var pointsOfInterest = facade.getPointsOfInterest();
+        pointsOfInterest.yt_visitedPlaces = []; pointsOfInterest.wiki_visitedPlaces = []; pointsOfInterest.points_visitedPlaces = [];
+        pointsOfInterest.listOfPlacesVisited = [];
+        purpose = "what";
+        badCurrentLvlSpec = 0;
+        next = 1;
+        prev_value = 0;
+        search();
     }
     else if (!L.userPosition) badPaul.say("You have to activate the geolocalisation");
+}
+
+function search(){
+    wmi_search(1, L.userPosition.latLng, {purpose: purpose}, function(videos){
+        if (videos[0] && videos[0].id) facade.getPointsOfInterest().setYTPoint(videos[0].id, videos[0].latLng);
+        dest_point = facade.getPointsOfInterest().calculateClosestPoint();
+        //da mettere un qualcosa se non trova nulla
+        var tmp = []; tmp.push(L.userPosition.latLng); tmp.push(dest_point.data.latLng);
+        facade.getItinerary().setWaypoints(tmp); // per wiki e point l'audio parte quando viene cambiato L.userPosition e diventa <20, guarda su l0controllocate (mi sembra)
+            //if (next) facade.getPointsOfInterest().yt_visitedPlaces.push({"id": dest_point.data.id, "latLng": {"lat": dest_point.data.latLng.lat, "lng": dest_point.data.latLng.lng}});
+    });
 }
 
 function badPaulWhy(){
@@ -133,11 +125,32 @@ function badPaulHow(){
 }
 
 function badPaulNext(){
-
+    if (L.userPosition){
+        purpose = "what";
+        badCurrentLvlSpec = 0;
+        next = 1;
+        prev_value = 0;
+        search();
+    }
+    else if (!L.userPosition) badPaul.say("You have to activate the geolocalisation");
 }
 
 function badPaulPrev(){
-
+    if (L.userPosition){
+        if (dest_point.type){
+            next = 0;
+            var pointsOfInterest = facade.getPointsOfInterest();
+            var len = pointsOfInterest.listOfPlacesVisited.length;
+            if (len > prev_value){
+                dest_point = Object.assign({},pointsOfInterest.listOfPlacesVisited[len-1-prev_value]); //important
+                var tmp = []; tmp.push(L.userPosition.latLng); tmp.push(dest_point.data.latLng);
+                facade.getItinerary().setWaypoints(tmp);
+                prev_value++;
+            }
+            else badPaul.say("You can't go back anymore");
+        }
+    }
+    else badPaul.say("You have to activate the geolocalisation");
 }
 
 /*function badPaulPause(){

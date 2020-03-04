@@ -73,18 +73,15 @@ function youtubeUpload(){
 	fileReader.readAsArrayBuffer(file);
 }
 
-function checkDistance(){
-	console.log("dentro check");
-	console.log(dest_point);
-	if (dest_point.type && dest_point.type == "wiki") {
-		console.log("dentro wiki");
-		facade.checkWikiDistance([dest_point.data],0);
-		dest_point = {};
-	}
-	if (dest_point.type && dest_point.type == "point"){
-		facade.checkPointDistance([dest_point.data],0);
-		dest_point = {};
-	}
+function checkDistance(i = 0){
+	if (dest_point.type && dest_point.type == "wiki")
+		facade.checkWikiDistance([dest_point.data],i);
+
+	if (dest_point.type && dest_point.type == "point")
+		facade.checkPointDistance([dest_point.data],i);
+		
+	if (dest_point.type && dest_point.type == "yt")
+		facade.checkYtDistance([dest_point.data],i);
 }
 
 function copyVideoFields() {
