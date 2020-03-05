@@ -20,7 +20,6 @@ class Facade{
             // e.g to trigger Good Morning, you need to say "Jarvis Good Morning"
             name: "Paul"
         });
-        this.selectedWaypoint=undefined;
         this.initPaulCommands(this.Paul);
         this.currentLvlSpec = 0;
         this.lvlSpec = ['gen','pre','elm','mid','scl','all'];
@@ -528,6 +527,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
     }
 
     generateDescription(waypoint){
+             
       var olc=this.locationString(waypoint.latLng, 6, 10);
         olc=olc.concat(':', $("#purp").val());
         olc=olc.concat(':', $("#lang").val());
@@ -549,7 +549,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
 
     uploadVideo(){
       var title=$("#video-title").val();
-      var description=this.generateDescription(this.getselectedWaypoint());
+      var description=this.generateDescription(this.getPointsOfInterest().selectedWaypoint);
       var category=22;
       var metadata = {
         snippet: {

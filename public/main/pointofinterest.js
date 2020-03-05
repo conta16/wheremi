@@ -17,6 +17,7 @@ class PointOfInterest{
         this.graphics = graphics;
         this.yt_visitedPlaces = []; this.wiki_visitedPlaces = []; this.points_visitedPlaces = [];
         this.listOfPlacesVisited = [];
+        this.selectedWaypoint=undefined;
         this.url = "https://site181951.tw.cs.unibo.it";
         this.wiki= undefined;
     }
@@ -88,7 +89,6 @@ class PointOfInterest{
                 });
                 parentThis.points.forEach((obj,index) => {
                     if (parentThis.markers[index]) parentThis.markers[index].on('click', (e) => {
-
                         parentThis.graphics.loadMenu(parentThis.points, index, false);
                     });
                     parentThis.points[index].username = facade.user.account.username;
@@ -209,7 +209,7 @@ calculateClosestPoint(){
             parentThis.markers[len].closePopup();
         });*/
         this.markers[len].on('click', (e) => {
-
+            parentThis.selectedWaypoint = parentThis.points[len];
             var do_nothing;
 
             do_nothing = parentThis.check_in_waypoints(len);
@@ -258,6 +258,7 @@ calculateClosestPoint(){
         this.itineraryStartMarkers[len].off('click');
 
         this.itineraryStartMarkers[len].on('click', (e) => {
+            parentThis.selectedWaypoint = parentThis.itineraryStartPoints[len].inputWaypoints[0];
 
 
             var do_nothing;

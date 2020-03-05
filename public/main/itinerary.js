@@ -136,7 +136,7 @@ class Itinerary {
         }
         map.removeControl(this.control);
         this.control.addTo(map);
-        if (this.waypoints != []) L.routes = []; //without this, when you setWaypoints([]) it reloads the old route (stored in L.routes) instead of putting an empty route
+        //if (this.waypoints != []) L.routes = []; //without this, when you setWaypoints([]) it reloads the old route (stored in L.routes) instead of putting an empty route
         this.route = L.routes;
     }
 

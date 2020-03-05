@@ -159,8 +159,9 @@ class Graphics{
             parentThis.facade.saveChanges(waypoints[index]);
         });
 
-        if (waypoints[index].startItinerary && L.userPosition) $("#startItinerary").css("display", "inline");
-        else $("#startItinerary").css("display", "none");
+        console.log(waypoints[index].startItinerary);
+        if (waypoints[index].startItinerary && L.userPosition) $(".startItinerary").css("display", "inline");
+        else $(".startItinerary").css("display", "none");
 
         document.removeEventListener('loadimg', parentThis.eventListener);
         document.addEventListener('loadimg', parentThis.eventListener);
@@ -168,7 +169,7 @@ class Graphics{
         this.tmp_waypoint = Object.assign({},waypoints);
     }
 
-    eventListener(event){ //mmm function inside function
+    eventListener(event){
         var fd = new FormData();
         fd.append('file', event.detail.files[0]);
         console.log(this);

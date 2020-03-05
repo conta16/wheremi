@@ -8,7 +8,7 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){
 			this.onstop = ()=>{};
 			this.onpoint = ()=>{};
 			this.wondering = ()=>{};
-
+			console.log(typeof usr_onpoint);
 			if (typeof usr_onpoint == "function")
 				this.onpoint = usr_onpoint;
 			if (typeof usr_onstop == "function")
@@ -170,21 +170,16 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){
 
 				this.navigate= function(begin_itinerary = false){
 					parent._initListeners();
-					console.log("boh");
 					//if (!L.routes || !L.routes[0]){
-						console.log("routes");
 						if (facade.selectedWaypoint){
-							console.log("navigate");
-							//document.removeEventListener("route-available", this.navigate);
-							//document.addEventListener("route-available", this.navigate);
+							document.removeEventListener("route-available", this.navigate);
+							document.addEventListener("route-available", this.navigate);
 							var itin = Object.assign({},facade.getItinerary().getWaypoints());
 							facade.getItinerary().setWaypoints([]);
 							facade.getItinerary().pushWaypoints([L.userPosition.latLng],undefined, false);
 							if (!begin_itinerary) facade.getItinerary().pushWaypoints([facade.selectedWaypoint.latLng],undefined, false);
 							else {
-								console.log("!begin_itinerary");
 								for (var i in itin){
-									console.log(itin);
 									facade.getItinerary().pushWaypoints([{}], itin[i], false);
 									i++;
 								}
