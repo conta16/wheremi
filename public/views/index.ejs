@@ -158,34 +158,34 @@
     </div>
     <!--<div id="headerPopup" class="">-->
     <div role="tabpanel" class="tab-pane fade-in h-100" id="voice">
-     <div class="test-container-for-vids" id="vid-container" style="height: 350px; width: 100%; border-color: red; border-style: solid; border-width: 1px;">
+     <div class="test-container-for-vids" id="vid-container" style="height: 350px; width: 100%; border-color: red; border-style: solid; border-width: 1px; margin-bottom: 1%;">
         <iframe type="text/html" class="embed-responsive-item" id="video-frame" width="100%" height="100%" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
       </div>
       <button class="btn btn-primary dis" id="buttonWmi" onclick="badPaulWmi()" >Where am i?</button>
       <button class="btn btn-primary dis" id="buttonWhy" onclick="badPaulWhy()" >Why</button>
       <button class="btn btn-primary dis" id="buttonMore" onclick="badPaulMore()" >More</button>
-      <br>
       <button class="btn btn-primary dis" id="buttonNext" onclick="badPaulNext()" >Next</button>
       <button class="btn btn-primary dis" id="buttonPrev" onclick="badPaulPrev()" >Previous</button>
       <button class="btn btn-primary dis" id="buttonPause" onclick="" >Pause</button>
-      <br>
       <button class="btn btn-primary dis" id="buttonCont" onclick="" >Continue</button>
+      <div id ="dropdown-container" style ="padding-top: 1%;">
+        <label for="audience">Audience</label>
+        <select id="audience" name="audience">
+          <option value="gen">Generico</option>
+          <option value="pre">Pre-Scolastico</option>
+          <option value="elm">Scuola Elementare</option>
+          <option value="mid">Scuola Media</option>
+          <option value="scl">Accademico</option>
+          <option value="all">All</option>
+        </select>
+        <label for="language">Language</label>
+        <select id="language" name="language">
+          <option value="ita">Italiano</option>
+          <option value="eng">English</option>
+          <option value="fr">Français</option>
+        </select> 
       </div>
-      <!--<div class="test-container-for-vids" id="vid-container" style="height: 100%; width: 100%; border-color: red; border-style: solid; border-width: 1px;">
-        <iframe type="text/html" class="" id="video-frame" width="100%" height="100%" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-      </div>
-                <button class="btn btn-primary dis" id="buttonWmi" onclick="badPaulWmi()" >Where am i?</button>
-                <button class="btn btn-primary dis" id="buttonWhy" onclick="badPaulWhy()" >Why</button>
-                <button class="btn btn-primary dis" id="buttonMore" onclick="badPaulMore()" >More</button>
-                <button class="btn btn-primary dis" id="buttonMore" onclick="badPaulHow()" >How</button>
-                <br>
-                <button class="btn btn-primary dis" id="buttonNext" onclick="badPaulNext()" >Next</button>
-                <button class="btn btn-primary dis" id="buttonPrev" onclick="badPaulPrev()" >Previous</button>
-                <button class="btn btn-primary dis" id="buttonPause" onclick="badPaulPause()" >Pause</button>
-                <br>
-                <button class="btn btn-primary dis" id="buttonCont" onclick="badPaulContinue()" >Continue</button>
-                </div>
-    </div>-->
+    </div>
     </div>
     </div>
     <canvas id="canvas" width="1920" height="1080" style="display: none" tabindex="-1"></canvas>
@@ -208,7 +208,6 @@
     <script type="text/javascript" src="./main/graphics.js"></script>
     <script type="text/javascript" src="./main/facade.js"></script>
     <script type="text/javascript" src="./main/leaflet.js"></script>
-    <script type="text/javascript" src="./main/mPopup.js"></script>
     <script type="text/javascript" src="./main/fakevoice.js"></script>
 
   </body>

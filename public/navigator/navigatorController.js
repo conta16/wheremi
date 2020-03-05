@@ -56,12 +56,12 @@ class navigatorController{
 
     onpoint (waypoint){
         console.log(waypoint.text)
-        //Paul.say(waypoint.text);
+        Paul.say(waypoint.text);
     }
 
     onend (){
         this.indexOfList += 1;
         this.listOfPoints[this.indexOfList] = L.userPosition
-        //Paul.say("You reached your destination");
+        Paul.say("You reached your destination");
     }
 }
