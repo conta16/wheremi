@@ -43,7 +43,7 @@ function badPaulWmi(){//wheremi
 }
 
 function search(){
-    wmi_search(1, L.userPosition.latLng, {purpose: purpose}, function(videos){
+    wmi_search(1, L.userPosition.latLng, {purpose: purpose,language: $("#language option:selected").val()}, function(videos){
         if (videos[0] && videos[0].id) facade.getPointsOfInterest().setYTPoint(videos[0].id, videos[0].latLng);
         dest_point = facade.getPointsOfInterest().calculateClosestPoint();
         //da mettere un qualcosa se non trova nulla
@@ -57,7 +57,7 @@ function badPaulWhy(){
     if (L.userPosition){
         purpose = "why";
         badCurrentLvlSpec = 0;
-        wmi_search(1, L.userPosition.latLng, {purpose: purpose, level: badLvlSpec[0], audience: $("#audience option:selected").val()}, function(videos){
+        wmi_search(1, L.userPosition.latLng, {purpose: purpose, level: badLvlSpec[0], audience: $("#audience option:selected").val(), language: $("#language option:selected").val()}, function(videos){
             console.log(videos);
             var url;
             if (videos.length > 0){
@@ -77,7 +77,7 @@ function badPaulWhy(){
 function badPaulMore(){
     var url;
     if (L.userPosition){
-        wmi_search(1, L.userPosition.latLng, {purpose: purpose, level: badLvlSpec[++badCurrentLvlSpec], audience: $("#audience option:selected").val()}, function(videos){
+        wmi_search(1, L.userPosition.latLng, {purpose: purpose, level: badLvlSpec[++badCurrentLvlSpec], audience: $("#audience option:selected").val(), language: $("#language option:selected").val()}, function(videos){
             console.log(videos);
             if (videos.length > 0 && badCurrentLvlSpec <= 5){
              if (videos[0].id){
@@ -108,7 +108,7 @@ function badPaulHow(){
     if (L.userPosition){
         purpose = "how";
         badCurrentLvlSpec = 0;
-    wmi_search(1, tmpuser.latLng, {purpose: purpose, level: badLvlSpec[0], audience: $("#audience option:selected").val()}, function(videos){
+    wmi_search(1, tmpuser.latLng, {purpose: purpose, level: badLvlSpec[0], audience: $("#audience option:selected").val(), language: $("#language option:selected").val()}, function(videos){
         console.log(videos);
         var url;
         if (videos.length > 0){
