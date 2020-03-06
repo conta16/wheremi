@@ -45,128 +45,52 @@ class Facade{
         return userLang;
     }
 
-    getOlcForUser (){
-        return this.locationString(this.findPointForVideos(L.userPosition).latLng,10,10);
-    }
-
-    saveHtmlInspectBefore(str){ //salvo lo stato di inspect prima di infilarci il video così quando finisce posso ripristinarlo
-        this.htmlInspectBefore = str;
-    }
-
-    loadHtmlInspectBefore(){ //risistemo inspect per usarlo la volta dopo da nuovo
-        $("#inspect").html(this.htmlInspectBefore);
-    }
-
-    findPointForVideos(latLngMia){
-        var min = Infinity;
-        var returnPoint;
-        var points = this.pointsOfInterest.points.concat(this.pointsOfInterest.wiki_points, this.pointsOfInterest.yt_points);
-        for (var point of points){
-        if (min < this.distance(latLngMia.lat,latLngMia.lon,point.latLng.lat,point.latLng.lon)){min = distance; returnPoint = point}
-        }
-        return returnPoint;
-    }
 
     initPaulCommands(Paul){
         var htmlVideoPopup = `<div id="headerPopup" class="mfp-hide embed-responsive embed-responsive-21by9">
                               <iframe class="embed-responsive-item video-frame" width="854" height="480" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                               </div>`;
-        //var olcCurrentPosition = this.locationString(this.findPointForVideos(L.userPosition).latLng,10,10); //trova un modo per sapere a che punto sei più vicino facade-distance(lat e lng dei due punti)
-                                //questa cosa qui (^) ha senso, ma magari non qui, infatti se provi a decommentre dà l'errore latLngMia undefined perché L.userPosition dipende da due azioni asincorne indipendenti:
-                                //la richiesta della geolocalizzazione dell' ip utente e la richiesta di attivazione da parte di questo del GPS, entrambe le suddette azioni spesso non sono ancora avvenute quando il programma si trova a questo punto,
-                                //inoltre, siccome l'olc è una cosa che cambia nel tempo, non ha molto il suo valore all'accensione del programma (che avviene una tantum), quando poi sappiamo già che ci servirà in altri momenti.
         var myGroup = [
             {//wheremi
                 description:"Where am I? L'utente chiede un video di spiegazione del post in cui è",
                 indexes:["Where am I", "Where", "paul where am i", "paul where"],
                 action: function(i){
-                     this.loadHtmlInspectBefore();
-                     //var olcCurrentPosition = getOlcForUser();
-                     //riproduci un video per dire dove sei (WHERE)
-                     Paul.say('Playing a video to tell you where you are');
-                     /*trova dove sei (usando olc) e poi carica un video di quel tipo*/
-
-                     this.saveHtmlInspectBefore($("#inspect").html());
-
-                     var video = wmi_search(1, L.userPosition.latLng, {purpose: "where"}, function(videos){return videos;});
-
-                     $("#inspect").append(htmlVideoPopup);
-                     $(".video-frame").attr('src', video);
-                     $('#headerVideoLink').magnificPopup({
-                        type:'inline',
-                        midClick: true
-                     }); //a sto punto il video dovrebbe essere un popup.
+                    badPaulWmi()
                 }
             },
             {//more
                 description:"aumenta il livello di specificità ad ogni more. quando cambi posto ritorna all' inizio",
                 indexes:["more", "paul more"],
                 action: function(i){
-                    this.loadHtmlInspectBefore();
-                    //riproduci un video per dire dettagli sul posto dove sei
-                    var video = wmi_search(1, L.userPosition.latLng, {purpose: "why", level: lvlSpec[currentLvlSpec]}, function(videos){return videos;});
-
-                    Paul.say("Playing a video to tell you more details about the thing you're looking at. Level " + lvlSpec[currentLvlSpec]);
-                    if (currentLvlSpec <= 6){
-                        this.currentLvlSpec += 1;
-                    }
-                    $("#inspect").append(htmlVideoPopup);
-
-                     $(".video-frame").attr('src', video);
-                     $('#headerVideoLink').magnificPopup({
-                        type:'inline',
-                        midClick: true
-                     }); //a sto punto il video dovrebbe essere un popup.
-
+                    badPaulMore()
                 }
             },
             {//next
                 description:"Vai al prossimo luogo",
                 indexes:["next", "paul next"],
                 action: function(i){
-                    this.loadHtmlInspectBefore();
-                    // vai al prossimo punto nell' itinerario
-                    this.currentLvlSpec = 0;
-                    Paul.say("I'll guide you to your next location");
-
+                    badPaulNext()
                 }
             },
             {//previous
                 description:"Vai al luogo precedente",
                 indexes:["previous", "paul previous"],
                 action: function(i){
-                    this.loadHtmlInspectBefore();
-                    // vai al punto precedente nell' itinerario
-                    this.currentLvlSpec = 0;
-                    Paul.say("I'll guide you to your previous location");
-
+                    badPaulPrev()
                 }
             },
             {//why
                 description:"spiega come mai questo posto è interessante",
                 indexes:["why", "paul why", "tell me why", "paul tell me why"],
                 action: function(i){
-                    this.loadHtmlInspectBefore();
-                    //riproduci una clip WHY
+                    
                     if (i >= 2){
                         Paul.say("Ain't nothing but a heartache");
-                    }else{
-                        Paul.say("Playing a why clip. level "+currentLvlSpec);
                     }
-
-                     this.saveHtmlInspectBefore($("#inspect").html());
-                     var video = wmi_search(1, L.userPosition.latLng, {purpose: "why", level: lvlSpec[0]}, function(videos){return videos;});
-                     currentLvlSpec += 1;
-                     $("#inspect").append(htmlVideoPopup);
-
-                     $(".video-frame").attr('src', video);
-                     $('#headerVideoLink').magnificPopup({
-                        type:'inline',
-                        midClick: true
-                     }); //a sto punto il video dovrebbe essere un popup.
+                    badPaulWhy()
                 }
             },
-            {//stop
+            /*{//stop
                 description:"Interrompi la riproduzione della clip corrente",
                 indexes:["stop", "paul stop"],
                 action: function(i){
@@ -183,16 +107,22 @@ class Facade{
                     Paul.say("Resuming play");
                     $(".video-frame").play()
                 }
-            }/*,
+            },*/
             {//how
                 description:"indica come accedere e orari del punto corrente",
                 indexes:["how", "paul how"],
                 action: function(i){
-                    this.loadHtmlInspectBefore();
-                    //riproduci info su come accedere al posto in questione
-                    Paul.say("Here is how to visit this place");
+                    badPaulHow()
                 }
-            }*/
+            },
+            {
+                //thanks
+                description:"quando le nonne dicono grazie ad alexa :)",
+                indexes:["thanks", "paul thanks","thanks paul", "grazie", "paul grazie", "grazie paul"],
+                action: function(i){
+                    Paul.say("It's my pleasure");
+                }
+            }
         ];
         Paul.addCommands(myGroup);
     }
