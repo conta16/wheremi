@@ -21,22 +21,40 @@ class navigatorController{
         console.log(tmp_itinerary.waypoints);*/
        // this.itinerary.setWaypoints([L.userPosition.latLng]);
         var l = itin.length;
+        console.log (itin);
         this.itinerary.setWaypoints();
-        console.log(this.itinerary.getWaypoints());
-        console.log(itin[0]);
-        this.itinerary.pushWaypoints([L.userPosition.latLng],undefined, false);
-
+        var a=[position];
         for (var i in itin){
-            console.log(i);
-            this.itinerary.pushWaypoints([{}],itin[i], false);
+          a.push(itin[i])
         }
-
-        this.itinerary.showOnMap();
+        console.log(a);
+        this.itinerary.setWaypoints(a);
     }
 
+    // wondering(nearest){
+    //     document.removeEventListener("route-available", nav.navigate);
+    //     function coordsFromInstructin(i){
+    //         return L.routes[0].coordinates[i.index];
+    //     }
+    //     function preserve_waypoints(i){
+    //         return (L.routes[0].waypointIndices.includes(i.index)) && i.index>=nearest;
+    //     }
+    //     //console.log(L.routes[0].instructions, L.routes[0].waypointIndices	)
+    //     document.addEventListener("route-available", nav.navigate);
+    //     nav.stop();
+    //     var tmp_route=Object.assign([], L.routes[0].instructions)
+    //     //tmp_route=tmp_route.map(coordsFromInstructin);
+    //     tmp_route = Object.assign({},this.itinerary.getWaypoints());
+    //     //tmp_route=tmp_route.filter(preserve_waypoints).map(coordsFromInstructin);
+    //     //console.log(tmp_route)
+    //     L.routes[0]=undefined;
+    //     this.reachItinerary(L.latLng(L.userPosition.lat, L.userPosition.lng), tmp_route/*.splice(nearest)*/)
+    // }
+
     wondering(nearest){
+      console.log("wondering")
         document.removeEventListener("route-available", nav.navigate);
-        function coordsFromInstructin(i){
+        function coordsFromInstruction(i){
             return L.routes[0].coordinates[i.index];
         }
         function preserve_waypoints(i){
@@ -46,22 +64,24 @@ class navigatorController{
         document.addEventListener("route-available", nav.navigate);
         nav.stop();
         var tmp_route=Object.assign([], L.routes[0].instructions)
-        //tmp_route=tmp_route.map(coordsFromInstructin);
-        tmp_route = Object.assign({},this.itinerary.getWaypoints());
-        //tmp_route=tmp_route.filter(preserve_waypoints).map(coordsFromInstructin);
+        //tmp_route=tmp_route.map(coordsFromInstruction);
+        //tmp_route = Object.assign({},this.itinerary.getWaypoints());
+        tmp_route=tmp_route.filter(preserve_waypoints).map(coordsFromInstruction);
         //console.log(tmp_route)
         L.routes[0]=undefined;
-        this.reachItinerary(L.latLng(L.userPosition.lat, L.userPosition.lng), tmp_route/*.splice(nearest)*/)
+        this.reachItinerary(L.userPosition.latLng, tmp_route.splice(nearest))
     }
 
+
     onpoint (waypoint){
-        console.log(waypoint.text)
-        //Paul.say(waypoint.text);
+        console.log(waypoint.text);
+        badPaul.say(waypoint.text);
     }
 
     onend (){
         this.indexOfList += 1;
         this.listOfPoints[this.indexOfList] = L.userPosition
-        //Paul.say("You reached your destination");
+        L.routes=[];
+        facade.setWaypoints([]);
     }
 }

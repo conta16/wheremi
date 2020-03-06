@@ -90,7 +90,7 @@ class Itinerary {
                     delete point.pageid;
                     delete point.extract;
                 }
-                
+
                 obj = point;
             }
             if (i==0 && point && point.id) {
@@ -123,6 +123,7 @@ class Itinerary {
     }
 
     showOnMap(markerUpdate = true){
+      if (this.waypoints != []) L.routes = []; //without this, when you setWaypoints([]) it reloads the old route (stored in L.routes) instead of putting an empty route
 
         var tmp = [];
         for (var i in this.waypoints)
@@ -136,7 +137,6 @@ class Itinerary {
         }
         map.removeControl(this.control);
         this.control.addTo(map);
-        if (this.waypoints != []) L.routes = []; //without this, when you setWaypoints([]) it reloads the old route (stored in L.routes) instead of putting an empty route
         this.route = L.routes;
     }
 

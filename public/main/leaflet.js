@@ -24,13 +24,6 @@ $(document).ready(function() {
 
 	navigatorControl = new navigatorController(facade.getItinerary());
 
-	var provider = new OpenStreetMapProvider(facade.getItinerary(), facade.getPointsOfInterest());
-
-	var searchControl = new GeoSearchControl({
-    	provider: provider,
-	});
-
-  map.addControl(searchControl);
   facade.getGraphics().loadControllers();
 	gapi.load('client:youtube', {
 		callback: function(){
@@ -79,7 +72,7 @@ function checkDistance(i = 0){
 
 	if (dest_point.type && dest_point.type == "point")
 		facade.checkPointDistance([dest_point.data],i);
-		
+
 	if (dest_point.type && dest_point.type == "yt")
 		facade.checkYtDistance([dest_point.data],i);
 }
@@ -161,7 +154,8 @@ function reloadInspect(){
 	  </div>
   </div>
   <div style="margin-bottom: 50px">
-    <button type="button" class="btn btn-primary startItinerary" onclick="facade.go(`+true+`)">Start Itinerary</button>
+	<button type="button" class="btn btn-primary startItinerary" onclick="facade.go(`+true+`)">Start Itinerary</button>
+	<button type="button" class="btn btn-primary startItinerary" onclick="facade.go()">Reach point</button>
   </div>
   </div>
 

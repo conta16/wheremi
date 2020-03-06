@@ -26,6 +26,19 @@ class Facade{
         this.lvlSpec = ['gen','pre','elm','mid','scl','all'];
         this.url = "https://site181951.tw.cs.unibo.it";
 //        this.url = "http://localhost:3000";
+        this.initSearchControl()
+    }
+
+    initSearchControl(){
+      var provider = new OpenStreetMapProvider(this.getItinerary(), this.getPointsOfInterest());
+      this.searchControl = new GeoSearchControl({
+          provider: provider,
+          autoClose: true
+      });
+      map.addControl(this.searchControl);
+      map.on('click', function(){
+        this.searchControl.closeResults();
+      }.bind(this))
     }
 
     initLanguagePaul(){
@@ -447,7 +460,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
                 $("#inspect").html("<div class='container'><h2>"+wiki_points[i].title+"</h2><p>"+wiki_points[i].extract+"</p></div>");
                 //$("#inspect").append('<div style="margin-bottom: 50px"><button type="button" class="btn btn-primary startItinerary" onclick="facade.go()">Start Itinerary</button></div>');
                 this.graphics.addStopButton(wiki_points[i].title, wiki_points[i].extract);
-            
+
         }
     }
 
@@ -472,7 +485,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
                 $('.embed-responsive-item').each(function(){
                     this.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
                 });
-            });       
+            });
         }
     }
 
@@ -538,8 +551,12 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
     }
 
     go(begin_itinerary = false){
+      console.log(nav);
+        if (nav)
+          nav.stop();
+        if (!begin_itinerary && L.routes) this.getItinerary().setWaypoints([]);
         nav=new polloNavigator(navigatorControl.onpoint, navigatorControl.onend, navigatorControl.wondering);
-        console.log(nav);
+        console.log(L.routes);
         nav.navigate(begin_itinerary);
     }
 
