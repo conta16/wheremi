@@ -145,7 +145,7 @@ function reloadInspect(){
 		  <button type="button" class="btn btn-primary" id="send_comment" disabled>Send comment</button>
 	  </div>
   </div>
-  <input id="saveChanges" type="submit" value="Submit" class="btn btn-primary" > <!--onclick="youtubeUpload()"-->
+  <input id="saveChanges" type="" value="Submit" class="btn btn-primary" > <!--onclick="youtubeUpload()"-->
 </form>
   <div class="comment-section">
 	  <p>Comments:</p>
@@ -164,7 +164,7 @@ function reloadInspect(){
 	  <button type="button" class="btn btn-primary" id="right">Next</button>
   </div>
 
-	<div class="modal fade" id="clipModal" tabindex="-1" role="dialog" aria-labelledby="clipModalLabel" aria-hidden="true">
+	<div class="modal fade modal-xl" id="clipModal" tabindex="-1" role="dialog" aria-labelledby="clipModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -750,16 +750,23 @@ function reloadInspect(){
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="reloadInspect()">Close</button>
-				<span class="btn btn-danger" id="recordVideo" onclick="SimpleRecorder.initVideoStream(this)">
+			<div class="container">
+			<div class="row">
+			<div class="mx-auto">
+        <button type="button" class="btn btn-secondary m-1" data-dismiss="modal" onclick="reloadInspect()">Close</button>
+				<span class="btn btn-danger m-1" id="recordVideo" onclick="SimpleRecorder.initVideoStream(this)">
 					<span>Record video</span>
 				</span>
-				<span id="recordAudio" class="btn btn-secondary" onclick="SimpleRecorder.initAudioStream(this)">
+				<span id="recordAudio" class="btn btn-secondary m-1" onclick="SimpleRecorder.initAudioStream(this)">
 					<span>Record audio</span>
 				</span>
-				<span id="uploadOnYT" class="btn btn-primary" onclick="facade.uploadVideo()">
+				</div>
+				</div><div class="row">
+				<span id="uploadOnYT" class="btn btn-primary btn-lg m-auto" onclick="facade.uploadVideo()">
 					Upload on Youtube
 				</span>
+			</div>
+			</div>
       </div>
     </div>
   </div>

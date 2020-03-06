@@ -393,6 +393,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
             },
             success: () => {
                 console.log("changes saved successfully");
+                location.reload();
             },
             error: () => {
                 console.log("changes saved unsuccessfully");

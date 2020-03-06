@@ -9,6 +9,7 @@ class Graphics{
         this.tmp_index = 0;
         this.tmp_waypoint = {};
         this.screen = 1;
+	this.eventListener=this.eventListener.bind(this);
         //this.loadControllers();
     }
 
@@ -101,8 +102,14 @@ class Graphics{
             $(".nopermit").css("display", "none");
             $(".d").prop("disabled", false);
             $(".custom-select").css('display', "inline");
-            $(".comment").css("display", "none");
-            $("#send_comment").prop("disabled", true);
+            if (!$.isEmptyObject(this.facade.getAccount())){
+                $(".comment").css("display", "inline");
+                $("#send_comment").prop("disabled", false);
+            }
+            else{
+                $(".comment").css("display", "none");
+                $("#send_comment").prop("disabled", true);
+            }
             if (this.facade.getItinerary().user_id == this.facade.getAccount()._id && this.facade.getItinerary().getMode() == 0){
                 $("#saveChanges").css("display", "inline");
             }
@@ -173,8 +180,8 @@ class Graphics{
         var fd = new FormData();
         fd.append('file', event.detail.files[0]);
         console.log(this);
-        tmp_waypoint[tmp_index].img.push(event.detail.src);
-        tmp_waypoint[tmp_index].files.push(event.detail.files);
+        this.tmp_waypoint[this.tmp_index].img.push(event.detail.src);
+        this.tmp_waypoint[this.tmp_index].files.push(event.detail.files);
       }
 
       clearCards(){

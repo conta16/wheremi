@@ -16,7 +16,7 @@ var refresh = require('passport-oauth2-refresh');
 
 sgMail.setApiKey("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")
 
-const LOCAL=1;
+const LOCAL=0;
 
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
@@ -799,11 +799,6 @@ passport.authenticate("cookie", { session: false }),
   var id = JSON.parse(req.body.id);
   var title = JSON.parse(req.body.title);
   var description = JSON.parse(req.body.description);
-  var purpose = JSON.parse(req.body.purpose);
-  var language = JSON.parse(req.body.language);
-  var content = JSON.parse(req.body.content);
-  var audience = JSON.parse(req.body.audience);
-  var detail = JSON.parse(req.body.detail);
   var img = JSON.parse(req.body.img);
   MongoClient.connect(urldb, {useUnifiedTopology: true}, function(err, db) {
     if (err) throw err;
@@ -814,16 +809,13 @@ passport.authenticate("cookie", { session: false }),
       $set: {
         "title": title,
         "description": description,
-        "purpose": purpose,
-        "lang": language,
-        "content": content,
-        "audience": audience,
-        "detail": detail,
         "img": img
       }
-    }, function(err,res){
+    }, function(err, data){
       if (err) throw err;
-      db.close();
+	db.close();
+	res.status(200)
+	res.send({"message": "ok"});
     });
   });
 });
