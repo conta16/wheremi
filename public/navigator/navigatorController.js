@@ -83,5 +83,6 @@ class navigatorController{
         this.listOfPoints[this.indexOfList] = L.userPosition
         L.routes=[];
         facade.setWaypoints([]);
+        Paul.say("You reached your destination");
     }
 }

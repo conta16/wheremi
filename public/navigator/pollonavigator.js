@@ -8,7 +8,7 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){
 			this.onstop = ()=>{};
 			this.onpoint = ()=>{};
 			this.wondering = ()=>{};
-
+			console.log(typeof usr_onpoint);
 			if (typeof usr_onpoint == "function")
 				this.onpoint = usr_onpoint;
 			if (typeof usr_onstop == "function")
@@ -171,6 +171,7 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){
 
 
 				this.navigate= function(begin_itinerary = false){
+<<<<<<< HEAD
 					console.log(L.routes)
 
 					if (!L.routes || !L.routes[0]){
@@ -190,6 +191,23 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){
 							// 	}
 							// }
 							console.log([facade.selectedWaypoint.latLng]);
+=======
+					parent._initListeners();
+					//if (!L.routes || !L.routes[0]){
+						if (facade.selectedWaypoint){
+							document.removeEventListener("route-available", this.navigate);
+							document.addEventListener("route-available", this.navigate);
+							var itin = Object.assign({},facade.getItinerary().getWaypoints());
+							facade.getItinerary().setWaypoints([]);
+							facade.getItinerary().pushWaypoints([L.userPosition.latLng],undefined, false);
+							if (!begin_itinerary) facade.getItinerary().pushWaypoints([facade.selectedWaypoint.latLng],undefined, false);
+							else {
+								for (var i in itin){
+									facade.getItinerary().pushWaypoints([{}], itin[i], false);
+									i++;
+								}
+							}
+>>>>>>> 77a691e2e46089e70ba76008f5cc72edeca23973
 							facade.getItinerary().showOnMap();
 							return;
 						}
