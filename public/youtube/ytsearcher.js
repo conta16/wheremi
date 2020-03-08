@@ -80,15 +80,15 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
       format: "json",
       success: function(res){
         console.log(res);
-        if (res.items.length > 0){
-          var yt_points = facade.getPointsOfInterest().yt_points;
-          yt_points = Object.assign({},res.items);
-          for (var i in yt_points){
-              var latLn = ytOLCtolatlng(yt_points[i]);
-              yt_points[i].latLng = Object.assign({},latLn);
-              facade.getPointsOfInterest().setYoutubeMarker(latLn, i);
-          }
-        }
+        //if (res.items.length > 0){
+        //  var yt_points = facade.getPointsOfInterest().yt_points;
+        //  yt_points = Object.assign({},res.items);
+        //  for (var i in yt_points){
+        //      var latLn = ytOLCtolatlng(yt_points[i]);
+        //      yt_points[i].latLng = Object.assign({},latLn);
+        //      facade.getPointsOfInterest().setYoutubeMarker(latLn, i);
+        //  }
+        //}
         parent.items=parent.items.concat(res.items);
         if (res.nextPageToken && _params.results-res.items.length>0)
           _wmivideo_search(Object.assign(_params, {pageToken: res.nextPageToken, results:_params.results-res.items.length}), latLng, spec_level)

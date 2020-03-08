@@ -90,16 +90,19 @@ function unpack(list){
     for (i in list[0]){
         returnlist[j] = list[0][i].id.videoId;
     }
+    console.log(returnlist);
     return returnlist;
+
 }
 
 function badPaulWheremi(){
     badPaul.say("This is what we found for this place!");
     listeroni = search();
     listaId = unpack(listeroni)
-    player.cuePlaylist({listType: "playlist",
+    player.loadPlaylist({listType: "playlist",
             list:listaId,
-            index:0})
+            index:parseInt(0)})
+    player.playVideo()
 }
 
 
