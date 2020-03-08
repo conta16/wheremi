@@ -95,6 +95,7 @@ function mahmood(res){
       tmp_obj.content=Object.assign([], content);
       tmp_obj.audience=Object.assign([], audience);
       tmp_obj.content=Object.assign([], content);
+      tmp_obj.olc=last_olc;
       if (purp)
         tmp_obj.purpose=parts[purp].toLowerCase();
       if (lang)
