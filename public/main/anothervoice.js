@@ -59,12 +59,13 @@ function search(){
           sorted_places[i].push(tmp_list[i].how[0])
         sorted_places[i].concat(tmp_list[i].why);//a questo punto tmp_list è un oggetto del tipo [[...video obj...], ...] ordinati per distanza dalla posizione dell'utente di cui, come ha detto vitali, il primo è un what,il secondo un how, poi una lista di why
       }
-      //in questo modo scorrendo la matrice sorted_places è tale che sorted_places[0] dovrebbe avere tutti i video inerenti al punto più vicino all'utente in ordine di riproduzione. sorted_places[1] è il punto più cicino all'utente con già i video ordinati in ordine di riproduzione, mentre sorted_places[3] è il punto più vicino alla posizione iniziale dell'utente, ma non necessariamente alla posizione dell'utente
+      //in questo modo scorrendo la matrice sorted_places è tale che sorted_places[0] dovrebbe avere tutti i video inerenti al punto più vicino all'utente in ordine di riproduzione. sorted_places[1] è il punto più vicino all'utente con già i video ordinati in ordine di riproduzione, mentre sorted_places[3] è il punto più vicino alla posizione iniziale dell'utente, ma non necessariamente alla posizione dell'utente
       rollback=0;//per implementare previous, i posti visitati sono inseriti in visited_olcs. al crescere di rollback la posizione del video corrente retrocede (ciò avviene al comando previous) ed avanza al comando next. Quando rollback è 0, current_video cresce. se è maggiore di 1, allora non abbiamo la certezza che il video ottenuto sia il più vicino, dunque ne cerchiamo dei nuovi per assicuraci che il primo ottenuto sia il più vicino non ancora visitato.
       current_place=0;
       current_video=0;
       next(current_place++);
     });
+  return sorted_places;
 }
 
 function sort_places(){
@@ -131,105 +132,3 @@ function playController(){
 }
 
 
-
-// function badPaulWhy(){
-//     if (why.length!=0){
-//       if (why[0].id){
-//         facade.getGraphics().loadVideoAndPlay(videos[0].id);
-//         badPaul.say("Playing a video to tell you why this place is interesting")
-//       }
-//     }
-// }
-//
-// function badPaulMore(){
-//     var url;
-//     if (L.userPosition){
-//         wmi_search(1, L.userPosition.latLng, {purpose: purpose, level: ++badCurrentLvlSpec, audience: $("#audience option:selected").val(), language: $("#language option:selected").val()}, function(videos){
-//             console.log(videos);
-//             if (videos.length > 0 && badCurrentLvlSpec <= 10){
-//              if (videos[0].id){
-//                 badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badCurrentLvlSpec)
-//                 facade.getGraphics().loadVideoAndPlay(videos[0].id);
-//              } else if (videos.id){
-//                 url = "https://www.youtube.com/embed/" + videos.id //videos non dovrebbe essere sempre un vettore??
-//                 facade.getGraphics().loadVideoAndPlay(videos.id);
-//                 badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badCurrentLvlSpec)
-//              }
-//             }
-//              else {
-//                  //badPaul.say("We couldn't find the right video for the occasion");
-//                  if (badCurrentLvlSpec > 10){
-//                      badPaul.say("Reached maximum detail level");
-//                      badCurrentLvlSpec = 10;
-//                  }
-//                  else badPaulMore();
-//              }
-//              //if (url){$("#video-frame").attr('src', url); $("#video-frame").play()}
-//           });
-//     }
-//     else badPaul.say("You have to activate the geolocation");
-//
-// }
-//
-// function badPaulHow(){
-//     if (L.userPosition){
-//         purpose = "how";
-//         badCurrentLvlSpec = 1;
-//     wmi_search(1, tmpuser.latLng, {purpose: purpose, level: badLvlSpec[0], audience: $("#audience option:selected").val(), language: $("#language option:selected").val()}, function(videos){
-//         console.log(videos);
-//         var url;
-//         if (videos.length > 0){
-//          if (videos[0].id){
-//              badPaul.say("Playing a video to tell you how to visit this place.");
-//              facade.getGraphics().loadVideoAndPlay(videos[0].id);
-//          }/* else if (videos.id){ url = "https://www.youtube.com/embed/" + videos.id +"?autoplay=1"
-//            badPaul.say("Playing a video to tell you how to visit this place.");
-//          }*/
-//         }
-//          else badPaul.say("We couldn't find the right video for the occasion");
-//       });
-//     }
-//     else badPaul.say("You have to activate the geolocation");
-// }
-//
-// function badPaulNext(){
-//     if (L.userPosition){
-//         purpose = "what";
-//         badCurrentLvlSpec = 1;
-//         next = 1;
-//         prev_value = 0;
-//         search();
-//     }
-//     else if (!L.userPosition) badPaul.say("You have to activate the geolocation");
-// }
-//
-// function badPaulPrev(){
-//     if (L.userPosition){
-//         if (dest_point.type){
-//             next = 0;
-//             var pointsOfInterest = facade.getPointsOfInterest();
-//             var len = pointsOfInterest.listOfPlacesVisited.length;
-//             if (len > prev_value){
-//                 dest_point = Object.assign({},pointsOfInterest.listOfPlacesVisited[len-1-prev_value]); //important
-//                 var tmp = []; tmp.push(L.userPosition.latLng); tmp.push(dest_point.data.latLng);
-//                 facade.getItinerary().setWaypoints(tmp);
-//                 prev_value++;
-//             }
-//             else badPaul.say("You can't go back anymore");
-//         }
-//     }
-//     else badPaul.say("You have to activate the geolocation");
-// }
-//
-// /*function badPaulPause(){
-//     //stoppa la riproduzione del video corrente
-//     //$("#video-frame").pause();
-//     badPaul.say("Current video paused");
-//
-// }
-//
-// function badPaulContinue(){
-//     //continua la riproduzione del video corrente
-//     badPaul.say("Resuming play");
-//     //$("#video-frame").play()
-// }*/

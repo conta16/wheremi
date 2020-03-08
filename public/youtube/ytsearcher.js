@@ -20,6 +20,7 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
       part: "snippet",
       location: _params.coords.latitude+","+_params.coords.longitude,
       locationRadius: _params.radius*1000+"m",
+      maxResults: 50,
       key: parent._options.googlekey,
       type: "video",
       videoEmbeddable: true
@@ -61,6 +62,7 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
       q: facade.locationString(latLng, spec_level, spec_level), //maybe _params.coords ???? -squest-
       key: parent._options.googlekey,
       type: "video",
+      maxResults: 50,
       videoEmbeddable: true
     }
     // TODO: aggiungere topicId

@@ -65,9 +65,10 @@ function mahmood(res){
       var lang=undefined;
 
       for (var j in parts){
-        if (!validOLC(parts[j]))
-            break;
+
         if (parts[j].search(OLC_REGEX)==0){
+          if (!validOLC(parts[j]))
+            break;
           last_olc='';
           olcs=content=Object.assign([], parts[j].split("-"))
           for (var k in olcs){
@@ -151,7 +152,7 @@ function ytOLCtolatlng(yt_points){
 function wmi_search(results, position, filter, callback){
   var raw_videos;
   var filtered_videos;
-  yt=new YTSearcher({googlekey: "AIzaSyCntiI4kbASipSjAzrS9yo75YS_WXQa0ls"/*"AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0"*/,yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){
+  yt=new YTSearcher({googlekey: /*"AIzaSyCntiI4kbASipSjAzrS9yo75YS_WXQa0ls"*/"AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0",yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){
     raw_videos=mahmood(res);
     filtered_videos=result_filter(raw_videos, filter);
     console.log(raw_videos);
