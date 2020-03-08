@@ -11,7 +11,8 @@ var tag = document.createElement('script');
 tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
+var listeroni;
+var listaId;
 
 var player;
 function onYouTubeIframeAPIReady() {
@@ -26,7 +27,15 @@ function onYouTubeIframeAPIReady() {
     });
   }
 function onPlayerReady(){}
-function onPlayerStateChange(){}
+function onPlayerStateChange(){
+    /*if (player.getPlayerState() == 0){ //Se la riproduzione di un video è terminata
+        player.cuePlaylist({listType: "playlist",
+            list:,
+            index:Number,
+            startSeconds:Number,
+            suggestedQuality:String})
+    }*/
+}
 
 var badPaul = new Artyom();
 badPaul.initialize({
@@ -75,9 +84,22 @@ function NOTbadPaulWmi(){//wheremi
     });
 }*/
 
+function unpack(list){
+    var returnlist
+    var j = 0;
+    for (i in list[0]){
+        returnlist[j] = list[0][i].id.videoId;
+    }
+    return returnlist;
+}
+
 function badPaulWheremi(){
-    var listeroni = search();
-    player.loadVideoById(listeroni[0][0].id)
+    badPaul.say("This is what we found for this place!");
+    listeroni = search();
+    listaId = unpack(listeroni)
+    player.cuePlaylist({listType: "playlist",
+            list:listaId,
+            index:0})
 }
 
 
