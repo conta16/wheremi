@@ -63,7 +63,7 @@ function mahmood(res){
       var tmp_obj={};
       var part=undefined;
       var lang=undefined;
-      
+
       for (var j in parts){
         if (!validOLC(parts[j]))
             break;
@@ -91,18 +91,10 @@ function mahmood(res){
         }
 
       }
-<<<<<<< HEAD
       if (!validOLC(last_olc))
         break;
       tmp_obj.latLng={lat:OpenLocationCode.decode(last_olc).latitudeCenter, lng:OpenLocationCode.decode(last_olc).longitudeCenter};
       tmp_obj.title=res.items[i].snippet.title;
-=======
-      if (!validOLC(parts[j]))
-        break;
-      tmp_obj.latLng={lat:OpenLocationCode.decode(last_olc).latitudeCenter, lng:OpenLocationCode.decode(last_olc).longitudeCenter};
-      tmp_obj.title=res.items[i].snippet.title;
-      
->>>>>>> adabf44bbb62389ff23b7b77b823d31365631e42
       tmp_obj.content=Object.assign([], content);
       tmp_obj.audience=Object.assign([], audience);
       tmp_obj.content=Object.assign([], content);
