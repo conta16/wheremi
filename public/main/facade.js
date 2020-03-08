@@ -10,7 +10,7 @@ class Facade{
         this.Paul = new Artyom();
         this.Paul.initialize({
             lang: this.initLanguagePaul(),
-            continuous: false, // Listen forever
+            continuous: true, // Listen forever /*LISSEN FOREVER COSì TESTO */
             soundex: true,// Use the soundex algorithm to increase accuracy
             debug: true, // Show messages in the console
             executionKeyword: "",//Esegui dopo questa spressione
