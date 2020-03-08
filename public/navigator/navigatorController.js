@@ -84,5 +84,7 @@ class navigatorController{
         L.routes=[];
         facade.setWaypoints([]);
         Paul.say("You reached your destination");
+        e=new customEvent("destinationReached");
+        document.dispatchEvent(e)
     }
 }
