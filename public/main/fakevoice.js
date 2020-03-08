@@ -6,6 +6,28 @@ var next = 1; //1 when next, 0 when previous
 var prev_value = 0 //when you're always pressing previous, this keeps track of how far back you've gone
 var filterForPaul = {}
 
+var tag = document.createElement('script');
+
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+
+var player;
+function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+      height: '100%',
+      width: '100%',
+      videoId: 'dQw4w9WgXcQ',
+      events: {
+        'onReady': onPlayerReady,
+        'onStateChange': onPlayerStateChange
+      }
+    });
+  }
+function onPlayerReady(){}
+function onPlayerStateChange(){}
+
 var badPaul = new Artyom();
 badPaul.initialize({
     lang: initLanguagePaul(),
@@ -62,9 +84,13 @@ function badPaulWhy(){
             var url;
             if (videos.length > 0){
                 if (videos[0].id){
-                facade.getGraphics().loadVideoAndPlay(videos[0].id);
+                    player.loadVideoById(videos[0].id);
+                    player.playVideo();
+                    //facade.getGraphics().loadVideoAndPlay(videos[0].id);
                 badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[0])
-            } else if (videos.id){ url = "https://www.youtube.com/embed/" + videos.id
+            } else if (videos.id){ //url = "https://www.youtube.com/embed/" + videos.id
+                player.loadVideoById(videos.id);
+                player.playVideo();
                 badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[0])
             }
         }
@@ -82,10 +108,14 @@ function badPaulMore(){
             if (videos.length > 0 && badCurrentLvlSpec <= 5){
              if (videos[0].id){
                 badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[badCurrentLvlSpec])
-                facade.getGraphics().loadVideoAndPlay(videos[0].id);
+                player.loadVideoById(videos[0].id);
+                player.playVideo();
+                //facade.getGraphics().loadVideoAndPlay(videos[0].id);
              } else if (videos.id){
                 url = "https://www.youtube.com/embed/" + videos.id //videos non dovrebbe essere sempre un vettore?? 
-                facade.getGraphics().loadVideoAndPlay(videos.id);
+                player.loadVideoById(videos.id);
+                player.playVideo();
+                //facade.getGraphics().loadVideoAndPlay(videos.id);
                 badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[badCurrentLvlSpec])
              }
             }
@@ -114,7 +144,9 @@ function badPaulHow(){
         if (videos.length > 0){
          if (videos[0].id){
              badPaul.say("Playing a video to tell you how to visit this place.");
-             facade.getGraphics().loadVideoAndPlay(videos[0].id);
+             player.loadVideoById(videos[0].id);
+             player.playVideo();
+             //facade.getGraphics().loadVideoAndPlay(videos[0].id);
          }/* else if (videos.id){ url = "https://www.youtube.com/embed/" + videos.id +"?autoplay=1"
            badPaul.say("Playing a video to tell you how to visit this place.");
          }*/
@@ -156,7 +188,7 @@ function badPaulPrev(){
 
 function badPaulPause(){
     //stoppa la riproduzione del video corrente
-    $('#video-frame').get(0).stopVideo();
+    player.pauseVideo();
     badPaul.say("Current video paused");
 
 }
@@ -164,5 +196,5 @@ function badPaulPause(){
 function badPaulContinue(){
     //continua la riproduzione del video corrente
     badPaul.say("Resuming play");
-    $("#video-frame").get(0).playVideo();
+    player.playVideo();
 }
