@@ -59,12 +59,13 @@ function search(){
           sorted_places[i].push(tmp_list[i].how[0])
         sorted_places[i].concat(tmp_list[i].why);//a questo punto tmp_list è un oggetto del tipo [[...video obj...], ...] ordinati per distanza dalla posizione dell'utente di cui, come ha detto vitali, il primo è un what,il secondo un how, poi una lista di why
       }
-      //in questo modo scorrendo la matrice sorted_places è tale che sorted_places[0] dovrebbe avere tutti i video inerenti al punto più vicino all'utente in ordine di riproduzione. sorted_places[1] è il punto più cicino all'utente con già i video ordinati in ordine di riproduzione, mentre sorted_places[3] è il punto più vicino alla posizione iniziale dell'utente, ma non necessariamente alla posizione dell'utente
+      //in questo modo scorrendo la matrice sorted_places è tale che sorted_places[0] dovrebbe avere tutti i video inerenti al punto più vicino all'utente in ordine di riproduzione. sorted_places[1] è il punto più vicino all'utente con già i video ordinati in ordine di riproduzione, mentre sorted_places[3] è il punto più vicino alla posizione iniziale dell'utente, ma non necessariamente alla posizione dell'utente
       rollback=0;//per implementare previous, i posti visitati sono inseriti in visited_olcs. al crescere di rollback la posizione del video corrente retrocede (ciò avviene al comando previous) ed avanza al comando next. Quando rollback è 0, current_video cresce. se è maggiore di 1, allora non abbiamo la certezza che il video ottenuto sia il più vicino, dunque ne cerchiamo dei nuovi per assicuraci che il primo ottenuto sia il più vicino non ancora visitato.
       current_place=0;
       current_video=0;
       next(current_place++);
     });
+  return sorted_places;
 }
 
 function sort_places(){

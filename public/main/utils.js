@@ -65,9 +65,10 @@ function mahmood(res){
       var lang=undefined;
       
       for (var j in parts){
-        if (!validOLC(parts[j]))
-            break;
+        
         if (parts[j].search(OLC_REGEX)==0){
+          if (!validOLC(parts[j]))
+            break;
           last_olc='';
           olcs=content=Object.assign([], parts[j].split("-"))
           for (var k in olcs){

@@ -49,7 +49,7 @@ function initLanguagePaul(){
 //var tmpuser = {}
 //tmpuser.latLng = {lat: '44.488998044', lng: '11.339498642'}
 
-function badPaulWmi(){//wheremi
+function NOTbadPaulWmi(){//wheremi
 
     if (L.userPosition){
         var pointsOfInterest = facade.getPointsOfInterest();
@@ -64,7 +64,7 @@ function badPaulWmi(){//wheremi
     else if (!L.userPosition) badPaul.say("You have to activate the geolocation");
 }
 
-function search(){
+/*function search(){
     wmi_search(20, L.userPosition.latLng, {purpose: purpose,language: $("#language option:selected").val()}, function(videos){
         if (videos[0] && videos[0].id) facade.getPointsOfInterest().setYTPoint(videos[0].id, videos[0].latLng);
         dest_point = facade.getPointsOfInterest().calculateClosestPoint();
@@ -73,7 +73,13 @@ function search(){
         facade.getItinerary().setWaypoints(tmp); // per wiki e point l'audio parte quando viene cambiato L.userPosition e diventa <20, guarda su l0controllocate (mi sembra)
             //if (next) facade.getPointsOfInterest().yt_visitedPlaces.push({"id": dest_point.data.id, "latLng": {"lat": dest_point.data.latLng.lat, "lng": dest_point.data.latLng.lng}});
     });
+}*/
+
+function badPaulWheremi(){
+    var listeroni = search();
+    player.loadVideoById(listeroni[0][0].id)
 }
+
 
 function badPaulWhy(){
     if (L.userPosition){
@@ -103,7 +109,7 @@ function badPaulWhy(){
 function badPaulMore(){
     var url;
     if (L.userPosition){
-        wmi_search(1, L.userPosition.latLng, {purpose: purpose, level: badLvlSpec[++badCurrentLvlSpec], audience: $("#audience option:selected").val(), language: $("#language option:selected").val()}, function(videos){
+        wmi_search(20, L.userPosition.latLng, {purpose: purpose, level: badLvlSpec[++badCurrentLvlSpec], audience: $("#audience option:selected").val(), language: $("#language option:selected").val()}, function(videos){
             console.log(videos);
             if (videos.length > 0 && badCurrentLvlSpec <= 5){
              if (videos[0].id){
