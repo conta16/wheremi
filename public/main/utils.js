@@ -39,6 +39,16 @@ function gotoTab(tab){
   }
 }
 
+function validOLC(str){
+  try{
+    OpenLocationCode.decode(str)
+  }
+  catch(e){
+    return false;
+  }
+  return true;
+}
+
 function mahmood(res){
   var position;
   yt_videos=[]
@@ -55,6 +65,8 @@ function mahmood(res){
       var lang=undefined;
       for (var j in parts){
         if (parts[j].search(OLC_REGEX)==0){
+          if (!validOLC(parts[j]))
+            break;
           last_olc='';
           olcs=content=Object.assign([], parts[j].split("-"))
           for (var k in olcs){

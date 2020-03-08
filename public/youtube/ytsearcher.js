@@ -90,8 +90,14 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
         parent.items=parent.items.concat(res.items);
         if (res.nextPageToken && _params.results-res.items.length>0)
           _wmivideo_search(Object.assign(_params, {pageToken: res.nextPageToken, results:_params.results-res.items.length}), latLng, spec_level)
-        else if (res.items.length==0 && _params.results-res.items.length>0)
+        else if ((!res.pageToken && _params.results-res.items.length>0)){
+          delete _params.nextPageToken;
+          _wmivideo_search(Object.assign(_params, {results:_params.results-res.items.length}), latLng, spec_level-2)
+        }
+        else if ((res.items.length==0 && _params.results-res.items.length>0)){
+          delete _params.nextPageToken
           _wmivideo_search(_params, latLng, spec_level-2);
+        }
         else
           parent.get_yt_videos(parent.items);
       }.bind(this),
