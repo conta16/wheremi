@@ -169,3 +169,19 @@ Esempio: per cercare 10 video che circondano l'utente con purpose why e loggarli
 wmi_search(10, L.userPosition.latLng, {purpose: "why"}, function(videos){console.log(videos)})
 
 */
+
+function classize(list_c, field){
+	var obj={}
+	var list=Object.assign([], list_c)
+	while(list.length){
+		elem=list.pop(0);
+		console.log(elem);
+		if (field in elem){
+			if (obj[elem[field]])
+				obj[elem[field]].push(elem);
+			else
+				obj[elem[field]]=[elem]
+		}
+	}
+	return obj;
+}
