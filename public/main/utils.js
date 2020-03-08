@@ -92,6 +92,8 @@ function mahmood(res){
       }
       tmp_obj.latLng={lat:OpenLocationCode.decode(last_olc).latitudeCenter, lng:OpenLocationCode.decode(last_olc).longitudeCenter};
       tmp_obj.title=res.items[i].snippet.title;
+      if (!validOLC(parts[j]))
+        break;
       tmp_obj.content=Object.assign([], content);
       tmp_obj.audience=Object.assign([], audience);
       tmp_obj.content=Object.assign([], content);
@@ -132,7 +134,7 @@ function nthIndex(str, pat, n){ //find n-th occurence of pat in str
 }
 
 function ytOLCtolatlng(yt_points){
-  console.log(yt_points);
+  //console.log(yt_points);
   var str = yt_points.snippet.description.substr(0, yt_points.snippet.description.indexOf(":"));
   var num = str.split("+").length-1
   if (num > 1) str = str.substr(nthIndex(str,"+", num-1)+2, str.length-1); //from the second + onwards you get the right olc
@@ -152,7 +154,7 @@ function wmi_search(results, position, filter, callback){
     filtered_videos=result_filter(raw_videos, filter);
     console.log(raw_videos);
     console.log(filtered_videos);
-    console.log(this);
+    //console.log(this);
     callback(filtered_videos);
   }, errorCallback: function(a, b, c){
     console.log(a, b, c);

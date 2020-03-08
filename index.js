@@ -16,7 +16,7 @@ var refresh = require('passport-oauth2-refresh');
 
 sgMail.setApiKey("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")
 
-const LOCAL=0;
+const LOCAL=1;
 
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;

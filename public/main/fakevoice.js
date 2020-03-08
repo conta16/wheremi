@@ -43,7 +43,7 @@ function badPaulWmi(){//wheremi
 }
 
 function search(){
-    wmi_search(1, L.userPosition.latLng, {purpose: purpose,language: $("#language option:selected").val()}, function(videos){
+    wmi_search(20, L.userPosition.latLng, {purpose: purpose,language: $("#language option:selected").val()}, function(videos){
         if (videos[0] && videos[0].id) facade.getPointsOfInterest().setYTPoint(videos[0].id, videos[0].latLng);
         dest_point = facade.getPointsOfInterest().calculateClosestPoint();
         //da mettere un qualcosa se non trova nulla
@@ -57,7 +57,7 @@ function badPaulWhy(){
     if (L.userPosition){
         purpose = "why";
         badCurrentLvlSpec = 0;
-        wmi_search(1, L.userPosition.latLng, {purpose: purpose, level: badLvlSpec[0], audience: $("#audience option:selected").val(), language: $("#language option:selected").val()}, function(videos){
+        wmi_search(20, L.userPosition.latLng, {purpose: purpose, level: badLvlSpec[0], audience: $("#audience option:selected").val(), language: $("#language option:selected").val()}, function(videos){
             console.log(videos);
             var url;
             if (videos.length > 0){
@@ -154,9 +154,9 @@ function badPaulPrev(){
     else badPaul.say("You have to activate the geolocation");
 }
 
-/*function badPaulPause(){
+function badPaulPause(){
     //stoppa la riproduzione del video corrente
-    //$("#video-frame").pause();
+    $('#video-frame').get(0).stopVideo();
     badPaul.say("Current video paused");
 
 }
@@ -164,5 +164,5 @@ function badPaulPrev(){
 function badPaulContinue(){
     //continua la riproduzione del video corrente
     badPaul.say("Resuming play");
-    //$("#video-frame").play()
-}*/
+    $("#video-frame").get(0).playVideo();
+}
