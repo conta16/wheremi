@@ -105,10 +105,12 @@ function previous(){
 }
 
 function next(place){
-  if (rollback>0)
+  if (rollback>0){
     rollback--;
+    current_place--;
+    }
   else if (rollback==0){
-    if (place<2)
+    if (place<2 && sort_places[places])
       visited_places.push(sort_places[places]);
     else
       return search();
