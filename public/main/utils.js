@@ -90,10 +90,10 @@ function mahmood(res){
         }
 
       }
+      if (!validOLC(last_olc))
+        break;
       tmp_obj.latLng={lat:OpenLocationCode.decode(last_olc).latitudeCenter, lng:OpenLocationCode.decode(last_olc).longitudeCenter};
       tmp_obj.title=res.items[i].snippet.title;
-      if (!validOLC(parts[j]))
-        break;
       tmp_obj.content=Object.assign([], content);
       tmp_obj.audience=Object.assign([], audience);
       tmp_obj.content=Object.assign([], content);
