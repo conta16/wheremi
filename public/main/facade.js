@@ -179,7 +179,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
             var options= {setView:'once', sharePosition: true, showCompass: true, markerStyle:{radius: mobile? 18: 9}, compassStyle:{radius: mobile? 18: 9}, flyTo:false,locateOptions:{watch:false, enableHighAccuracy:true}};
             options.defaultLatLng=Object.assign({}, defaultLatLng);
             L.userPosition={}
-            L.userPosition.latLng=Object.assign({}, defaultLatLng);
+            //L.userPosition.latLng=Object.assign({}, defaultLatLng);
             L.control.locate(options).addTo(map);
         });
     }
