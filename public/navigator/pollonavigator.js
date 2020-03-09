@@ -96,8 +96,24 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){
 					parent.stopped=true;
 					return;
 				}
+
+				function double_point(){
+					var list;
+					for (var i in list=L.routes[0].instructions.map(function(item){return L.routes[0].coordinates[item.index]}).splice(parent._targetindex)){
+						if (list[i].lat==L.routes[0].instructions.map(function(item){return L.routes[0].coordinates[item.index]})[parent._targetindex-1].lat && list[i].lng==L.routes[0].instructions.map(function(item){return L.routes[0].coordinates[item.index]})[parent._targetindex-1].lng)
+  						return true;
+						}
+					return false
+				}
+
 				parent.onpoint(L.routes[0].instructions[parent._targetindex])
 				parent._targetindex+=1;
+				if (double_point()){
+					secondPart=L.routes[0].instruction.splice(parent._targetindex);
+					L.routes[0].instruction.pop()
+					L.routes[0].instruction=L.routes[0].instruction.concat()
+					parent._targetindex-=1;
+				}
 				parent._prevpos={lat:undefined, lng:undefined};
 				parent._prevdist=Infinity;
 				if (parent._targetindex>L.routes[0].instructions.length-1)
