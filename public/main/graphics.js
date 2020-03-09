@@ -156,7 +156,7 @@ class Graphics{
           waypoints[index].description = $('#description').val();
         });
 
-        if (L.userPosition) wmi_search(10, L.userPosition.latLng, {}, function(videos){console.log(videos)});
+        //if (L.userPosition) wmi_search(10, L.userPosition.latLng, {}, function(videos){console.log(videos)});
 
         for (var i in waypoints[index].comments){
             $('#comment-list').append("<p>"+waypoints[index].comments[i].madeBy.name+": "+waypoints[index].comments[i].text+"</p><br>");

@@ -91,6 +91,8 @@ function badPaulWheremi(){
         listeroni = listbaby;
         console.log("LISTERONI");
         console.log(listeroni[0][0]);
+        facade.getPointsOfInterest().removeYTMarkers();
+        facade.getPointsOfInterest().setYTMarkers(listeroni);
         player.loadVideoById(listeroni[0][wmiBookmark].id.videoId);
         player.playVideo();
     });

@@ -6,6 +6,7 @@ var tmp_waypoint;
 var YTUploader;
 var player;
 var yt;
+var clicked = false;
 
 var tag = document.createElement('script');
 tag.src = "//www.youtube.com/player_api";

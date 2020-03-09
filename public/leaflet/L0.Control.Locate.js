@@ -377,6 +377,8 @@ You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
             var wasFollowing =  this._isFollowing();
             this._userPanned = false;
             this._userZoomed = false;
+            clicked = true; //serve per attivare azioni che hanno bisogno della posizione
+                                //Problema: se uno clicca e poi clicca ancora si dovrebbe disabilitare?
 
             if (this._active && !this._event) {
                 // click while requesting

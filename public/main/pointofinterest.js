@@ -386,6 +386,37 @@ calculateClosestPoint(){
         this.yt_markers[len].addTo(map);
     }
 
+    setYTMarker(list){
+        var len = this.yt_markers.length;
+        var icon = L.icon({
+            iconUrl: "./img/32x32.png"
+        });
+        for (var i = 0; i<list; i++){
+            var latLng = list[i][0].latLng;
+            this.yt_markers[len] = new L.Marker(
+                latLng,
+                {
+                    icon: icon
+                },
+                {
+                    draggable: false
+                }
+            ).addTo(map);
+        }
+        this.yt_markers.forEach((obj,index) => {
+            this.yt_markers[index].on("click", () => {
+                gotoTab(INSPECT_TAB);
+                $("#inspect").html('<iframe class="embed-responsive-item video-frame" width="854" height="480" src="https://www.youtube.com/embed/'+list[index][0].id.videoId+'" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>');
+            });
+        });
+    }
+
+    removeYTMarkers(){
+        for (var i in this.yt_markers)
+            map.removeLayer(this.yt_markers[i]);
+        this.yt_markers = [];
+    }
+
     removePointsMarker(position){
         map.removeLayer(this.markers[position]);
         this.markers.splice(position,1);
@@ -413,14 +444,6 @@ calculateClosestPoint(){
         map.removeLayer(this.addedPointMarker);
     }
 
-    removeYtMarker(marker){
-        map.removeLayer(marker);
-        for (var position in this.yt_markers)
-          if (this.yt_markers[position]===marker)
-            this.yt_markers.splice(position,1);
-        this.yt_points.splice(position,1);
-
-    }
 
     removeAllMarkers(){
         while (this.markers.length > 0){

@@ -386,7 +386,7 @@ class Itinerary {
 
     checkWaypointInRange(){
         var tmp;
-        if (L.userPosition)
+        if (clicked) //l.userposition
             for (var i in this.waypoints){
                 tmp = this.waypoints[i];
                 if (this.distance(L.userPosition.lat, L.userPosition.lng, tmp.latLng.lat, tmp.latLng.lng, 'K') < 50){

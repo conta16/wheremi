@@ -491,13 +491,18 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
     }
 
     go(begin_itinerary = false){
-      console.log(nav);
-        if (nav)
-          nav.stop();
-        if (L.routes) L.routes = [];//this.getItinerary().setWaypoints([]);
-        nav=new polloNavigator(navigatorControl.onpoint, navigatorControl.onend, navigatorControl.wondering);
-        console.log(L.routes);
-        nav.navigate(begin_itinerary);
+        if (clicked){
+            console.log(nav);
+            if (nav)
+                nav.stop();
+            if (L.routes) L.routes = [];//this.getItinerary().setWaypoints([]);
+            nav=new polloNavigator(navigatorControl.onpoint, navigatorControl.onend, navigatorControl.wondering);
+            console.log(L.routes);
+            nav.navigate(begin_itinerary);
+        }
+        else {
+            badPaul.say("you have to activate the geolocalisation");
+        }
     }
 
     getselectedWaypoint(){

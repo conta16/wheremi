@@ -19,9 +19,9 @@ function different_olc(olc){
 }
 
 function badPaulWmi(){//wheremi
-    if (L.userPosition)
+    if (clicked) //l.userposition
       search();
-    else if (!L.userPosition)
+    else if (!clicked) //l.userposition
       badPaul.say("You have to activate the geolocation");
 }
 
