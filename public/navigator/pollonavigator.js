@@ -210,8 +210,8 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){
 					parent._initListeners()
 					init();
 					parent._timeoutChain= setTimeout(f,300);
-				
-		
+				}
+
 
 				if (!'routes' in L)
 					return ;

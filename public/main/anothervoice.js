@@ -27,7 +27,7 @@ function badPaulWmi(){//wheremi
 
 function search(callback){
   wmi_search(100, L.userPosition.latLng, {language: $("#language option:selected").val(), audience: $("#audience option:selected").val()}, function(videos){
-      var tmp_places=videos.classize(videos, 'olc')//dividiamo i video in classi di olc per ottenere un oggetto contentente tutti i video divisi per olc
+      var tmp_places=classize(videos, 'olc')//dividiamo i video in classi di olc per ottenere un oggetto contentente tutti i video divisi per olc
       for (var i in tmp_places){ //dividiamo i video, oltre che per olc, per purpose
         var what=Object.assign({}, result_filter(tmp_places[i], {purpose: "what"}));
         var how=Object.assign({}, result_filter(tmp_places[i], {purpose: "how"}));
@@ -63,10 +63,10 @@ function search(callback){
       rollback=0;//per implementare previous, i posti visitati sono inseriti in visited_olcs. al crescere di rollback la posizione del video corrente retrocede (ciò avviene al comando previous) ed avanza al comando next. Quando rollback è 0, current_video cresce. se è maggiore di 1, allora non abbiamo la certezza che il video ottenuto sia il più vicino, dunque ne cerchiamo dei nuovi per assicuraci che il primo ottenuto sia il più vicino non ancora visitato.
       current_place=0;
       current_video=0;
-      next(current_place++);
+      //next(current_place++);
       callback(sorted_places);
     });
-  
+
 }
 
 function sort_places(){
@@ -131,5 +131,3 @@ function playController(){
   if (facade.distance(L.userPosition, visited_olcs[visited_olcs.length-1-rollback][0].olc)<0.02)//se siamo nel punto giusto
     play(current_video++);
 }
-
-

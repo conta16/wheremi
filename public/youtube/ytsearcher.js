@@ -3,6 +3,8 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
   parent = this;
   this._options={};
 
+  this.final_data=undefined;
+
   function init(){
     for (var i in options){
       if (typeof(i) === 'object')
@@ -13,7 +15,7 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
         parent.items=[]
   }
 
-  function cleanItems(){parent.items=[];}
+  function cleanItems(){parent.items=[];parent.final_data=undefined;}
 
   function yt_geovideo_search(_params){
     var params={
@@ -54,9 +56,11 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
   }
 
   _wmivideo_search = function(_params, latLng, spec_level){
-    console.log(latLng);
-    if (spec_level<6)
+    console.log(parent.items);
+    if (spec_level<6 || _params.results<=0){
+      parent.get_yt_videos(parent.items.map(function(item){return item.id.videoId}));
       return;
+    }
     var params={
       part: "snippet",
       q: facade.locationString(latLng, spec_level, spec_level), //maybe _params.coords ???? -squest-
@@ -92,16 +96,10 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
         parent.items=parent.items.concat(res.items);
         if (res.nextPageToken && _params.results-res.items.length>0)
           _wmivideo_search(Object.assign(_params, {pageToken: res.nextPageToken, results:_params.results-res.items.length}), latLng, spec_level)
-        else if ((!res.pageToken && _params.results-res.items.length>0)){
-          delete _params.nextPageToken;
+        else {
+          delete _params.pageToken;
           _wmivideo_search(Object.assign(_params, {results:_params.results-res.items.length}), latLng, spec_level-2)
         }
-        else if ((res.items.length==0 && _params.results-res.items.length>0)){
-          delete _params.nextPageToken
-          _wmivideo_search(_params, latLng, spec_level-2);
-        }
-        else
-          parent.get_yt_videos(parent.items);
       }.bind(this),
       error: function(a,b,c){
         console.log(a,b,c);
@@ -114,15 +112,20 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
   }
 
   this.get_yt_videos = function (search_resource_array){
-    var list="";
-    if (search_resource_array.length)
-      list+=search_resource_array[0].id.videoId;
-    for (var i=1; i<search_resource_array.length; i++)
-      list+=","+search_resource_array[i].id.videoId;
+    console.log(search_resource_array);
+    if(!search_resource_array || search_resource_array.length==0){
+      console.log(parent.final_data);
+      var data=parent.final_data?Object.assign({}, parent.final_data):{};
+      cleanItems();
+      parent._options.successCallback(data);
+      return;
+    }
+    var list=search_resource_array.splice(0,25).join(',');
 
     var params={
       part: "snippet,recordingDetails",
       key: parent._options.googlekey,
+      maxResults:50,
       id: list
     };
 
@@ -133,7 +136,13 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
       url: get_url,
       contentType: "application/json",
       format: "json",
-      success: function(res){cleanItems();parent._options.successCallback(res);},
+      success: function(res){
+        if (!parent.final_data)
+          parent.final_data=Object.assign({}, res);
+        else
+          parent.final_data.items=parent.final_data.items.concat(res.items);
+        parent.get_yt_videos(search_resource_array);
+        },
       error: function(a,b,c){
         parent._options.errorCallback(a, b, c);
       }

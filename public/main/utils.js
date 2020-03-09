@@ -52,7 +52,9 @@ function validOLC(str){
 function mahmood(res){
   var position;
   yt_videos=[]
-  for (i in res.items){
+  console.log(res)
+  for (var i in res.items){
+    console.log(yt_videos);
     if ((position=res.items[i].snippet.description.search(DESCRIPTION_REGEX))!=-1){
       var desc=res.items[i].snippet.description.substring(position);
       var parts=desc.split(":");
@@ -67,8 +69,6 @@ function mahmood(res){
       for (var j in parts){
 
         if (parts[j].search(OLC_REGEX)==0){
-          if (!validOLC(parts[j]))
-            break;
           last_olc='';
           olcs=content=Object.assign([], parts[j].split("-"))
           for (var k in olcs){
@@ -93,7 +93,7 @@ function mahmood(res){
 
       }
       if (!validOLC(last_olc))
-        break;
+        continue;
       tmp_obj.latLng={lat:OpenLocationCode.decode(last_olc).latitudeCenter, lng:OpenLocationCode.decode(last_olc).longitudeCenter};
       tmp_obj.title=res.items[i].snippet.title;
       tmp_obj.content=Object.assign([], content);
@@ -152,8 +152,14 @@ function ytOLCtolatlng(yt_points){
 function wmi_search(results, position, filter, callback){
   var raw_videos;
   var filtered_videos;
-  yt=new YTSearcher({googlekey: /*"AIzaSyCntiI4kbASipSjAzrS9yo75YS_WXQa0ls"*/"AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0",yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){
-    raw_videos=mahmood(res);
+  yt=new YTSearcher({googlekey:
+    "AIzaSyAc68mhk7Mo-BJQh5DHAGI6vkOc-u7hAa0",
+  //"AIzaSyAPDIRruOD0_Ug3Ktosgxpzx5Z4Dwhx2W8",
+  //"AIzaSyCntiI4kbASipSjAzrS9yo75YS_WXQa0ls",
+  //"AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0",
+  yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){
+    var a=Object.assign({}, res);
+    raw_videos=mahmood(a);
     filtered_videos=result_filter(raw_videos, filter);
     console.log(raw_videos);
     console.log(filtered_videos);

@@ -94,7 +94,7 @@ function badPaulWheremi(){
         player.loadVideoById(listeroni[0][wmiBookmark].id.videoId);
         player.playVideo();
     });
-    
+
 }
 
 
@@ -135,7 +135,7 @@ function badPaulMore(){
                 player.playVideo();
                 //facade.getGraphics().loadVideoAndPlay(videos[0].id);
              } else if (videos.id){
-                url = "https://www.youtube.com/embed/" + videos.id //videos non dovrebbe essere sempre un vettore?? 
+                url = "https://www.youtube.com/embed/" + videos.id //videos non dovrebbe essere sempre un vettore??
                 player.loadVideoById(videos.id);
                 player.playVideo();
                 //facade.getGraphics().loadVideoAndPlay(videos.id);
@@ -161,7 +161,7 @@ function badPaulHow(){
     if (L.userPosition){
         purpose = "how";
         badCurrentLvlSpec = 0;
-    wmi_search(1, tmpuser.latLng, {purpose: purpose, level: badLvlSpec[0], audience: $("#audience option:selected").val(), language: $("#language option:selected").val()}, function(videos){
+    wmi_search(1, tmpuser.latLng, {purpose: purpose, part: badLvlSpec[0], audience: $("#audience option:selected").val(), language: $("#language option:selected").val()}, function(videos){
         console.log(videos);
         var url;
         if (videos.length > 0){
@@ -174,7 +174,7 @@ function badPaulHow(){
            badPaul.say("Playing a video to tell you how to visit this place.");
          }*/
         }
-         else badPaul.say("We couldn't find the right video for the occasion");    
+         else badPaul.say("We couldn't find the right video for the occasion");
       });
     }
     else badPaul.say("You have to activate the geolocation");
