@@ -25,7 +25,7 @@ function badPaulWmi(){//wheremi
       badPaul.say("You have to activate the geolocation");
 }
 
-function search(){
+function search(callback){
   wmi_search(100, L.userPosition.latLng, {language: $("#language option:selected").val(), audience: $("#audience option:selected").val()}, function(videos){
       var tmp_places=videos.classize(videos, 'olc')//dividiamo i video in classi di olc per ottenere un oggetto contentente tutti i video divisi per olc
       for (var i in tmp_places){ //dividiamo i video, oltre che per olc, per purpose
@@ -64,8 +64,9 @@ function search(){
       current_place=0;
       current_video=0;
       next(current_place++);
+      callback(sorted_places);
     });
-  return sorted_places;
+  
 }
 
 function sort_places(){

@@ -5,6 +5,7 @@ var dest_point = {};
 var next = 1; //1 when next, 0 when previous
 var prev_value = 0 //when you're always pressing previous, this keeps track of how far back you've gone
 var filterForPaul = {}
+var wmiBookmark = 0;
 
 var tag = document.createElement('script');
 
@@ -28,13 +29,10 @@ function onYouTubeIframeAPIReady() {
   }
 function onPlayerReady(){}
 function onPlayerStateChange(){
-    /*if (player.getPlayerState() == 0){ //Se la riproduzione di un video è terminata
-        player.cuePlaylist({listType: "playlist",
-            list:,
-            index:Number,
-            startSeconds:Number,
-            suggestedQuality:String})
-    }*/
+    if (player.getPlayerState() == 0){ //Se la riproduzione di un video è terminata
+        wmiBookmark += 1;
+        player.loadVideoById(); //carica il prossimo video
+    }
 }
 
 var badPaul = new Artyom();
@@ -84,25 +82,19 @@ function NOTbadPaulWmi(){//wheremi
     });
 }*/
 
-function unpack(list){
-    var returnlist
-    var j = 0;
-    for (i in list[0]){
-        returnlist[j] = list[0][i].id.videoId;
-    }
-    console.log(returnlist);
-    return returnlist;
 
-}
 
 function badPaulWheremi(){
     badPaul.say("This is what we found for this place!");
-    listeroni = search();
-    listaId = unpack(listeroni)
-    player.loadPlaylist({listType: "playlist",
-            list:listaId,
-            index:parseInt(0)})
-    player.playVideo()
+    wmiBookmark = 0;
+    search(function (listbaby) {
+        listeroni = listbaby;
+        console.log("LISTERONI");
+        console.log(listeroni[0][0]);
+        player.loadVideoById(listeroni[0][wmiBookmark].id.videoId);
+        player.playVideo();
+    });
+    
 }
 
 
