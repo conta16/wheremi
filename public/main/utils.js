@@ -7,7 +7,7 @@ const DESCRIPTION_REGEX=/([A-Z,0-9]{8}\+[A-Z,0-9]{0,8})+(-[A-Z,0-9]{8}\+[A-Z,0-9
 const OLC_REGEX=/([A-Z,0-9]{8}\+[A-Z,0-9]{0,8})/;
 const PURP_REGEX=/(why|how|what)/i;
 const CONTENT_REGEX=/(none|nat|art|his|flk|mod|rel|cui|spo|mus|mov|fas|shp|tec|pop|prs|oth)/i;
-const AUDIENCE_REGEX=/(gen|pre|elm|mid|scl|all)/i;
+const AUDIENCE_REGEX=/(gen|pre|elm|mid|scl|all)(-(gen|pre|elm|mid|scl|all))*/i;
 const PART_REGEX=/P1?[0-9]/i;
 
 function gotoTab(tab){
@@ -52,9 +52,7 @@ function validOLC(str){
 function mahmood(res){
   var position;
   yt_videos=[]
-  console.log(res)
   for (var i in res.items){
-    console.log(yt_videos);
     if ((position=res.items[i].snippet.description.search(DESCRIPTION_REGEX))!=-1){
       var desc=res.items[i].snippet.description.substring(position);
       var parts=desc.split(":");
@@ -81,8 +79,8 @@ function mahmood(res){
         else if (parts[j].search(CONTENT_REGEX)==0){
           content=Object.assign([], parts[j].split("-"))
         }
-        else if (parts[j].search(AUDIENCE_REGEX)==0){
-          parts[j]=parts[j].substring(1,3);
+        else if (parts[j].search(AUDIENCE_REGEX)>=0){
+          parts[j]=parts[j].substring(parts[j].search(AUDIENCE_REGEX), parts[j].length);
           audience=Object.assign([], parts[j].split("-"))
         }
         else if (parts[j].search(PART_REGEX)==0){
@@ -117,7 +115,7 @@ function mahmood(res){
 function result_filter(yt_videos, props){
   function filter(item){
     for (var i in props){
-      if (item[i] && item[i]==props[i]);
+      if (item[i] && (item[i]==props[i] || ((typeof item[i])=='object') && props[i] in item[i]));
       else return false;
     }
     return true
@@ -183,7 +181,6 @@ function classize(list_c, field){
 	var list=Object.assign([], list_c)
 	while(list.length){
 		elem=list.pop(0);
-		console.log(elem);
 		if (field in elem){
 			if (obj[elem[field]])
 				obj[elem[field]].push(elem);

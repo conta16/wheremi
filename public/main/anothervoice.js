@@ -29,9 +29,9 @@ function search(callback){
   wmi_search(100, L.userPosition.latLng, {language: $("#language option:selected").val(), audience: $("#audience option:selected").val()}, function(videos){
       var tmp_places=classize(videos, 'olc')//dividiamo i video in classi di olc per ottenere un oggetto contentente tutti i video divisi per olc
       for (var i in tmp_places){ //dividiamo i video, oltre che per olc, per purpose
-        var what=Object.assign({}, result_filter(tmp_places[i], {purpose: "what"}));
-        var how=Object.assign({}, result_filter(tmp_places[i], {purpose: "how"}));
-        var why=Object.assign({}, result_filter(tmp_places[i], {purpose: "why"}));
+        var what=Object.assign([], result_filter(tmp_places[i], {purpose: "what"}));
+        var how=Object.assign([], result_filter(tmp_places[i], {purpose: "how"}));
+        var why=Object.assign([], result_filter(tmp_places[i], {purpose: "why"}));
         if (!places[i])
           places[i]={}
         places[i]=Object.assign(places[i], {what: what, why: why, how:how, olc:i});
@@ -43,15 +43,16 @@ function search(callback){
         return true;
       }); //teniamo solamente i posti non già visitati;
       for (var i in tmp_list){
-        tmp_list[i].why.sort(function(a,b){
-          if (!a.part && !b.part)
-            return 0
-          if (!a.part)
-            return 1
-          if (!b.part)
-            return -1
-          return a.part-b.part;
-        });//ordiniamo le clip why per livello di dettaglio
+        if(tmp_list[i].why[0])
+          tmp_list[i].why.sort(function(a,b){
+            if (!a.part && !b.part)
+              return 0
+            if (!a.part)
+              return 1
+            if (!b.part)
+              return -1
+            return a.part-b.part;
+          });//ordiniamo le clip why per livello di dettaglio
         sorted_places[i]=[];
         if (tmp_list[i].what[0])
           sorted_places[i].push(tmp_list[i].what[0]);
