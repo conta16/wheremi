@@ -494,7 +494,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
       console.log(nav);
         if (nav)
           nav.stop();
-        if (!begin_itinerary && L.routes) this.getItinerary().setWaypoints([]);
+        if (L.routes) L.routes = [];//this.getItinerary().setWaypoints([]);
         nav=new polloNavigator(navigatorControl.onpoint, navigatorControl.onend, navigatorControl.wondering);
         console.log(L.routes);
         nav.navigate(begin_itinerary);
