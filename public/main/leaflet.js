@@ -155,7 +155,7 @@ function reloadInspect(){
   </div>
   <div style="margin-bottom: 50px">
 	<button type="button" class="btn btn-primary startItinerary" onclick="facade.go(`+true+`)">Start Itinerary</button>
-	<button type="button" class="btn btn-primary startItinerary" onclick="facade.go()">Reach point</button>
+	<!--<button type="button" class="btn btn-primary startItinerary" onclick="facade.go()">Reach point</button>-->
   </div>
   </div>
 
