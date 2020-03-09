@@ -83,7 +83,7 @@ class Facade{
                 description:"spiega come mai questo posto è interessante",
                 indexes:["why", "paul why", "tell me why", "paul tell me why"],
                 action: function(i){
-                    
+
                     if (i >= 2){
                         Paul.say("Ain't nothing but a heartache");
                     }
@@ -471,11 +471,20 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
     }
 
     generateDescription(waypoint){
-             
+
+      function choices(field){
+        var a=[]
+        for (var i in $(field)){
+          if ($(field)[i].checked)
+            a.push($(field)[i].value);
+        }
+        return (a.length!=0)?a.join('-'):'none';
+      }
+
       var olc=this.locationString(waypoint.latLng, 6, 10);
         olc=olc.concat(':', $("#purp").val());
-        olc=olc.concat(':', $("#lang").val());
-        olc=olc.concat(':', $("#cont").val());
+        olc=olc.concat(':', $('#lang').find(":selected").attr("val"));
+        olc=olc.concat(':', choices("[name=cont]"));
         olc=olc.concat(':A', $("#aud").val());
         olc=olc.concat(':P', $("#det").val());
         return olc;
@@ -497,7 +506,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
 
     uploadVideo(){
       var title=$("#video-title").val();
-      var description=this.generateDescription(this.getPointsOfInterest().selectedWaypoint);
+      var description=this.generateDescription(facade.selectedWaypoint);
       var category=22;
       var metadata = {
         snippet: {

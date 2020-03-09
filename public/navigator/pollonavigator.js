@@ -90,7 +90,7 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){
 				}
 
 				this._onpoint= function(){
-				if (parent._targetindex>=L.routes[0].instructions.length){
+				if (parent._targetindex>=L.routes[0].instructions.length-1){
 					parent.stop();
 					parent.onstop();
 					parent.stopped=true;

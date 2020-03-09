@@ -74,7 +74,7 @@ class Graphics{
     loadMenu(waypoints, index, write_permit = true, nextnprevious = false){
         var parentThis = this;
 
-        Facade.selectedWaypoint=Object.assign({}, waypoints[index]);
+        facade.selectedWaypoint=Object.assign({}, waypoints[index]);
 
         if (this.facade.getItinerary().user_id === this.facade.getAccount()._id && this.facade.getItinerary().getMode() == 0){
             write_permit = true;

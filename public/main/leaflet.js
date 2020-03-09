@@ -710,25 +710,33 @@ function reloadInspect(){
 				<div class="col-auto my-1">
 				<p>Content:</p>
 				<label class="mr-sm-2 sr-only" for="cont"></label>
-				<select class="custom-select mr-sm-2 y-formCategory" id="cont">
-				<option value="none" selected>none</option>
-				<option value="nat">nature</option>
-				<option value="art">art</option>
-				<option value="his">history</option>
-				<option value="flk">folklore</option>
-				<option value="mod">modern culture</option>
-				<option value="rel">religions</option>
-				<option value="cui">cuisine</option>
-				<option value="spo">sport</option>
-				<option value="mus">music</option>
-				<option value="mov">movies</option>
-				<option value="fas">fashion</option>
-				<option value="shp">shopping</option>
-				<option value="tec">technology</option>
-				<option value="pop">pop culture and gossip</option>
-				<option value="prs">personal experiences</option>
-				<option value="oth">other</option>
-				</select>
+				<div class="container">
+				<div class="row">
+				<div class="col">
+				<div class="row"><input type="checkbox" class="form-check-input"  name="cont" value="none" id="none"></input><label for="none">none</label></div>
+			  <div class="row"><input type="checkbox" class="form-check-input"  name="cont" value="nat" id="nat"></input><label for="nature">nature</label></div>
+			  <div class="row"><input type="checkbox" class="form-check-input"  name="cont" value="art" id="art"></input><label for="art">art</label></div>
+			  <div class="row"><input type="checkbox" class="form-check-input"  name="cont" value="his" id="his"></input><label for="his">history</label></div>
+				<div class="row"><input type="checkbox" class="form-check-input"  name="cont" value="prs" id="prs"></input><label for="prs">personal</label></div>
+				<div class="row"><input type="checkbox" class="form-check-input"  name="cont" value="pop" id="pop"></input><label for="pop">pop and gossip</label></div>
+				</div>
+				<div class="col">
+				<div class="row"><input type="checkbox" class="form-check-input"  name="cont" value="flk" id="flk"></input><label for="flk">folklore</label></div>
+			  <div class="row"><input type="checkbox" class="form-check-input"  name="cont" value="mod" id="mod"></input><label for="mod">modern culture</label></div>
+			  <div class="row"><input type="checkbox" class="form-check-input"  name="cont" value="rel" id="rel"></input><label for="rel">religions</label></div>
+			  <div class="row"><input type="checkbox" class="form-check-input"  name="cont" value="cui" id="cui"></input><label for="cui">cuisine</label></div>
+				<div class="row"><input type="checkbox" class="form-check-input"  name="cont" value="shp" id="shp"></input><label for="shp">shopping</label></div>
+				<div class="row"><input type="checkbox" class="form-check-input"  name="cont" value="tec" id="tec"></input><label for="tec">technology</label></div>
+				</div>
+				<div class="col">
+			  <div class="row"><input type="checkbox" class="form-check-input"  name="cont" value="spo" id="spo"></input><label for="spo">sport</label></div>
+			  <div class="row"><input type="checkbox" class="form-check-input"  name="cont" value="mus" id="mus"></input><label for="mus">music</label></div>
+			  <div class="row"><input type="checkbox" class="form-check-input"  name="cont" value="mov" id="mov"></input><label for="mov">movies</label></div>
+				<div class="row"><input type="checkbox" class="form-check-input"  name="cont" value="oth" id="oth"></input><label for="oth">other</label></div>
+				<div class="row"><input type="checkbox" class="form-check-input"  name="cont" value="fas" id="fas"></input><label for="fas">fashion</label></div>
+				</div>
+				</div>
+				</div>
 			</div>
 			<div class="col-auto my-1">
 			<p>Audience:</p>

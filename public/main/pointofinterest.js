@@ -154,7 +154,7 @@ setYTPoint(id, latLng){
 }
 
 calculateClosestPoint(){
-    
+
     var min_distance = Infinity;
     var closestPoint = {};
     for (var i in this.points){
