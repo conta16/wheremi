@@ -96,6 +96,8 @@ function badPaulWheremi(){
         player.loadVideoById(listeroni[0][wmiBookmark].id);
         player.playVideo();
         facade.getPointsOfInterest().setYTMarkers(listeroni);
+        facade.selectedWaypoint = listeroni[0][wmiBookmark];
+        facade.go();
     });
 
 }
