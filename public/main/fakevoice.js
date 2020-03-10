@@ -6,6 +6,7 @@ var next = 1; //1 when next, 0 when previous
 var prev_value = 0 //when you're always pressing previous, this keeps track of how far back you've gone
 var filterForPaul = {}
 var wmiBookmark = 0;
+var olcBookmark=0;
 
 var tag = document.createElement('script');
 
@@ -30,8 +31,7 @@ function onYouTubeIframeAPIReady() {
 function onPlayerReady(){}
 function onPlayerStateChange(){
     if (player.getPlayerState() == 0){ //Se la riproduzione di un video è terminata
-        wmiBookmark += 1;
-        player.loadVideoById(); //carica il prossimo video
+        playClip(sorted_places[olcBookmark][++wmiBookmark]);
     }
 }
 
@@ -82,12 +82,26 @@ function NOTbadPaulWmi(){//wheremi
     });
 }*/
 
+function playClip(clip){
+  if (!visited_olcs.includes(clip.olc)){
+    visited_olcs.push(clip.olc);
+  }
+  player.loadVideoById(clip.id);
+  player.playVideo();
+}
+
 function gotoClip(clip){
   /*function autoPlay(event){
     if (facade.distance(L.userPosition.lat, L.userPosition.lng, event.detail.latLng.lat, event.detail.latLng.lat)<0.02){
       player.loadVideoById(clip.id);
       player.playVideo();
+////davide
+  function autoPlay(event){
+    if (facade.distance(L.userPosition.latLng.lat, L.userPosition.latLng.lng, event.detail.latLng.lat, event.detail.latLng.lng)<20){
+      playClip(clip);
+////davide
     }
+    console.log(this);
     document.removeEventListener("destinationReached", autoPlay);
   }*/
   facade.selectedWaypoint = clip;
@@ -100,13 +114,21 @@ function gotoClip(clip){
 function badPaulWheremi(){
     badPaul.say("This is what we found for this place!");
     wmiBookmark = 0;
+    olcBookmark=0;
     search(function (listbaby) {
+<<<<<<< HEAD
         listeroni = listbaby;
         facade.getPointsOfInterest().removeYTMarkers();
         facade.getPointsOfInterest().setYTMarkers(listeroni);
         //gotoClip(listeroni[0][wmiBookmark])
         visited_places.push(listeroni[0]);
         startPlace();
+=======
+        gotoTab(VOICE_TAB);
+        facade.getPointsOfInterest().removeYTMarkers();
+        facade.getPointsOfInterest().setYTMarkers(sorted_places);
+        gotoClip(sorted_places[olcBookmark][wmiBookmark])
+>>>>>>> c0b960647e8367d20593f602599a76d33e2b56fe
     });
 
 }
@@ -138,64 +160,90 @@ function badPaulWheremi(){
 // }
 
 function badPaulWhy(){
+  for(var i in sorted_places[olcBookmark]){
+    if (sorted_places[olcBookmark][i].purpose==="why")
+      playClip(sorted_places[olcBookmark][i]);
+  }
 }
 
+
+// function badPaulMore(){
+//     var url;
+//     if (L.userPosition){
+//         wmi_search(20, L.userPosition.latLng, {purpose: purpose, level: badLvlSpec[++badCurrentLvlSpec], audience: $("#audience option:selected").val(), language: $("#language option:selected").val()}, function(videos){
+//             console.log(videos);
+//             if (videos.length > 0 && badCurrentLvlSpec <= 5){
+//              if (videos[0].id){
+//                 badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[badCurrentLvlSpec])
+//                 player.loadVideoById(videos[0].id);
+//                 player.playVideo();
+//                 //facade.getGraphics().loadVideoAndPlay(videos[0].id);
+//              } else if (videos.id){
+//                 url = "https://www.youtube.com/embed/" + videos.id //videos non dovrebbe essere sempre un vettore??
+//                 player.loadVideoById(videos.id);
+//                 player.playVideo();
+//                 //facade.getGraphics().loadVideoAndPlay(videos.id);
+//                 badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[badCurrentLvlSpec])
+//              }
+//             }
+//              else {
+//                  //badPaul.say("We couldn't find the right video for the occasion");
+//                  if (badCurrentLvlSpec > 5){
+//                      badPaul.say("Reached maximum detail level");
+//                      badCurrentLvlSpec = 0;
+//                  }
+//                  else badPaulMore();
+//              }
+//              //if (url){$("#video-frame").attr('src', url); $("#video-frame").play()}
+//           });
+//     }
+//     else badPaul.say("You have to activate the geolocation");
+//
+// }
 
 function badPaulMore(){
-    var url;
-    if (L.userPosition){
-        wmi_search(20, L.userPosition.latLng, {purpose: purpose, level: badLvlSpec[++badCurrentLvlSpec], audience: $("#audience option:selected").val(), language: $("#language option:selected").val()}, function(videos){
-            console.log(videos);
-            if (videos.length > 0 && badCurrentLvlSpec <= 5){
-             if (videos[0].id){
-                badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[badCurrentLvlSpec])
-                player.loadVideoById(videos[0].id);
-                player.playVideo();
-                //facade.getGraphics().loadVideoAndPlay(videos[0].id);
-             } else if (videos.id){
-                url = "https://www.youtube.com/embed/" + videos.id //videos non dovrebbe essere sempre un vettore??
-                player.loadVideoById(videos.id);
-                player.playVideo();
-                //facade.getGraphics().loadVideoAndPlay(videos.id);
-                badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[badCurrentLvlSpec])
-             }
-            }
-             else {
-                 //badPaul.say("We couldn't find the right video for the occasion");
-                 if (badCurrentLvlSpec > 5){
-                     badPaul.say("Reached maximum detail level");
-                     badCurrentLvlSpec = 0;
-                 }
-                 else badPaulMore();
-             }
-             //if (url){$("#video-frame").attr('src', url); $("#video-frame").play()}
-          });
-    }
-    else badPaul.say("You have to activate the geolocation");
-
+  if (sorted_places[olcBookmark][wmiBookmark+1])
+    playClip(sorted_places[olcBookmark][++wmiBookmark]);
+  else {
+    badPaul.say("No more video to show you");
+  }
 }
 
+// function badPaulHow(){
+//     if (L.userPosition){
+//         purpose = "how";
+//         badCurrentLvlSpec = 0;
+//     wmi_search(1, tmpuser.latLng, {purpose: purpose, part: badLvlSpec[0], audience: $("#audience option:selected").val(), language: $("#language option:selected").val()}, function(videos){
+//         console.log(videos);
+//         var url;
+//         if (videos.length > 0){
+//          if (videos[0].id){
+//              badPaul.say("Playing a video to tell you how to visit this place.");
+//              player.loadVideoById(videos[0].id);
+//              player.playVideo();
+//              //facade.getGraphics().loadVideoAndPlay(videos[0].id);
+//          }/* else if (videos.id){ url = "https://www.youtube.com/embed/" + videos.id +"?autoplay=1"
+//            badPaul.say("Playing a video to tell you how to visit this place.");
+//          }*/
+//         }
+//          else badPaul.say("We couldn't find the right video for the occasion");
+//       });
+//     }
+//     else badPaul.say("You have to activate the geolocation");
+// }
+
 function badPaulHow(){
-    if (L.userPosition){
-        purpose = "how";
-        badCurrentLvlSpec = 0;
-    wmi_search(1, tmpuser.latLng, {purpose: purpose, part: badLvlSpec[0], audience: $("#audience option:selected").val(), language: $("#language option:selected").val()}, function(videos){
-        console.log(videos);
-        var url;
-        if (videos.length > 0){
-         if (videos[0].id){
-             badPaul.say("Playing a video to tell you how to visit this place.");
-             player.loadVideoById(videos[0].id);
-             player.playVideo();
-             //facade.getGraphics().loadVideoAndPlay(videos[0].id);
-         }/* else if (videos.id){ url = "https://www.youtube.com/embed/" + videos.id +"?autoplay=1"
-           badPaul.say("Playing a video to tell you how to visit this place.");
-         }*/
-        }
-         else badPaul.say("We couldn't find the right video for the occasion");
-      });
-    }
-    else badPaul.say("You have to activate the geolocation");
+  for(var i in sorted_places[olcBookmark]){
+    if (sorted_places[olcBookmark][i].purpose==="how")
+      playClip(sorted_places[olcBookmark][i]);
+  }
+}
+
+function badPaulWhat(){
+  for(var i in sorted_places[olcBookmark]){
+    if (sorted_places[olcBookmark][i].purpose==="what")
+      playClip(sorted_places[olcBookmark][i]);
+  }
 }
 
 function badPaulNext(){

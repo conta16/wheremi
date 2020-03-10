@@ -82,7 +82,7 @@ function polloNavigator(usr_onpoint, usr_onstop, usr_wondering){
 				};
 
 				this.stop= function(){
-					document.removeEventListener("route-available", this.navigate);
+					document.removeEventListener("route-available", parent.navigate);
 					document.removeEventListener('instruction-available', parent._onpoint);
 					document.removeEventListener('distance-increasement', parent._wondering);
 					parent.stopped=true;

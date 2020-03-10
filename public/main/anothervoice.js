@@ -39,7 +39,7 @@ function search(callback){
       } //a questo punto places è un oggetto del tipo {"8FPHF8VV+X2":{what:[...(video obj)...], why:[...], how:[...], olc:"8FPHF8VV+X2"}, ...}
       var tmp_list=sort_places();//a questo punto tmp_list è un oggetto del tipo [{what:[...(video obj)...], why:[...], how:[...], olc:"8FPHF8VV+X2"}, ...] ordinati per distanza dalla posizione dell'utente
       tmp_list=tmp_list.filter(function(item){
-        if (item.olc in visited_olcs)
+        if (visited_olcs.includes(item.olc))
           return false;
         return true;
       }); //teniamo solamente i posti non già visitati;
@@ -90,7 +90,7 @@ function sort_places(){
 }
 
 function play(video_index){
-  if (!(visited_places[visited_places.length-1-rollback][video_index].olc in visited_olcs))
+  if (!(visited_olcs.includes(visited_places[visited_places.length-1-rollback][video_index].olc)))
     visited_olcs.push(visited_places[visited_places.length-1-rollback][video_index].olc);
   //mettiamo il video dove va messo ed iniziamo la riproduzione
   player.loadVideoById(visited_places[visited_places.length-1-rollback][video_index].id);

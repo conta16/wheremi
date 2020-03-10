@@ -81,10 +81,11 @@ class navigatorController{
     onend (){
         this.indexOfList += 1;
         this.listOfPoints[this.indexOfList] = L.userPosition
-        //L.routes=[];
-        //facade.getItinerary().setWaypoints([]);
+
         badPaul.say("You have arrived at your destination");
         e=new CustomEvent("destinationReached", {detail: {latLng: L.routes[0].coordinates[L.routes[0].instructions[nav._targetindex].index]}});
+        facade.getItinerary().setWaypoints([]);
+        L.routes=[];
         document.dispatchEvent(e)
     }
 }
