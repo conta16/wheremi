@@ -180,15 +180,21 @@ function reloadInspect(){
 		  </div>
 
 			<div class="col-auto my-1">
-			<div class="form-group p">
+			<div class="form-group">
 			<label for="video-title">Title:</label>
-			<textarea class="form-control d" id="video-title"></textarea>
+			<textarea class="form-control" id="video-title"></textarea>
 			</div>
 
-			<div class="form-group p">
+			<div class="form-group">
 			<label for="video-description">Description:</label>
-			<textarea class="form-control d y-descrizioneLuogo" id="video-description" rows="3"></textarea>
+			<textarea class="form-control" id="video-description" rows="3"></textarea>
 			</div>
+			<p>Position:<p>
+			<label class="mr-sm-2 sr-only" for="purp"></label>
+			<select class="custom-select mr-sm-2" id="position">
+				<option value="marker"selected>Selected marker</option>
+				<option value="user">Your position</option>
+			</select>
 
 			<p>Purpose:</p>
 			<label class="mr-sm-2 sr-only" for="purp"></label>
