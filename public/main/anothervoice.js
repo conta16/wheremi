@@ -93,7 +93,7 @@ function play(video_index){
   if (!(visited_olcs.includes(visited_places[visited_places.length-1-rollback][video_index].olc)))
     visited_olcs.push(visited_places[visited_places.length-1-rollback][video_index].olc);
   //mettiamo il video dove va messo ed iniziamo la riproduzione
-  player.loadVideoById(sorted_places[olcBookmark][wmiBookmark].id);
+  player.loadVideoById(visited_places[visited_places.length-1-rollback][video_index].id);
   player.playVideo();
 }
 
@@ -127,7 +127,7 @@ function next(place){
 function startPlace(){
   current_video=0;
   console.log("arrivato2");
-  gotoClip(sorted_places[olcBookmark][wmiBookmark]);
+  gotoClip(visited_places[visited_places.length-1-rollback][current_video]);
   //raggiungiamo il posto visited_places[visited_places.length-1-rollback] mediante visited_places[visited_places.length-1-rollback][current_video].latLng
   document.addEventListener("destinationReached", playController);
 }

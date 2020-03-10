@@ -409,7 +409,7 @@ calculateClosestPoint(){
             this.yt_markers[index].on("click", () => {
                 facade.selectedWaypoint = list[index][0];
                 gotoTab(INSPECT_TAB);
-                $("#inspect").html('<iframe class="embed-responsive-item video-frame" width="854" height="480" src="https://www.youtube.com/embed/'+list[index][0].id.videoId+'" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>');
+                $("#inspect").html('<iframe class="embed-responsive-item video-frame" width="854" height="480" src="https://www.youtube.com/embed/'+list[index][0].id+'" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>');
             });
         });
     }

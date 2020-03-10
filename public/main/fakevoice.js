@@ -112,7 +112,7 @@ function gotoClip(clip){
 
 
 function badPaulWheremi(){
-    badPaul.say("This is what we found for this place!");
+    //badPaul.say("This is what we found for this place!");
     wmiBookmark = 0;
     olcBookmark=0;
     search(function (listbaby) {
@@ -161,10 +161,14 @@ function badPaulWheremi(){
 // }
 
 function badPaulWhy(){
-  for(var i in sorted_places[olcBookmark]){
-    if (sorted_places[olcBookmark][i].purpose==="why")
-      playClip(sorted_places[olcBookmark][i]);
+  var tmp = visited_places[visited_places.length-1-rollback];
+  for(var i in tmp){
+    if (tmp[i].purpose==="why"){
+      playClip(tmp[i]);
+      return;
+    }
   }
+  badPaul.say("No why video to show you");
 }
 
 
@@ -203,8 +207,9 @@ function badPaulWhy(){
 // }
 
 function badPaulMore(){
-  if (sorted_places[olcBookmark][wmiBookmark+1])
-    playClip(sorted_places[olcBookmark][++wmiBookmark]);
+  var tmp = visited_places[visited_places.length-1-rollback];
+  if (tmp[current_video+1])
+    playClip(tmp[++current_video]);
   else {
     badPaul.say("No more video to show you");
   }
@@ -234,46 +239,53 @@ function badPaulMore(){
 // }
 
 function badPaulHow(){
-  for(var i in sorted_places[olcBookmark]){
-    if (sorted_places[olcBookmark][i].purpose==="how")
-      playClip(sorted_places[olcBookmark][i]);
+  var tmp = visited_places[visited_places.length-1-rollback]; 
+  for(var i in tmp){
+    if (tmp[i].purpose==="how"){
+      playClip(tmp[i]);
+      return;
+    }
   }
+  badPaul.say("No how video to show you");
 }
 
 function badPaulWhat(){
-  for(var i in sorted_places[olcBookmark]){
-    if (sorted_places[olcBookmark][i].purpose==="what")
-      playClip(sorted_places[olcBookmark][i]);
+    var tmp = visited_places[visited_places.length-1-rollback];
+  for(var i in tmp){
+    if (tmp[i].purpose==="what"){
+      playClip(tmp[i]);
+    }
   }
+  badPaul.say("No what video to show you");
 }
 
 function badPaulNext(){
-    if (L.userPosition){
-        purpose = "what";
-        badCurrentLvlSpec = 0;
-        next = 1;
-        prev_value = 0;
-        search();
+    if (clicked){
+        if (rollback == 0) badPaulWheremi(); //da search ottengo solo posti in cui non sono ancora stato
+        else {
+            //var tmp = visited_places[visited_places.length-1-(--rollback)];
+            rollback--;
+            current_video = 0;
+            //gotoClip(tmp[current_video]);
+            startPlace();
+        }
     }
-    else if (!L.userPosition) badPaul.say("You have to activate the geolocation");
+    else badPaul.say("You have to activate the geolocalisation");
 }
 
 function badPaulPrev(){
-    if (L.userPosition){
-        if (dest_point.type){
-            next = 0;
-            var pointsOfInterest = facade.getPointsOfInterest();
-            var len = pointsOfInterest.listOfPlacesVisited.length;
-            if (len > prev_value){
-                dest_point = Object.assign({},pointsOfInterest.listOfPlacesVisited[len-1-prev_value]); //important
-                var tmp = []; tmp.push(L.userPosition.latLng); tmp.push(dest_point.data.latLng);
-                facade.getItinerary().setWaypoints(tmp);
-                prev_value++;
-            }
-            else badPaul.say("You can't go back anymore");
+    if (clicked){
+        if (visited_places.length-1-rollback == 0)
+            badPaul.say("You can't go further back");
+        else {
+            //var tmp = visited_places[visited_places.length-1-(++rollback)];
+            rollback++;
+            current_video = 0;
+            //gotoClip(tmp[current_video]);
+            startPlace();
         }
     }
-    else badPaul.say("You have to activate the geolocation");
+    else badPaul.say("You have to activate the geolocalisation");
 }
 
 function badPaulPause(){
