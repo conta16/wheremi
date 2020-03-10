@@ -69,3 +69,19 @@ function carica_video(){
     YTUploader.retreiveVideos(list, cb);
   })
 }
+
+function carica_clip(selector, clip){
+  $(selector)[0].innerHTML=''
+    var card=`
+              <div class="card mt-3">
+              <div class="card-horizontal" id="${items[i].id}">
+              <img class="card-img w-50" style="height: ${items[i].snippet.thumbnails.medium.height};" src="${items[i].snippet.thumbnails.medium.url}" alt="${items[i].snippet.title}">
+              <div class="card-body" style="text-align: left; overflow: hidden"><div class="container"><h5 class="card-title">${items[i].snippet.title}</h5><h6 class="card-subtitle text-muted"><small> ${items[i].snippet.description}</small></h6>
+              <button class="btn" onclick="YTUploader.setVideoPrivacy(${"'"+items[i].id+"'"}, ${"'"+(items[i].status.privacyStatus=='private'?'public':'private')+"'"}, privacyupload_done)">Set ${items[i].status.privacyStatus=='private'?'public':'private'}</button>
+              <button class="btn btn-danger" onclick="YTUploader.deleteVideo(${"'"+items[i].id+"'"}, video_deleted)">Delete</button>
+              </div>
+              </div>
+              </div>
+              </div>`
+    $(selector)[0].innerHTML=$(selector)[0].innerHTML+card;
+}

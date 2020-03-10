@@ -18,8 +18,8 @@ var listaId;
 var player;
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
-      height: '100%',
-      width: '100%',
+      height: '360px',
+      width: '480px',
       videoId: 'dQw4w9WgXcQ',
       events: {
         'onReady': onPlayerReady,
@@ -93,9 +93,9 @@ function badPaulWheremi(){
         console.log(listeroni[0][0]);
         gotoTab(VOICE_TAB);
         facade.getPointsOfInterest().removeYTMarkers();
-        facade.getPointsOfInterest().setYTMarkers(listeroni);
-        player.loadVideoById(listeroni[0][wmiBookmark].id.videoId);
+        player.loadVideoById(listeroni[0][wmiBookmark].id);
         player.playVideo();
+        facade.getPointsOfInterest().setYTMarkers(listeroni);
     });
 
 }
