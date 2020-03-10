@@ -116,19 +116,20 @@ function badPaulWheremi(){
     wmiBookmark = 0;
     olcBookmark=0;
     search(function (listbaby) {
-<<<<<<< HEAD
+/*<<<<<<< HEAD
         listeroni = listbaby;
         facade.getPointsOfInterest().removeYTMarkers();
         facade.getPointsOfInterest().setYTMarkers(listeroni);
         //gotoClip(listeroni[0][wmiBookmark])
         visited_places.push(listeroni[0]);
         startPlace();
-=======
+=======*/
         gotoTab(VOICE_TAB);
         facade.getPointsOfInterest().removeYTMarkers();
         facade.getPointsOfInterest().setYTMarkers(sorted_places);
-        gotoClip(sorted_places[olcBookmark][wmiBookmark])
->>>>>>> c0b960647e8367d20593f602599a76d33e2b56fe
+        visited_places.push(sorted_places[olcBookmark]);
+        startPlace();
+//davide
     });
 
 }
