@@ -7,6 +7,7 @@ var current_place=0;
 var rollback=0;
 
 var visited_olcs=[];
+var visited_places=[]
 
 var point_list=[];
 
@@ -129,6 +130,6 @@ function startPlace(){
 
 function playController(){
   document.removeEventListener("destinationReached", playController);//in ogni caso, che il posto sia quello gusto o meno, non ha senso che alla prossima nvigazione effettuata venga chaimata questa funzione
-  if (facade.distance(L.userPosition, visited_olcs[visited_olcs.length-1-rollback][0].olc)<0.02)//se siamo nel punto giusto
+  if (facade.distance(L.userPosition, visited_places[visited_places.length-1-rollback][0].olc)<0.02)//se siamo nel punto giusto
     play(current_video++);
 }

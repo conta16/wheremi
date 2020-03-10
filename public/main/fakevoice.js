@@ -82,6 +82,19 @@ function NOTbadPaulWmi(){//wheremi
     });
 }*/
 
+function gotoClip(clip){
+  function autoPlay(event){
+    if (facade.distance(L.userPosition.lat, L.userPosition.lng, event.detail.latLng.lat, event.detail.latLng.lat)<0.02){
+      player.loadVideoById(clip.id);
+      player.playVideo();
+    }
+    document.removeEventListener("destinationReached", autoPlay);
+  }
+  facade.selectedWaypoint = clip;
+  facade.go();
+  document.addEventListener("destinationReached", autoPlay)
+}
+
 
 
 function badPaulWheremi(){
@@ -93,40 +106,41 @@ function badPaulWheremi(){
         console.log(listeroni[0][0]);
         gotoTab(VOICE_TAB);
         facade.getPointsOfInterest().removeYTMarkers();
-        player.loadVideoById(listeroni[0][wmiBookmark].id);
-        player.playVideo();
         facade.getPointsOfInterest().setYTMarkers(listeroni);
-        facade.selectedWaypoint = listeroni[0][wmiBookmark];
-        facade.go();
+        gotoClip(listeroni[0][wmiBookmark])
     });
 
 }
 
 
+// function badPaulWhy(){
+//     if (L.userPosition){
+//         purpose = "why";
+//         badCurrentLvlSpec = 0;
+//         wmi_search(20, L.userPosition.latLng, {purpose: purpose, level: badLvlSpec[0], audience: $("#audience option:selected").val(), language: $("#language option:selected").val()}, function(videos){
+//             console.log(videos);
+//             var url;
+//             if (videos.length > 0){
+//                 if (videos[0].id){
+//                     player.loadVideoById(videos[0].id);
+//                     player.playVideo();
+//                     //facade.getGraphics().loadVideoAndPlay(videos[0].id);
+//                 badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[0])
+//             } else if (videos.id){ //url = "https://www.youtube.com/embed/" + videos.id
+//                 player.loadVideoById(videos.id);
+//                 player.playVideo();
+//                 badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[0])
+//             }
+//         }
+//         else badPaul.say("We couldn't find the right video for the occasion");
+//       });
+//     }
+//     else badPaul.say("You have to activate the geolocalisation");
+// }
+
 function badPaulWhy(){
-    if (L.userPosition){
-        purpose = "why";
-        badCurrentLvlSpec = 0;
-        wmi_search(20, L.userPosition.latLng, {purpose: purpose, level: badLvlSpec[0], audience: $("#audience option:selected").val(), language: $("#language option:selected").val()}, function(videos){
-            console.log(videos);
-            var url;
-            if (videos.length > 0){
-                if (videos[0].id){
-                    player.loadVideoById(videos[0].id);
-                    player.playVideo();
-                    //facade.getGraphics().loadVideoAndPlay(videos[0].id);
-                badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[0])
-            } else if (videos.id){ //url = "https://www.youtube.com/embed/" + videos.id
-                player.loadVideoById(videos.id);
-                player.playVideo();
-                badPaul.say("Playing a video to tell you why this place is interesting. Level "+ badLvlSpec[0])
-            }
-        }
-        else badPaul.say("We couldn't find the right video for the occasion");
-      });
-    }
-    else badPaul.say("You have to activate the geolocalisation");
 }
+
 
 function badPaulMore(){
     var url;
