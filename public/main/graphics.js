@@ -225,6 +225,7 @@ class Graphics{
             $('body').removeClass("mp");
             this.screen = 0;
         }
+        map.invalidateSize()
       }
 
       addStopButton(title, description){
