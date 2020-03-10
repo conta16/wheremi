@@ -55,28 +55,35 @@ class Facade{
                 description:"Where am I? L'utente chiede un video di spiegazione del post in cui è",
                 indexes:["Where am I", "Where", "paul where am i", "paul where"],
                 action: function(i){
-                    badPaulWmi()
+                    badPaulWheremi();
                 }
             },
             {//more
                 description:"aumenta il livello di specificità ad ogni more. quando cambi posto ritorna all' inizio",
                 indexes:["more", "paul more"],
                 action: function(i){
-                    badPaulMore()
+                    badPaulMore();
                 }
             },
             {//next
                 description:"Vai al prossimo luogo",
                 indexes:["next", "paul next"],
                 action: function(i){
-                    badPaulNext()
+                    badPaulNext();
                 }
             },
             {//previous
                 description:"Vai al luogo precedente",
                 indexes:["previous", "paul previous"],
                 action: function(i){
-                    badPaulPrev()
+                    badPaulPrev();
+                }
+            },
+            { //what
+                description:"spiega cosa è questo posto",
+                indexes:["what", "paul what", "tell me what", "paul tell me what"],
+                action: function(i){
+                    badPaulWhat();
                 }
             },
             {//why
@@ -84,19 +91,18 @@ class Facade{
                 indexes:["why", "paul why", "tell me why", "paul tell me why"],
                 action: function(i){
 
-                    if (i >= 2){
+                    /*if (i >= 2){
                         Paul.say("Ain't nothing but a heartache");
-                    }
-                    badPaulWhy()
+                    }*/
+                    badPaulWhy();
                 }
             },
-            /*{//stop
+            {//stop
                 description:"Interrompi la riproduzione della clip corrente",
                 indexes:["stop", "paul stop"],
                 action: function(i){
                     //stoppa la riproduzione del video corrente
-                    $(".video-frame").pause()
-                    Paul.say("Current video paused");
+                    badPaulPause();
                 }
             },
             {//continue
@@ -104,15 +110,14 @@ class Facade{
                 indexes:["continue", "paul continue"],
                 action: function(i){
                     //continua la riproduzione del video corrente
-                    Paul.say("Resuming play");
-                    $(".video-frame").play()
+                    badPaulContinue();
                 }
-            },*/
+            },
             {//how
                 description:"indica come accedere e orari del punto corrente",
                 indexes:["how", "paul how"],
                 action: function(i){
-                    badPaulHow()
+                    badPaulHow();
                 }
             },
             {

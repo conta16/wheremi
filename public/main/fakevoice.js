@@ -165,6 +165,7 @@ function badPaulWhy(){
   for(var i in tmp){
     if (tmp[i].purpose==="why"){
       playClip(tmp[i]);
+      current_video = i;
       return;
     }
   }
@@ -243,6 +244,7 @@ function badPaulHow(){
   for(var i in tmp){
     if (tmp[i].purpose==="how"){
       playClip(tmp[i]);
+      current_video = i;
       return;
     }
   }
@@ -254,6 +256,8 @@ function badPaulWhat(){
   for(var i in tmp){
     if (tmp[i].purpose==="what"){
       playClip(tmp[i]);
+      current_video = i;
+      return;
     }
   }
   badPaul.say("No what video to show you");
