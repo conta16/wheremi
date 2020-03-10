@@ -472,6 +472,10 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
 
     generateDescription(waypoint){
 
+      if (!waypoint.latLng){
+        return alert("Invalid position")
+      }
+
       function choices(field){
         var a=[]
         for (var i in $(field)){
@@ -511,7 +515,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
 
     uploadVideo(){
       var title=$("#video-title").val();
-      var description=this.generateDescription(facade.selectedWaypoint);
+      var description=this.generateDescription(($("#position").val()=="user")?L.userPosition:facade.selectedWaypoint);
       var category=22;
       var metadata = {
         snippet: {
