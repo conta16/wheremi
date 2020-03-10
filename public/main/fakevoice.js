@@ -83,16 +83,16 @@ function NOTbadPaulWmi(){//wheremi
 }*/
 
 function gotoClip(clip){
-  function autoPlay(event){
+  /*function autoPlay(event){
     if (facade.distance(L.userPosition.lat, L.userPosition.lng, event.detail.latLng.lat, event.detail.latLng.lat)<0.02){
       player.loadVideoById(clip.id);
       player.playVideo();
     }
     document.removeEventListener("destinationReached", autoPlay);
-  }
+  }*/
   facade.selectedWaypoint = clip;
   facade.go();
-  document.addEventListener("destinationReached", autoPlay)
+  //document.addEventListener("destinationReached", autoPlay)
 }
 
 
@@ -102,12 +102,11 @@ function badPaulWheremi(){
     wmiBookmark = 0;
     search(function (listbaby) {
         listeroni = listbaby;
-        console.log("LISTERONI");
-        console.log(listeroni[0][0]);
-        gotoTab(VOICE_TAB);
         facade.getPointsOfInterest().removeYTMarkers();
         facade.getPointsOfInterest().setYTMarkers(listeroni);
-        gotoClip(listeroni[0][wmiBookmark])
+        //gotoClip(listeroni[0][wmiBookmark])
+        visited_places.push(listeroni[0]);
+        startPlace();
     });
 
 }

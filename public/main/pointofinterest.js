@@ -391,6 +391,7 @@ calculateClosestPoint(){
         var icon = L.icon({
             iconUrl: "./img/32x32.png"
         });
+        console.log(list);
         for (var i = 0; i<list.length; i++){
             var latLng = list[i][0].latLng;
             this.yt_markers[len] = new L.Marker(

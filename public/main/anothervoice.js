@@ -93,6 +93,8 @@ function play(video_index){
   if (!(visited_places[visited_places.length-1-rollback][video_index].olc in visited_olcs))
     visited_olcs.push(visited_places[visited_places.length-1-rollback][video_index].olc);
   //mettiamo il video dove va messo ed iniziamo la riproduzione
+  player.loadVideoById(visited_places[visited_places.length-1-rollback][video_index].id);
+  player.playVideo();
 }
 
 function more(){
@@ -124,12 +126,17 @@ function next(place){
 
 function startPlace(){
   current_video=0;
+  console.log("arrivato2");
+  gotoClip(visited_places[visited_places.length-1-rollback][current_video]);
   //raggiungiamo il posto visited_places[visited_places.length-1-rollback] mediante visited_places[visited_places.length-1-rollback][current_video].latLng
   document.addEventListener("destinationReached", playController);
 }
 
 function playController(){
+  gotoTab(VOICE_TAB);
+  console.log("arrivato1");
   document.removeEventListener("destinationReached", playController);//in ogni caso, che il posto sia quello gusto o meno, non ha senso che alla prossima nvigazione effettuata venga chaimata questa funzione
-  if (facade.distance(L.userPosition, visited_places[visited_places.length-1-rollback][0].olc)<0.02)//se siamo nel punto giusto
+  //if (facade.distance(L.userPosition, visited_places[visited_places.length-1-rollback][0].olc)<0.02)//se siamo nel punto giusto
+  console.log("arrivato");
     play(current_video++);
 }
