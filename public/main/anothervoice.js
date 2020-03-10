@@ -93,8 +93,9 @@ function play(video_index){
   if (!(visited_olcs.includes(visited_places[visited_places.length-1-rollback][video_index].olc)))
     visited_olcs.push(visited_places[visited_places.length-1-rollback][video_index].olc);
   //mettiamo il video dove va messo ed iniziamo la riproduzione
-  player.loadVideoById(visited_places[visited_places.length-1-rollback][video_index].id);
-  player.playVideo();
+  console.log(visited_places[visited_places.length-1-rollback][video_index].id);
+  voicePlayer.loadVideoById(visited_places[visited_places.length-1-rollback][video_index].id);
+  voicePlayer.playVideo();
 }
 
 function more(){
@@ -127,6 +128,8 @@ function next(place){
 function startPlace(){
   current_video=0;
   console.log("arrivato2");
+  facade.graphics.cleanVideos();
+  facade.graphics.displayVideos(visited_places[visited_places.length-1-rollback]);
   gotoClip(visited_places[visited_places.length-1-rollback][current_video]);
   //raggiungiamo il posto visited_places[visited_places.length-1-rollback] mediante visited_places[visited_places.length-1-rollback][current_video].latLng
   document.addEventListener("destinationReached", playController);

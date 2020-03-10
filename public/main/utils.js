@@ -55,6 +55,7 @@ function mahmood(res){
   for (var i in res.items){
     if ((position=res.items[i].snippet.description.search(DESCRIPTION_REGEX))!=-1){
       var desc=res.items[i].snippet.description.substring(position);
+      var thumbnail=res.items[i].snippet.thumbnails.medium.url;
       var parts=desc.split(":");
       var last_olc='';
       var purp=undefined;
@@ -98,6 +99,7 @@ function mahmood(res){
       tmp_obj.audience=Object.assign([], audience);
       tmp_obj.content=Object.assign([], content);
       tmp_obj.olc=last_olc;
+      tmp_obj.thumbnail=thumbnail;
       if (purp)
         tmp_obj.purpose=parts[purp].toLowerCase();
       if (lang)
@@ -152,9 +154,11 @@ function wmi_search(results, position, filter, callback){
   var filtered_videos;
   yt=new YTSearcher({googlekey:
   //"AIzaSyAc68mhk7Mo-BJQh5DHAGI6vkOc-u7hAa0",
-  "AIzaSyAPDIRruOD0_Ug3Ktosgxpzx5Z4Dwhx2W8",
+  //"AIzaSyAPDIRruOD0_Ug3Ktosgxpzx5Z4Dwhx2W8",
   //"AIzaSyCntiI4kbASipSjAzrS9yo75YS_WXQa0ls",
   //"AIzaSyD3_AOCz72jah1UDnRW6Gga8n3T3TX9Rq0",
+  "AIzaSyD_8U7q3TxXBdNJ_gUxyAC__w52Lsrdi9A",
+  //"AIzaSyAuFSF5SwXCWWOlrZUfLBtvNUGZ2dTJajk",
   yt_url: "https://www.googleapis.com/youtube/v3/", successCallback: function(res){
     var a=Object.assign({}, res);
     raw_videos=mahmood(a);

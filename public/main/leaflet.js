@@ -86,6 +86,7 @@ function copyVideoFields() {
 }
 
 function reloadInspect(){
+	SimpleRecorder.stopRecording();
 	$('#video-div').html('<video id="monitor" width="100%" autoplay="autoplay"></video>');
 	$('#uploadOnYT').html('Upload on Youtube');
 	$('#recordAudio').html('Record audio');
@@ -769,12 +770,12 @@ function reloadInspect(){
 			<div class="row">
 			<div class="mx-auto">
         <button type="button" class="btn btn-secondary m-1" data-dismiss="modal" onclick="reloadInspect()">Close</button>
-				<span class="btn btn-danger m-1" id="recordVideo" onclick="SimpleRecorder.initVideoStream(this)">
+				<button class="btn btn-danger m-1" id="recordVideo" onclick="SimpleRecorder.initVideoStream(this)">
 					<span>Record video</span>
-				</span>
-				<span id="recordAudio" class="btn btn-secondary m-1" onclick="SimpleRecorder.initAudioStream(this)">
+				</button>
+				<button id="recordAudio" class="btn btn-secondary m-1" onclick="SimpleRecorder.initAudioStream(this)">
 					<span>Record audio</span>
-				</span>
+				</button>
 				</div>
 				</div><div class="row">
 				<span id="uploadOnYT" class="btn btn-primary btn-lg m-auto" onclick="facade.uploadVideo()">

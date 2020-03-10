@@ -16,9 +16,20 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 var listeroni;
 var listaId;
 
-var player;
+var voicePlayer;
 function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player', {
+
+  // anotherPlayer = new YT.Player('video-frame', {
+  //   height: '360',
+  //   width: '640',
+  //   //videoId: id, //'M7lc1UVf-VE',
+  //   events: {
+  //     'onReady': onPlayerReady
+  //     //'onStateChange': onPlayerStateChange
+  //   }
+  // });
+
+    voicePlayer = new YT.Player('player', {
       height: '360px',
       width: '480px',
       videoId: 'dQw4w9WgXcQ',
@@ -28,11 +39,9 @@ function onYouTubeIframeAPIReady() {
       }
     });
   }
-function onPlayerReady(){}
+function onPlayerReady(){
+}
 function onPlayerStateChange(){
-    if (player.getPlayerState() == 0){ //Se la riproduzione di un video è terminata
-        playClip(sorted_places[olcBookmark][++wmiBookmark]);
-    }
 }
 
 // var badPaul = new Artyom();
@@ -86,8 +95,8 @@ function playClip(clip){
   if (!visited_olcs.includes(clip.olc)){
     visited_olcs.push(clip.olc);
   }
-  player.loadVideoById(clip.id);
-  player.playVideo();
+  voicePlayer.loadVideoById(clip.id);
+  voicePlayer.playVideo();
 }
 
 function gotoClip(clip){
@@ -294,7 +303,7 @@ function badPaulPrev(){
 
 function badPaulPause(){
     //stoppa la riproduzione del video corrente
-    player.pauseVideo();
+    voicePlayer.pauseVideo();
     facade.Paul.say("Current video paused");
 
 }
@@ -302,5 +311,5 @@ function badPaulPause(){
 function badPaulContinue(){
     //continua la riproduzione del video corrente
     facade.Paul.say("Resuming play");
-    player.playVideo();
+    voicePlayer.playVideo();
 }

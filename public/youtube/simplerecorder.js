@@ -11,7 +11,30 @@ var cStream,
 
 var lorem="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque congue ante eu facilisis malesuada. Maecenas pharetra ante vitae suscipit mattis. Nulla at suscipit mauris, non fermentum neque. Aliquam ullamcorper ornare consectetur. Aenean feugiat enim quis dictum elementum. Sed pharetra cursus metus."
 
+  function disFactory(val){
+    return function(){
+      $("#video-title").prop("disabled", val);
+      $("#video-description").prop("disabled", val);
+      $("#purp").prop("disabled", val);
+      $("#lang").prop("disabled", val);
+      $("#position").prop("disabled", val);
+      list=$("[name=cont]");
+      for (var i in list){
+        list[i].disabled=val;
+      }
+      $("#aud").prop("disabled", val);
+      $("#det").prop("disabled", val);
+    };
+  }
+
+  this.disableForm=disFactory(true)
+
+  this.enableForm=disFactory(false);
+
+
 this.initVideoStream=function(button){
+  SimpleRecorder.disableForm();
+  $("#recordAudio").prop("disabled", true);
   if (video){
     if ('srcObject' in video)
       video.srcObject = undefined;
@@ -22,11 +45,12 @@ this.initVideoStream=function(button){
     video.controls=false;
   }
   button.innerHTML="Click to start";
-  $("#recordvideo").prop("disabled", true);
-  this.initMediaStream({'audio': true, 'video': {facingMode:"user"}})
+  this.initMediaStream({'audio': true, 'video': {facingMode:"user"}});
 }
 
 this.initAudioStream=function(button){
+  SimpleRecorder.disableForm();
+  $("#recordVideo").prop("disabled", true);
   if (video){
     if ('srcObject' in video)
       video.srcObject = undefined;
@@ -37,7 +61,6 @@ this.initAudioStream=function(button){
     video.controls=false;
   }
   button.innerHTML="Click to start";
-  $("#recordAudio").prop("disabled", true);
   this.initMediaStream({'audio': true, 'video': false})
 }
 
@@ -97,7 +120,9 @@ this.saveChunks=function(e) {
 }
 
 this.stopRecording=function() {
-	this.disabled = true;
+  SimpleRecorder.enableForm();
+  $("#recordAudio").prop("disabled", false);
+  $("#recordVideo").prop("disabled", false);
   video.controls=true;
   recordAudio.onclick = function(){
     chunks=[];

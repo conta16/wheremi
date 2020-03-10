@@ -410,6 +410,7 @@ calculateClosestPoint(){
                 facade.selectedWaypoint = list[index][0];
                 gotoTab(INSPECT_TAB);
                 $("#inspect").html('<iframe class="embed-responsive-item video-frame" width="480px" height="360px" src="https://www.youtube.com/embed/'+list[index][0].id+'" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>');
+                $("#inspect")[0].innerHTML=$("#inspect")[0].innerHTML+'<button class="btn btn-primary"onclick="facade.go()">Go to point</button>';
             });
         });
     }

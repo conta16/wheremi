@@ -258,4 +258,58 @@ class Graphics{
           });
         },2000);
       }
+
+      videoToCard(video){
+        function f (item){
+          var obj={
+            none: "none",
+            nat: "nature",
+            art: "art",
+            his: "history",
+            prs: "personal",
+            pop: "pop and gossip",
+            flk: "folklore",
+            mod: "modern culture",
+            rel: "religions",
+            cui: "cuisine",
+            shp: "shopping",
+            tec: "technology",
+            spo: "sport",
+            mus: "music",
+            mov: "movies",
+            oth: "other",
+            fas: "fashion"
+          }
+          return obj[item];
+        }
+        var card=`
+                  <div class="card mt-3" onclick="voicePlayer.loadVideoById('${video.id}');player.playVideo()">
+                  <div class="card-horizontal" id="${video.id}">
+                  <img class="card-img w-50" style="height: 180px;" src="${video.thumbnail}" alt="${video.title}">
+                  <div class="card-body" style="text-align: left; overflow: hidden"><div class="container"><h5 class="card-title">${video.title}</h5>
+                  Purpose: ${video.purpose}<br/>
+                  Content: ${video.content.map(f).join(', ')}<br/>
+		              Detail: ${video.detail}
+                  </div>
+                  </div>
+                  </div>
+                  </div>`
+        return card;
+        }
+
+        videosToCards(list){
+          if (list)
+            return list.map(this.videoToCard).join('');
+          else return '';
+        }
+
+	 displayVideos(list){
+		gotoTab(VOICE_TAB)
+		$("#voice #videocards")[0].innerHTML=$("#voice #videocards")[0].innerHTML+this.videosToCards(list);
+	 }
+
+  cleanVideos(){
+    if ($("#voice #videocards")[0])
+      $("#voice #videocards")[0].innerHTML=''
+  }
 }
