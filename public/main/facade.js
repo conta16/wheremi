@@ -14,7 +14,7 @@ class Facade{
             soundex: true,// Use the soundex algorithm to increase accuracy
             debug: true, // Show messages in the console
             executionKeyword: "",//Esegui dopo questa spressione
-            listen: false, // Start to listen commands !
+            listen: true, // Start to listen commands !
 
             // If providen, you can only trigger a command if you say its name
             // e.g to trigger Good Morning, you need to say "Jarvis Good Morning"
@@ -42,7 +42,8 @@ class Facade{
 
     initLanguagePaul(){
         var userLang = navigator.language || navigator.userLanguage;
-        return userLang;
+//        return userLang;
+        return "en-GB";
     }
 
 
@@ -409,7 +410,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
                 pointsOfInterest.listOfPlacesVisited.push(obj);
             }
             this.Paul.shutUp();
-            badPaul.say('Playing a video to tell you where you are');
+            this.Paul.say('Playing a video to tell you where you are');
             facade.getGraphics().loadVideoAndPlay(yt_points[i].id);
             $("#buttonPause").on("click", () => {
                 $('.embed-responsive-item').each(function(){
@@ -510,7 +511,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
             nav.navigate(begin_itinerary);
         }
         else {
-            badPaul.say("you have to activate the geolocalisation");
+            this.Paul.say("you have to activate the geolocalisation");
         }
     }
 

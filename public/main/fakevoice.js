@@ -35,18 +35,18 @@ function onPlayerStateChange(){
     }
 }
 
-var badPaul = new Artyom();
-badPaul.initialize({
-    lang: initLanguagePaul(),
-    continuous: false, // Listen forever
-    soundex: true,// Use the soundex algorithm to increase accuracy
-    debug: true, // Show messages in the console
-    executionKeyword: "",//Esegui dopo questa spressione
-    listen: false, // Start to listen commands !
-    // If providen, you can only trigger a command if you say its name
-    // e.g to trigger Good Morning, you need to say "Bad Paul Good Morning"
-    name: "Bad Paul"
-    });
+// var badPaul = new Artyom();
+// badPaul.initialize({
+//     lang: initLanguagePaul(),
+//     continuous: false, // Listen forever
+//     soundex: true,// Use the soundex algorithm to increase accuracy
+//     debug: true, // Show messages in the console
+//     executionKeyword: "",//Esegui dopo questa spressione
+//     listen: false, // Start to listen commands !
+//     // If providen, you can only trigger a command if you say its name
+//     // e.g to trigger Good Morning, you need to say "Bad Paul Good Morning"
+//     name: "Bad Paul"
+//     });
 
 function initLanguagePaul(){
     var userLang = navigator.language || navigator.userLanguage;
@@ -56,20 +56,20 @@ function initLanguagePaul(){
 //var tmpuser = {}
 //tmpuser.latLng = {lat: '44.488998044', lng: '11.339498642'}
 
-function NOTbadPaulWmi(){//wheremi
-
-    if (L.userPosition){
-        var pointsOfInterest = facade.getPointsOfInterest();
-        pointsOfInterest.yt_visitedPlaces = []; pointsOfInterest.wiki_visitedPlaces = []; pointsOfInterest.points_visitedPlaces = [];
-        pointsOfInterest.listOfPlacesVisited = [];
-        purpose = "what";
-        badCurrentLvlSpec = 0;
-        next = 1;
-        prev_value = 0;
-        search();
-    }
-    else if (!L.userPosition) badPaul.say("You have to activate the geolocation");
-}
+// function NOTbadPaulWmi(){//wheremi
+//
+//     if (L.userPosition){
+//         var pointsOfInterest = facade.getPointsOfInterest();
+//         pointsOfInterest.yt_visitedPlaces = []; pointsOfInterest.wiki_visitedPlaces = []; pointsOfInterest.points_visitedPlaces = [];
+//         pointsOfInterest.listOfPlacesVisited = [];
+//         purpose = "what";
+//         badCurrentLvlSpec = 0;
+//         next = 1;
+//         prev_value = 0;
+//         search();
+//     }
+//     else if (!L.userPosition) badPaul.say("You have to activate the geolocation");
+// }
 
 /*function search(){
     wmi_search(20, L.userPosition.latLng, {purpose: purpose,language: $("#language option:selected").val()}, function(videos){
@@ -169,7 +169,7 @@ function badPaulWhy(){
       return;
     }
   }
-  badPaul.say("No why video to show you");
+  facade.Paul.say("No why video to show you");
 }
 
 
@@ -212,7 +212,7 @@ function badPaulMore(){
   if (tmp[current_video+1])
     playClip(tmp[++current_video]);
   else {
-    badPaul.say("No more video to show you");
+    facade.Paul.say("No more video to show you");
   }
 }
 
@@ -240,7 +240,7 @@ function badPaulMore(){
 // }
 
 function badPaulHow(){
-  var tmp = visited_places[visited_places.length-1-rollback]; 
+  var tmp = visited_places[visited_places.length-1-rollback];
   for(var i in tmp){
     if (tmp[i].purpose==="how"){
       playClip(tmp[i]);
@@ -248,7 +248,7 @@ function badPaulHow(){
       return;
     }
   }
-  badPaul.say("No how video to show you");
+  facade.Paul.say("No how video to show you");
 }
 
 function badPaulWhat(){
@@ -260,7 +260,7 @@ function badPaulWhat(){
       return;
     }
   }
-  badPaul.say("No what video to show you");
+  facade.Paul.say("No what video to show you");
 }
 
 function badPaulNext(){
@@ -274,13 +274,13 @@ function badPaulNext(){
             startPlace();
         }
     }
-    else badPaul.say("You have to activate the geolocalisation");
+    else facade.Paul.say("You have to activate the geolocalisation");
 }
 
 function badPaulPrev(){
     if (clicked){
         if (visited_places.length-1-rollback == 0)
-            badPaul.say("You can't go further back");
+            facade.Paul.say("You can't go further back");
         else {
             //var tmp = visited_places[visited_places.length-1-(++rollback)];
             rollback++;
@@ -289,18 +289,18 @@ function badPaulPrev(){
             startPlace();
         }
     }
-    else badPaul.say("You have to activate the geolocalisation");
+    else facade.Paul.say("You have to activate the geolocalisation");
 }
 
 function badPaulPause(){
     //stoppa la riproduzione del video corrente
     player.pauseVideo();
-    badPaul.say("Current video paused");
+    facade.Paul.say("Current video paused");
 
 }
 
 function badPaulContinue(){
     //continua la riproduzione del video corrente
-    badPaul.say("Resuming play");
+    facade.Paul.say("Resuming play");
     player.playVideo();
 }
