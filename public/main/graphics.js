@@ -191,20 +191,20 @@ class Graphics{
         if (!waypoints[index].inputWaypoints){
             $('#feed').html($('#feed').html()+cardHTML);
             this.num_cards++;
-            $('div.card:nth-child('+this.num_cards+')').attr('data-key', index);
-            $('div.card:nth-child('+this.num_cards+')').attr('data-type', 1);
-            if (waypoints[index].img[0]) $('div.card:nth-child('+this.num_cards+') img').attr('src', waypoints[index].img[0]);
-            else $('div.card:nth-child('+this.num_cards+') img').attr('src', "./img/Question_Mark.svg");
-            $('div.card:nth-child('+this.num_cards+') .card-body').html("<div class='container'><h5 class='card-title'>"+waypoints[index].title+"</h5><h6 class='card-subtitle text-muted'><small> Point by "+waypoints[index].username+"</small></h6></div>");
+            $('div.card-feed:nth-child('+this.num_cards+')').attr('data-key', index);
+            $('div.card-feed:nth-child('+this.num_cards+')').attr('data-type', 1);
+            if (waypoints[index].img[0]) $('div.card-feed:nth-child('+this.num_cards+') img').attr('src', waypoints[index].img[0]);
+            else $('div.card-feed:nth-child('+this.num_cards+') img').attr('src', "./img/Question_Mark.svg");
+            $('div.card-feed:nth-child('+this.num_cards+') .card-body').html("<div class='container'><h5 class='card-title'>"+waypoints[index].title+"</h5><h6 class='card-subtitle text-muted'><small> Point by "+waypoints[index].username+"</small></h6></div>");
         }
         else{
             $('#feed').html($('#feed').html()+cardHTML);
             this.num_cards++;
-            $('div.card:nth-child('+this.num_cards+')').attr('data-key', index);
-            $('div.card:nth-child('+this.num_cards+')').attr('data-type', 0);
-            if (waypoints[index].inputWaypoints[0].img[0]) $('div.card:nth-child('+this.num_cards+') img').attr('src', waypoints[index].inputWaypoints[0].img[0]);
-            else $('div.card:nth-child('+this.num_cards+') img').attr('src', "./img/Question_Mark.svg");
-            $('div.card:nth-child('+this.num_cards+') .card-body').html("<div class='container'><h5 class='card-title'>"+waypoints[index].inputWaypoints[0].title+"</h5><h6 class='card-subtitle text-muted'><small>Itinerary by "+waypoints[index].username+"</small></h6></div>");
+            $('div.card-feed:nth-child('+this.num_cards+')').attr('data-key', index);
+            $('div.card-feed:nth-child('+this.num_cards+')').attr('data-type', 0);
+            if (waypoints[index].inputWaypoints[0].img[0]) $('div.card-feed:nth-child('+this.num_cards+') img').attr('src', waypoints[index].inputWaypoints[0].img[0]);
+            else $('div.card-feed:nth-child('+this.num_cards+') img').attr('src', "./img/Question_Mark.svg");
+            $('div.card-feed:nth-child('+this.num_cards+') .card-body').html("<div class='container'><h5 class='card-title'>"+waypoints[index].inputWaypoints[0].title+"</h5><h6 class='card-subtitle text-muted'><small>Itinerary by "+waypoints[index].username+"</small></h6></div>");
         }
       }
 

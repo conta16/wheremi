@@ -789,7 +789,7 @@ function reloadInspect(){
 </div>
   `;
 
-  var cardHTML = `<div class="card mt-3" style="height:20%; overflow: hidden" onclick="facade.getGraphics().cardClicked(this)" data-key="" data-type="">
+  var cardHTML = `<div class="card-feed card mt-3" style="height:20%; overflow: hidden" onclick="facade.getGraphics().cardClicked(this)" data-key="" data-type="">
   <div class="card-horizontal">
 	<img class="card-img w-50" style="height: 200px;" src="" alt="Card image cap">
 	<div class="card-body" style="text-align: left; overflow: hidden">
