@@ -31,8 +31,8 @@ function onYouTubeIframeAPIReady() {
 
     voicePlayer = new YT.Player('player', {
       height: '360px',
-      width: '480px',
-      videoId: 'dQw4w9WgXcQ',
+      width: '100%',
+      //videoId: '',
       events: {
         'onReady': onPlayerReady,
         'onStateChange': onPlayerStateChange
@@ -137,6 +137,7 @@ function badPaulWheremi(){
         facade.getPointsOfInterest().removeYTMarkers();
         facade.getPointsOfInterest().setYTMarkers(sorted_places);
         visited_places.push(sorted_places[olcBookmark]);
+        facade.getGraphics().toMap();
         startPlace();
 //davide
     });
@@ -174,7 +175,7 @@ function badPaulWhy(){
   for(var i in tmp){
     if (tmp[i].purpose==="why"){
       playClip(tmp[i]);
-      current_video = i;
+      current_video = parseInt(i);
       return;
     }
   }
@@ -253,7 +254,7 @@ function badPaulHow(){
   for(var i in tmp){
     if (tmp[i].purpose==="how"){
       playClip(tmp[i]);
-      current_video = i;
+      current_video = parseInt(i);
       return;
     }
   }
@@ -265,7 +266,7 @@ function badPaulWhat(){
   for(var i in tmp){
     if (tmp[i].purpose==="what"){
       playClip(tmp[i]);
-      current_video = i;
+      current_video = parseInt(i);
       return;
     }
   }
@@ -276,10 +277,9 @@ function badPaulNext(){
     if (clicked){
         if (rollback == 0) badPaulWheremi(); //da search ottengo solo posti in cui non sono ancora stato
         else {
-            //var tmp = visited_places[visited_places.length-1-(--rollback)];
             rollback--;
             current_video = 0;
-            //gotoClip(tmp[current_video]);
+            facade.getGraphics().toMap();
             startPlace();
         }
     }
@@ -291,10 +291,9 @@ function badPaulPrev(){
         if (visited_places.length-1-rollback == 0)
             facade.Paul.say("You can't go further back");
         else {
-            //var tmp = visited_places[visited_places.length-1-(++rollback)];
             rollback++;
             current_video = 0;
-            //gotoClip(tmp[current_video]);
+            facade.getGraphics().toMap();
             startPlace();
         }
     }

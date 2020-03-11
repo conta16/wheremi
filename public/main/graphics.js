@@ -216,15 +216,23 @@ class Graphics{
 
       change(){
         if (!this.screen){
-            $('body').addClass("mp");
-            $('body').removeClass("me");
-            this.screen = 1;
+            this.toMap();
         }
         else{
-            $('body').addClass("me");
-            $('body').removeClass("mp");
-            this.screen = 0;
+            this.toMenu();
         }
+      }
+
+      toMenu(){
+        $('body').addClass("me");
+        $('body').removeClass("mp");
+        this.screen = 0;
+      }
+
+      toMap(){
+        $('body').addClass("mp");
+        $('body').removeClass("me");
+        this.screen = 1;
       }
 
       addStopButton(title, description){

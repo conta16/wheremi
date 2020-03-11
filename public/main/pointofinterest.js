@@ -330,6 +330,7 @@ calculateClosestPoint(){
             $("#inspect").append('<div style="margin-bottom: 50px"><button type="button" class="btn btn-primary startItinerary" onclick="facade.go()">Go to place</button></div>');
             parentThis.graphics.addBeginButton(title, extract);
             gotoTab(INSPECT_TAB);
+            facade.getGraphics().toMenu();
             if (parentThis.currentItinerary.getMode()){
                 parentThis.currentItinerary.pushWaypoints([e.latlng], parentThis.wikipediaPoints[len]);
             }
@@ -409,7 +410,8 @@ calculateClosestPoint(){
             this.yt_markers[index].on("click", () => {
                 facade.selectedWaypoint = list[index][0];
                 gotoTab(INSPECT_TAB);
-                $("#inspect").html('<iframe class="embed-responsive-item video-frame" width="480px" height="360px" src="https://www.youtube.com/embed/'+list[index][0].id+'" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>');
+                facade.getGraphics().toMenu();
+                $("#inspect").html('<iframe class="embed-responsive-item video-frame" width="100%" height="360px" src="https://www.youtube.com/embed/'+list[index][0].id+'" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>');
                 $("#inspect")[0].innerHTML=$("#inspect")[0].innerHTML+'<button class="btn btn-primary"onclick="facade.go()">Go to point</button>';
             });
         });

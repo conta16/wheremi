@@ -49,7 +49,7 @@ class Facade{
 
     initPaulCommands(Paul){
         var htmlVideoPopup = `<div id="headerPopup" class="mfp-hide embed-responsive embed-responsive-21by9">
-                              <iframe class="embed-responsive-item video-frame" width="854" height="480" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                              <iframe class="embed-responsive-item video-frame" width="100%" height="480" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                               </div>`;
         var myGroup = [
             {//wheremi
@@ -502,7 +502,7 @@ dragging: true, touchZoom: true, scrollWheelZoom: true, doubleClickZoom: true
 
     go(begin_itinerary = false){
         if (clicked){
-            console.log(nav);
+            facade.getGraphics().toMap();
             if (nav)
                 nav.stop();
             if (L.routes) L.routes = [];//this.getItinerary().setWaypoints([]);
