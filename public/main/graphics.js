@@ -221,6 +221,7 @@ class Graphics{
         else{
             this.toMenu();
         }
+        map.invalidateSize()
       }
 
       toMenu(){
