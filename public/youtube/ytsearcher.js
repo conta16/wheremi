@@ -113,6 +113,7 @@ YTSearcher = function (options){ //var yt=new YTSearcher({googlekey: "AIzaSyD3_A
 
   this.get_yt_videos = function (search_resource_array){
     console.log(search_resource_array);
+    search_resource_array.filter((v,i) => search_resource_array.indexOf(v) === i);
     if(!search_resource_array || search_resource_array.length==0){
       console.log(parent.final_data);
       var data=parent.final_data?Object.assign({}, parent.final_data):{};
